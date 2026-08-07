@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查能力清单，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用混乱、幻觉式硬扛任务三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等主流 Agent 框架均可适配。"
-version: 2.0.0
+version: 2.1.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -16,6 +16,24 @@ agent_created: true
 # Skills 宪法（Skills Constitution）
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
+
+## ⚠️ 前置过滤：任务类型判断（零号条款）
+
+**本宪法仅适用于"专业任务"**，不适用于简单问答。执行前先判断：
+
+| 任务类型 | 特征 | 是否查技能 |
+|---------|------|-----------|
+| **简单问答** | 翻译、润色、解释概念、一般知识问答 | ❌ 跳过 |
+| **专业任务** | 编码、数据抓取、文件操作、API 调用、复杂分析 | ✅ 必须查 |
+| **模糊任务** | 不确定是否需要专业工具 | ✅ 查一下（宁可不放过） |
+
+**判断标准**：
+- 任务涉及**文件系统、网络请求、代码执行、专业工具** → 专业任务
+- 任务只是**文字处理、知识问答、简单解释** → 简单任务
+
+**自我豁免**：本宪法本身是元规则，执行宪法条款时**不需要再次查技能**（防止死循环）。
+
+---
 
 ## 痛点
 

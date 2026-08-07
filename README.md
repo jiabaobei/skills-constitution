@@ -1,6 +1,6 @@
 # Skills 宪法（Skills Constitution）
 
-> **项目简介**：一条凌驾于全部技能/工具/插件之上的元规则，强制 Agent 执行任何任务前必须扫描能力清单、有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用混乱、幻觉式硬扛任务三大痛点，跨平台通用（ChatGPT / Claude / Codex / Gemini / WorkBuddy / Cursor / Windsurf / Cline 等 12+ 框架）。
+> **项目简介**：一条凌驾于全部技能/工具/插件之上的元规则，强制 Agent 执行专业任务前必须扫描能力清单、有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用混乱、幻觉式硬扛任务三大痛点。自带任务类型过滤（简单问答跳过，专业任务强制），跨平台通用（ChatGPT / Claude / Codex / Gemini / WorkBuddy / Cursor / Windsurf / Cline 等 12+ 框架）。
 
 > 凌驾于全部技能/工具/插件之上的元规则 —— 强制 Agent 先查后用、有匹配必用、无匹配必搜
 
