@@ -1,6 +1,8 @@
 # Skills 宪法（Skills Constitution）
 
 > **项目简介**：一条凌驾于全部技能/工具/插件之上的元规则，强制 Agent 执行专业任务前必须扫描能力清单、有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用混乱、幻觉式硬扛任务三大痛点。自带任务类型过滤（简单问答跳过，专业任务强制），跨平台通用（ChatGPT / Claude / Codex / Gemini / WorkBuddy / Cursor / Windsurf / Cline 等 12+ 框架）。
+>
+> **Project Description**: A meta-rule governing all skill/tool/plugin invocations, forcing Agents to scan capability lists before executing professional tasks — mandatory use when matched, search when not, auto-recommend at reply. Solves three pain points: Agent ignoring installed skills, chaotic invocation, hallucination-based workarounds. Built-in task type filtering (skips simple Q&A, mandates for professional tasks), cross-platform compatible (ChatGPT / Claude / Codex / Gemini / WorkBuddy / Cursor / Windsurf / Cline and 12+ frameworks).
 
 > 凌驾于全部技能/工具/插件之上的元规则 —— 强制 Agent 先查后用、有匹配必用、无匹配必搜
 
