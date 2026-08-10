@@ -1,18 +1,23 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查能力清单，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用混乱、幻觉式硬扛任务三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等主流 Agent 框架均可适配。"
-version: 2.2.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.3.0 新增记忆层必备内容、误判回退与生效检查清单，修复索引数据自洽性。"
+version: 2.3.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
+display_name_en: "Skills Constitution"
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks."
+visibility: "public"
+agent_created: true
 ---
 
 # Skills 宪法（Skills Constitution）
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.2.0** — 新增技能树索引（按功能分类），支持快速定位匹配技能，减少 80% 扫描量
+> **v2.3.0** — 新增「记忆层必备内容」引导 +「零号条款-C 误判回退」+「宪法生效检查清单」；技能索引改为脚本生成、数据自洽可校验（修复索引 total 与真实技能数不一致的问题）
 
 ---
 
@@ -31,6 +36,11 @@ display_name: "Skills 宪法"
 - 任务只是**文字处理、知识问答、简单解释** → 简单任务
 
 **自我豁免**：本宪法本身是元规则，执行宪法条款时**不需要再次查技能**（防止死循环）。
+
+**误判回退（零号条款-C）**：若 Agent 误判任务类型（如把专业任务当作简单问答跳过），用户有权指出（"这是专业任务，你应该查技能"）。此时 Agent 必须：
+1. 道歉并承认误判
+2. 立即回退到完整宪法流程（从查记忆开始）
+3. 将此次误判记录到记忆层（`MISJUDGMENTS`），避免重复犯错
 
 ---
 
@@ -88,6 +98,28 @@ display_name: "Skills 宪法"
 1. 用户级记忆（长期偏好、硬规则）
 2. 项目记忆（当前项目约定、历史决策）
 3. 今日流水（当天工作记录，避免重复）
+
+**记忆层必备内容**（自举前提：让"查记忆"真正发现技能，v2.3.0 新增）：
+
+为了让宪法自举执行，记忆层中应维护以下两类条目：
+
+| 条目 | 内容 | 示例 |
+|------|------|------|
+| `INSTALLED_SKILLS` | 已安装技能清单（名称 + 一句话描述） | `file-ops：文件读取/写入工具，用于读取技能索引` |
+| `SKILL_INDEX_PATH` | 技能索引文件路径 | `~/.workbuddy/skills/skill_tree.json` |
+
+示例：
+
+```markdown
+INSTALLED_SKILLS:
+- file-ops：文件读取/写入工具，用于读取技能索引
+- find-skills：技能搜索工具，用于发现新能力
+- agent-memory：记忆管理系统
+
+SKILL_INDEX_PATH: ~/.workbuddy/skills/skill_tree.json
+```
+
+只要按此格式维护记忆层，Agent 查记忆即可"回忆"出技能清单，无需实时扫描，冷启动问题就此解决。
 
 ---
 
@@ -260,6 +292,15 @@ flowchart TD
 | **月之暗面** | 插件 + 工具 | 插件市场 | 系统提示词 | 将宪法写入系统提示词 |
 | **Dify** | 工具 + 工作流 | 插件市场 | 系统 Prompt | 将宪法写入系统 Prompt |
 
+**支持级别说明**（诚实声明，v2.3.0 新增）：
+
+| 级别 | 含义 | 平台 |
+|------|------|------|
+| ✅ **完全支持** | 有本地文件系统 + 可访问的能力注册表/技能文件，宪法可真正执行"查索引→加载技能→执行" | WorkBuddy / Claude Code / Cursor / Windsurf / Cline / Codex |
+| ⚠️ **建议型** | 无本地文件系统、无技能文件机制，只能将宪法条款注入提示词/人设，作为行为建议执行，无法真正加载技能文件 | ChatGPT / Kimi / 豆包 / 文心一言 / 通义千问 / 智谱清言 / 月之暗面 / Dify / 扣子 |
+
+> 说明：对"建议型"平台，请勿期待 file-ops / find-skills 等本地技能机制生效；宪法在这些平台上以提示词约束的形式工作，效果取决于平台对系统提示词的遵循程度。
+
 ### 通用适配（任何 Agent 框架）
 
 对于不在上表的框架，通用适配方式：
@@ -276,7 +317,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.2.0
+## Skills 宪法（Skills Constitution）v2.3.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -340,7 +381,7 @@ flowchart TD
 
 "无条件启用全部能力"在技术上不可行——大量能力全量加载会撑爆上下文窗口。能力机制的正确设计是**按描述匹配触发**，本宪法的作用就是确保这个匹配机制被**强制执行**，不被跳过。
 
-**v2.2.0 优化**：通过技能树索引按功能分类，将扫描范围从"全量 655 个技能"缩小到"目标分支 ~50 个技能"，减少 80% token 消耗。
+**v2.3.0 优化**：通过技能树索引按功能分类，将扫描范围从"全量 659 个技能"缩小到"目标分支 ~50 个技能"，减少 80%+ token 消耗。索引由 `scripts/build_skill_tree.py` 脚本生成并自检（分类条数和 ≥ total），**禁止手写索引**，从源头杜绝数据不一致。
 
 ---
 

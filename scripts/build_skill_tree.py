@@ -60,11 +60,23 @@ def parse_frontmatter(content: str) -> dict:
     return fm
 
 
+def read_constitution_version() -> str:
+    """从仓库根 SKILL.md 的 frontmatter 读取宪法版本号，保持索引与技能版本同源"""
+    try:
+        root = Path(__file__).resolve().parent.parent
+        content = (root / "SKILL.md").read_text(encoding="utf-8")
+        m = re.search(r"^version:\s*(\S+)", content, re.MULTILINE)
+        return m.group(1) if m else "unknown"
+    except Exception:
+        return "unknown"
+
+
 def build_skill_tree(skills_dir: str) -> dict:
     """扫描所有技能，生成树形索引"""
     tree = {
         "categories": {},
         "total": 0,
+        "version": read_constitution_version(),
         "generated_at": datetime.now().isoformat(),
         "skills_dir": skills_dir
     }
@@ -172,6 +184,17 @@ def main():
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(tree, f, ensure_ascii=False, indent=2)
     print(f"✓ 生成索引: {json_path}")
+
+    # 自检：每个技能至少归入一个分类，故分类条数和应 >= total
+    # （若 total > 分类条数和，说明索引数据不一致，直接报错退出，防止提交假索引）
+    cat_sum = sum(len(v) for v in tree["categories"].values())
+    if cat_sum < tree["total"]:
+        print(
+            f"✗ 自检失败: 分类条数和({cat_sum}) < total({tree['total']})，索引数据不一致！",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    print(f"✓ 自检通过: 分类条数和 {cat_sum} >= total {tree['total']}")
 
     # 输出 Markdown
     md_path = output_dir / "SKILL_TREE.md"

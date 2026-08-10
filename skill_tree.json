@@ -1,124 +1,6364 @@
 {
-  "version": "2.2.0",
-  "generated_at": "2026-08-10T15:52:00",
-  "skills_dir": "~/.workbuddy/skills",
-  "total": 655,
   "categories": {
-    "meta": [
+    "doc": [
       {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能之上的元规则...",
-        "version": "2.2.0"
+        "name": "1password",
+        "description": "Set up and use 1Password CLI (op). Use when installing the CLI,",
+        "version": "0.0.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "canvas-design",
+        "description": "Create beautiful visual art in .png and .pdf documents using design",
+        "version": "1.0.3",
+        "categories": [
+          "doc",
+          "image"
+        ]
+      },
+      {
+        "name": "download-web-file",
+        "description": "从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "excel-xlsx",
+        "description": "Create, inspect, and edit Microsoft Excel workbooks and XLSX files",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "kdocs",
+        "description": "操作金山文档（WPS 云文档 / Kdocs / 365.kdocs.cn / www.kdocs.cn）云文档的官方",
+        "version": "2.5.7",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "md-to-pdf-cjk",
+        "description": "Convert Markdown files to professional PDF documents with full CJK",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "microsoft-excel",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "minimax-docx",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "minimax-pdf",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "minimax-xlsx",
+        "description": "Open, create, read, analyze, edit, or validate Excel/spreadsheet",
+        "version": "1.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "nano-pdf",
+        "description": "Edit PDFs with natural-language instructions using the nano-pdf CLI.",
+        "version": "0.0.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "office-cli",
+        "description": "OfficeCLI —— 零依赖办公套件 CLI。支持创建、读取、编辑、预览",
+        "version": "0.0.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "pdf",
+        "description": "Comprehensive PDF manipulation toolkit for extracting text and",
+        "version": "0.0.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "pdf-extract",
+        "description": "Extract text from PDF files for LLM processing",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "pdfkit-py",
+        "description": "仅用于对已存在的 .pdf",
+        "version": "1.0.1",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "powerpoint-pptx",
+        "description": "Create, inspect, and edit Microsoft PowerPoint presentations and",
+        "version": "1.0.1",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "pptx-generator",
+        "description": "Generate, edit, and read PowerPoint presentations. Create from",
+        "version": "1.0",
+        "categories": [
+          "doc"
+        ]
+      },
+      {
+        "name": "seo-ops",
+        "description": "SEO operations automation: generate content attack briefs from competitor gaps, optimize GSC data for quick wins, and scout emerging search trends. Use when asked to \"SEO audit\", \"content attack brief",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "search",
+          "data",
+          "automation"
+        ]
       },
       {
         "name": "skills-security-check",
-        "description": "Skill 安全审查工具，对技能及其配套文件进行全面安全审计...",
-        "version": "1.0.0"
-      }
-    ],
-    "memory": [
-      {
-        "name": "aiweko-memory-reports",
-        "description": "一键为工作空间搭建本地三层记忆体系...",
-        "version": "1.0.0"
+        "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
       },
       {
-        "name": "agent-memory",
-        "description": "Agent Memory — 持久化记忆系统...",
-        "version": "1.0.0"
+        "name": "smart-page",
+        "description": "腾讯文档智能页面（Smart",
+        "version": "1.0.1",
+        "categories": [
+          "doc"
+        ]
       },
       {
-        "name": "elite-longterm-memory",
-        "description": "精英长期记忆系统...",
-        "version": "1.0.0"
+        "name": "summarize",
+        "description": "Summarize URLs or files with the summarize CLI (web, PDFs, images,",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "file"
+        ]
       },
       {
-        "name": "memory-hygiene",
-        "description": "记忆卫生清理工具...",
-        "version": "1.0.0"
+        "name": "tencent-docs",
+        "description": "腾讯文档（docs.qq.com）-在线云文档平台，是创建、编辑、管理文档的首选",
+        "version": "1.0.36",
+        "categories": [
+          "doc"
+        ]
       },
       {
-        "name": "memory-manager",
-        "description": "记忆管理器...",
-        "version": "1.0.0"
+        "name": "word-docx",
+        "description": "Create, inspect, and edit Microsoft Word documents and DOCX files",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
       },
       {
-        "name": "memory-setup",
-        "description": "记忆系统初始化配置...",
-        "version": "1.0.0"
-      }
-    ],
-    "browser": [
-      {
-        "name": "browser-skill",
-        "description": "腾讯开源浏览器自动化工具 bsk CLI...",
-        "version": "0.1.9"
-      },
-      {
-        "name": "agent-browser",
-        "description": "Playwright 浏览器自动化 CLI...",
-        "version": "0.25.3"
+        "name": "配网规划评审器",
+        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "finance",
+          "file"
+        ]
       }
     ],
     "code": [
       {
+        "name": "accessibility",
+        "description": "Design, implement, and audit inclusive digital products using WCAG",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "agent-eval",
+        "description": "Head-to-head comparison of coding agents (Claude Code, Aider,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "agent-introspection-debugging",
+        "description": "Structured self-debugging workflow for AI agent failures using",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "agentic-os",
+        "description": "Build persistent multi-agent operating systems on Claude Code.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "angular-developer",
+        "description": "Generates Angular code and provides architectural guidance. Trigger",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "api-design",
+        "description": "REST API design patterns including resource naming, status codes,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "architecture-decision-records",
+        "description": "Capture architectural decisions made during Claude Code sessions as",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "autonomous-agent-harness",
+        "description": "Transform Claude Code into a fully autonomous agent system with",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "autonomous-loops",
+        "description": "Patterns and architectures for autonomous Claude Code loops — from",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "cisco-ios-patterns",
+        "description": "Cisco IOS and IOS-XE review patterns for show commands, config",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "ck",
+        "description": "Persistent per-project memory for Claude Code. Auto-loads project",
+        "version": "2.0.0",
+        "categories": [
+          "memory",
+          "code"
+        ]
+      },
+      {
+        "name": "code",
+        "description": "Coding workflow with planning, implementation, verification, and",
+        "version": "1.0.4",
+        "categories": [
+          "code"
+        ]
+      },
+      {
         "name": "code-review",
-        "description": "代码审查工具...",
-        "version": "1.0.0"
+        "description": "Review the changes since a fixed point (commit, branch, tag, or",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "code-tour",
+        "description": "Create CodeTour `.tour` files — persona-targeted, step-by-step",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "codebase-design",
+        "description": "Shared vocabulary for designing deep modules. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "codebase-onboarding",
+        "description": "Analyze an unfamiliar codebase and generate a structured onboarding",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "codehealth-mcp",
+        "description": "Real-time structural Code Health via CodeScene MCP — review before",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "config-gc",
+        "description": "Garbage collection for your Claude Code configuration. Periodically",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "configure-ecc",
+        "description": "Interactive installer for Everything Claude Code — guides users",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "connections-optimizer",
+        "description": "Reorganize the user's X and LinkedIn network with review-first",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "context-budget",
+        "description": "Audits Claude Code context window consumption across agents,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "cost-tracking",
+        "description": "Track and report Claude Code token usage, spending, and budgets",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "didi-ride-skill",
+        "description": "中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置/取消订单。关键词：\"打车\"、\"叫车\"、\"去[地点]\"、\"回家\"、\"上班\"、\"下班\"、\"查价格\"、\"多少钱\"、\"路线\"、\"怎么走\"、\"步行到\"、\"附近\"、\"周边\"、\"司机\"、\"订单\"、\"查询订单\"。注意：即使用户未明确说\"打车\"，只要涉及从",
+        "version": "1.1.3",
+        "categories": [
+          "browser",
+          "code",
+          "finance"
+        ]
+      },
+      {
+        "name": "education",
+        "description": "Generate study plans, quizzes, flashcards, review materials, track",
+        "version": "3.4.1",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "error-handling",
+        "description": "Patterns for robust error handling across TypeScript, Python, and",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "eval-harness",
+        "description": "Formal evaluation framework for Claude Code sessions implementing",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "everos",
+        "description": "EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以可读 .md 文件为事实源，天然可 Git 版本化、可 diff、可直接 push 到私有 GitHub 仓库实现跨设备共享。适用于：需要让 AI Agent 在多次对话之间、多台电脑之间保持长期记忆；且希望记忆可读、可手编、可版本管理的场",
+        "version": "1.0.0",
+        "categories": [
+          "memory",
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "evolver",
+        "description": "GitHub API token for auto-issue reporting and releases.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "exa-search",
+        "description": "Neural search via Exa MCP for web, code, and company research. Use",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "exa-web-search-free",
+        "description": "Free AI search via Exa MCP. Web search for news/info, code search",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "find-skills",
+        "description": "场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如\"我想做一个海报\"\"帮我分析股票\"），或明确说\"安装技能/find skills/找个skill\"时，自动从官方内置、本地已安装、SkillHub、虾评、GitHub、ClawHub 六层联合搜索并推荐最合适的技能，支持一键安装。已完全替代官方原 find-skills 插件。",
+        "version": "1.7.0",
+        "categories": [
+          "browser",
+          "code",
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "flutter-dart-code-review",
+        "description": "Library-agnostic Flutter/Dart code review checklist covering widget",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "generating-python-installer",
+        "description": "Commercial-grade Python installer expert for Windows: Nuitka",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "git-essentials",
+        "description": "Essential Git commands and workflows for version control,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "git-workflow",
+        "description": "Git workflow patterns including branching strategies, commit",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "github",
+        "description": "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "github-ops",
+        "description": "GitHub repository operations, automation, and management. Issue",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "automation"
+        ]
+      },
+      {
+        "name": "growth-log",
+        "description": "Use after a complex task, failure, or when reviewing what was",
+        "version": "1.1.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-audit-fix",
+        "description": "Autonomous audit-to-fix pipeline — find issues, classify, fix, test, commit",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-code-review",
+        "description": "Review source files changed during a phase for bugs, security",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-debug",
+        "description": "Systematic debugging with persistent state across context resets",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-docs-update",
+        "description": "Generate or update project documentation verified against the codebase",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-eval-review",
+        "description": "Audit an executed AI phase's evaluation coverage and produce an",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-inbox",
+        "description": "Triage and review open GitHub issues and PRs against project",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-map-codebase",
+        "description": "Analyze codebase with parallel mapper agents to produce",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-ns-context",
+        "description": "codebase intel | map graphify docs learnings mempalace",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-ns-review",
+        "description": "quality gates | code review debug audit security eval ui",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-onboard",
+        "description": "Guide existing codebase onboarding through mapping, doc ingest, and",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-plan-review-convergence",
+        "description": "Cross-AI plan convergence - replan until review concerns are resolved.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-pr-branch",
+        "description": "Create a clean PR branch by filtering out .planning/ commits —",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-quick",
+        "description": "Execute a quick task with GSD guarantees (atomic commits, state",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-review",
+        "description": "Request cross-AI peer review of phase plans from external AI CLIs",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-review-backlog",
+        "description": "Review and promote backlog items to active milestone",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-ship",
+        "description": "Create PR, run review, and prepare for merge after verification passes",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-stats",
+        "description": "Display project statistics — phases, plans, requirements, git",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-ui-review",
+        "description": "Retroactive 6-pillar visual audit of implemented frontend code",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-ultraplan-phase",
+        "description": "[BETA] Offload plan phase to CodeBuddy's ultraplan cloud; review",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "gsd-undo",
+        "description": "Safe git revert. Roll back phase or plan commits using the phase",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "improve-codebase-architecture",
+        "description": "Scan a codebase for deepening opportunities, present them as a",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "ios-icon-gen",
+        "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "loop-design-check",
+        "description": "Design a goal-oriented agent loop, and review it for the ways",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "model-usage",
+        "description": "Use CodexBar CLI local cost usage to summarize per-model usage for",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "netmiko-ssh-automation",
+        "description": "Safe Python Netmiko patterns for read-only collection, bounded",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "automation"
+        ]
+      },
+      {
+        "name": "nodejs-keccak256",
+        "description": "Prevent Ethereum hashing bugs in JavaScript and TypeScript. Node's",
+        "version": "1.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "opencode-controller",
+        "description": "Control and operate Opencode via slash commands. Use this skill to",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "orch-refine-code",
+        "description": "Orchestrate a behavior-preserving refactor — confirm tests are",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "peiwang-buwangwo",
+        "description": "配网勿忘我 — 多人协作任务看板。纯 HTML 单文件应用，Gitee 云端同步，支持管理员/协作者双模式、自定义移动端日期选择器、三列状态徽章。",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "plankton-code-quality",
+        "description": "Write-time code quality enforcement using Plankton —",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "ponytail-review",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "pr-review",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "prediction-market-risk-review",
+        "description": "Review prediction-market, basket, oracle, and trading-agent",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "project-flow-ops",
+        "description": "Operate execution flow across GitHub and Linear by triaging issues",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "python-patterns",
+        "description": "Pythonic idioms, PEP 8 standards, type hints, and best practices",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "python-testing",
+        "description": "Python testing strategies using pytest, TDD methodology, fixtures,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "repo-scan",
+        "description": "Cross-stack source code asset audit — classifies every file,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "resolving-merge-conflicts",
+        "description": "Use when you need to resolve an in-progress git merge/rebase conflict.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "scientific-pkg-gget",
+        "description": "gget CLI and Python workflow for quick genomic database queries,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
+        ]
+      },
+      {
+        "name": "scientific-thinking-literature-review",
+        "description": "Systematic literature-review workflow for academic, biomedical,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "security-review",
+        "description": "Use this skill when adding authentication, handling user input,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "security-scan",
+        "description": "Scan your Claude Code configuration (.claude/ directory) for",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "setup-pre-commit",
+        "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type",
+        "version": "1.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "skill-scout",
+        "description": "Search existing local, marketplace, GitHub, and web skill sources",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "skill_2053081574105186304",
+        "description": "GitHub API token for auto-issue reporting and releases.",
+        "version": "1.51.3",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "speckit-baseline",
+        "description": "Generate feature specifications by analyzing existing source code.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "speckit-taskstoissues",
+        "description": "Convert existing tasks into actionable, dependency-ordered GitHub",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "swift-protocol-di-testing",
+        "description": "Protocol-based dependency injection for testable Swift code — mock",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "team-ops",
+        "description": "Audit team performance using the Elon Algorithm (identify A/B/C players) and extract action items from meeting transcripts. Use when asked to \"audit team performance\", \"review my team\", \"extract meeti",
+        "version": "1.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "tencent-meeting-skill",
+        "description": "在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeting_id、meeting_code、参会成员、受邀成员、等候室、会议列表、我的会议、会议录制、录制回放、录制下载、会议转写、会议纪要、智能纪要、AI纪要、搜索转写。覆盖三大场景：(1)",
+        "version": "1.0.10",
+        "categories": [
+          "browser",
+          "code",
+          "video"
+        ]
+      },
+      {
+        "name": "tencentmap-jsapi-gl-skill",
+        "description": "腾讯地图 JavaScript GL（JSAPIGL）开发指南。适用于地图应用或者工具的编写。在编写、审查或调试使用腾讯地图",
+        "version": "1.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "tencentmap-webservice-skill",
+        "description": "腾讯位置服务 WebService API 开发技能。当开发者需要通过 HTTP 接口集成地理编码、地点搜索、路线规划、天气查询、IP",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "code"
+        ]
+      },
+      {
+        "name": "unified-notifications-ops",
+        "description": "Operate notifications as one ECC-native workflow across GitHub,",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "verification-loop",
+        "description": "A comprehensive verification system for Claude Code sessions.",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
       }
     ],
-    "doc": [
+    "image": [
       {
-        "name": "pdf",
-        "description": "PDF 处理工具...",
-        "version": "1.0.0"
+        "name": "accessibility",
+        "description": "Design, implement, and audit inclusive digital products using WCAG",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
       },
       {
-        "name": "docx",
-        "description": "Word 文档处理工具...",
-        "version": "1.0.0"
+        "name": "agent-harness-construction",
+        "description": "Design and optimize AI agent action spaces, tool definitions, and",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
       },
       {
-        "name": "xlsx",
-        "description": "Excel 表格处理工具...",
-        "version": "1.0.0"
+        "name": "agentmail",
+        "description": "API-first email platform designed for AI agents. Create and manage",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "email"
+        ]
       },
       {
-        "name": "pptx",
-        "description": "PowerPoint 演示文稿处理...",
-        "version": "1.0.0"
+        "name": "android-native-dev",
+        "description": "Android native application development and UI design guide. Covers",
+        "version": "1.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "api-design",
+        "description": "REST API design patterns including resource naming, status codes,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "atxp",
+        "description": "Access ATXP paid API tools for web search, AI image generation,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search"
+        ]
+      },
+      {
+        "name": "automation-workflows",
+        "description": "Design and implement automation workflows to save time and scale",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "automation"
+        ]
+      },
+      {
+        "name": "awesome-design-md",
+        "description": "Curated collection of 54 DESIGN.md files extracted from real",
+        "version": "1.0.0",
+        "categories": [
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "backend-patterns",
+        "description": "Backend architecture patterns, API design, database optimization,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "data"
+        ]
+      },
+      {
+        "name": "canvas-design",
+        "description": "Create beautiful visual art in .png and .pdf documents using design",
+        "version": "1.0.3",
+        "categories": [
+          "doc",
+          "image"
+        ]
+      },
+      {
+        "name": "codebase-design",
+        "description": "Shared vocabulary for designing deep modules. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "deck-generator",
+        "description": "Generate professional presentations with AI-generated images. Use",
+        "version": "1.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "design-system",
+        "description": "Use this skill to generate or audit design systems, check visual",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "django-celery",
+        "description": "Django + Celery async task patterns — configuration, task design,",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "django-patterns",
+        "description": "Django architecture patterns, REST API design with DRF, ORM best",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "dynamic-workflow-mode",
+        "description": "Design task-local harnesses, eval gates, and reusable skill",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "fal-ai-media",
+        "description": "Unified media generation via fal.ai MCP — image, video, and audio.",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "frontend-design-3",
+        "description": "Create distinctive, production-grade frontend interfaces with high",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "frontend-design-direction",
+        "description": "Set an ECC-specific frontend design direction for production UI",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "grill-me",
+        "description": "Interview the user relentlessly about a plan or design until",
+        "version": "1.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "grill-with-docs",
+        "description": "A relentless interview to sharpen a plan or design, which also",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "gsd-ai-integration-phase",
+        "description": "Generate an AI-SPEC.md design contract for phases that involve",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "gsd-sketch",
+        "description": "Sketch UI/design ideas with throwaway HTML mockups, or propose what",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "gsd-ui-phase",
+        "description": "Generate UI design contract (UI-SPEC.md) for frontend phases",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "hermes-self-evolution",
+        "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
+        "version": "main",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "hexagonal-architecture",
+        "description": "Design, implement, and refactor Ports & Adapters systems with clear",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "image",
+        "description": "Create, inspect, process, and optimize image files and visual",
+        "version": "1.0.4",
+        "categories": [
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "ios-icon-gen",
+        "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "ito-data-atlas-agent",
+        "description": "Design background Data Atlas style agents for Itô basket research,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "jpa-patterns",
+        "description": "JPA/Hibernate patterns for entity design, relationships, query",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "liquid-glass-design",
+        "description": "iOS 26 Liquid Glass design system — dynamic glass material with",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "loop-design-check",
+        "description": "Design a goal-oriented agent loop, and review it for the ways",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "make-interfaces-feel-better",
+        "description": "Apply concrete design-engineering details that make interfaces feel",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "migraq",
+        "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
+        "version": "1.1.6",
+        "categories": [
+          "image",
+          "video",
+          "data"
+        ]
+      },
+      {
+        "name": "minimax-multimodal-toolkit",
+        "description": "Use mmx to generate text, images, video, speech, and music via the",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "n8n-workflow-automation",
+        "description": "Designs and outputs n8n workflow JSON with robust triggers,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "automation"
+        ]
+      },
+      {
+        "name": "nano-banana-pro",
+        "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use",
+        "version": "1.0.1",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "ocr-local",
+        "description": "Extract text from images using Tesseract.js OCR (100% local, no API",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "openai-image-gen",
+        "description": "Batch-generate images via OpenAI Images API. Random prompt sampler",
+        "version": "1.0.1",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "orch-build-mvp",
+        "description": "Orchestrate bootstrapping a working MVP from a design or spec",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "outbound-engine",
+        "description": "Design, analyze, and optimize cold outbound email campaigns for",
+        "version": "1.0.0",
+        "categories": [
+          "image",
+          "email"
+        ]
+      },
+      {
+        "name": "plan-orchestrate",
+        "description": "Read a plan document, decompose it into steps, design a per-step",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "postgres-patterns",
+        "description": "PostgreSQL database patterns for query optimization, schema design,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "data"
+        ]
+      },
+      {
+        "name": "ppt",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-generator",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "prisma-patterns",
+        "description": "Prisma ORM patterns for TypeScript backends — schema design, query",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "prompt-engineering-expert",
+        "description": "Advanced expert in prompt engineering, custom instructions design,",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "prototype",
+        "description": "Build a throwaway prototype to answer a design question. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "recsys-pipeline-architect",
+        "description": "Design composable recommendation, ranking, and feed pipelines using",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "springboot-patterns",
+        "description": "Spring Boot architecture patterns, REST API design, layered",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "summarize",
+        "description": "Summarize URLs or files with the summarize CLI (web, PDFs, images,",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "superdesign",
+        "description": "Expert frontend design guidelines for creating beautiful, modern",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "tdesign-miniprogram",
+        "description": "TDesign WeChat Mini Program UI component library by Tencent. Use",
+        "version": "1.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "ui-to-vue",
+        "description": "Use when the user has UI screenshots or design exports that need",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "ui-ux-pro-max",
+        "description": "UI/UX design intelligence and implementation guidance for building",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "video-generator-seedance",
+        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "visa-doc-translate",
+        "description": "Translate visa application documents (images) to English and create",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "wechat-article-pro",
+        "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "workrally",
+        "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
+        "version": "2.4.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "配网规划评审器",
+        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "finance",
+          "file"
+        ]
+      }
+    ],
+    "data": [
+      {
+        "name": "admapix",
+        "description": "AdMapix raw data layer for ad creatives, apps, rankings,",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "akshare-stock",
+        "description": "A股量化数据分析工具，基于AkShare库获取A股行情、财务数据、板块信息等。用于回答关于A股股票查询、行情数据、财务分析、选股等问题。",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "backend-patterns",
+        "description": "Backend architecture patterns, API design, database optimization,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "data"
+        ]
+      },
+      {
+        "name": "clickhouse-io",
+        "description": "ClickHouse database patterns, query optimization, analytics, and",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "conversion-ops",
+        "description": "Score any landing page with a CRO audit framework, and convert survey data into lead magnets. Use when asked to \"audit this landing page\", \"score this page\", \"CRO audit\", \"convert survey to lead magne",
+        "version": "1.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "data-analysis",
+        "description": "Data analysis and visualization. Query databases, generate reports,",
+        "version": "1.0.2",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "data-analyst",
+        "description": "Data visualization, report generation, SQL queries, and spreadsheet",
+        "version": "1.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "data-scraper-agent",
+        "description": "Build a fully automated AI-powered data collection agent for any",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "data-throughput-accelerator",
+        "description": "Use when large data ingestion, backfill, export, ETL, warehouse",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "database-migrations",
+        "description": "Database migration best practices for schema changes, data",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "diagram-generator",
+        "description": "Generate and edit diagrams with the mcp-diagram-generator MCP server. Use this skill for new diagrams, existing .drawio/.mmd/.excalidraw edits, network topology, architecture, flowchart, swimlane, seq",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "find-skills",
+        "description": "场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如\"我想做一个海报\"\"帮我分析股票\"），或明确说\"安装技能/find skills/找个skill\"时，自动从官方内置、本地已安装、SkillHub、虾评、GitHub、ClawHub 六层联合搜索并推荐最合适的技能，支持一键安装。已完全替代官方原 find-skills 插件。",
+        "version": "1.7.0",
+        "categories": [
+          "browser",
+          "code",
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "ito-data-atlas-agent",
+        "description": "Design background Data Atlas style agents for Itô basket research,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "migraq",
+        "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
+        "version": "1.1.6",
+        "categories": [
+          "image",
+          "video",
+          "data"
+        ]
+      },
+      {
+        "name": "mle-workflow",
+        "description": "Production machine-learning engineering workflow for data",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "mx-finance-data",
+        "description": "基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业分析、信用研究、财报审计、资产配置等场景，适配机构与个人多元需求。返回结果包含",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "neodata-financial-search",
+        "description": "NeoData Financial Search — natural language financial data search.",
+        "version": "1.0.1",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "notion",
+        "description": "Notion API for creating and managing pages, databases, and blocks.",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "openclaw-backup",
+        "description": "Backup and restore OpenClaw data. Use when user asks to create",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "postgres-patterns",
+        "description": "PostgreSQL database patterns for query optimization, schema design,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "data"
+        ]
+      },
+      {
+        "name": "prediction-market-oracle-research",
+        "description": "Research prediction markets as data sources or oracle signals for",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "redis-patterns",
+        "description": "Redis data structure patterns, caching strategies, distributed",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "scientific-db-pubmed-database",
+        "description": "Direct PubMed and NCBI E-utilities search workflows for biomedical",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "scientific-db-uspto-database",
+        "description": "USPTO patent and trademark data workflow for official record",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "scientific-pkg-gget",
+        "description": "gget CLI and Python workflow for quick genomic database queries,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
+        ]
+      },
+      {
+        "name": "seo-ops",
+        "description": "SEO operations automation: generate content attack briefs from competitor gaps, optimize GSC data for quick wins, and scout emerging search trends. Use when asked to \"SEO audit\", \"content attack brief",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "search",
+          "data",
+          "automation"
+        ]
+      },
+      {
+        "name": "stock-analysis",
+        "description": "Analyze stocks and cryptocurrencies using Yahoo Finance data.",
+        "version": "6.2.0",
+        "categories": [
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "swift-actor-persistence",
+        "description": "Thread-safe data persistence in Swift using actors — in-memory",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "data"
+        ]
+      },
+      {
+        "name": "tencent-musician-skills",
+        "description": "腾讯音乐人智能分析助手（数据分析 +",
+        "version": "1.0.1",
+        "categories": [
+          "data"
+        ]
+      }
+    ],
+    "general": [
+      {
+        "name": "agent-architecture-audit",
+        "description": "Full-stack diagnostic for agent and LLM applications. Audits the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-mbti",
+        "description": "AI Agent personality diagnosis and configuration system based on",
+        "version": "0.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-payment-x402",
+        "description": "Add x402 payment execution to AI agents with per-task budgets,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-phone-call",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-self-evaluation",
+        "description": "Use after completing any non-trivial task. The agent self-rates its",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-sort",
+        "description": "Build an evidence-backed ECC install plan for a specific repo by",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-team-orchestration",
+        "description": "Orchestrate multi-agent teams with defined roles, task lifecycles,",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agentic-engineering",
+        "description": "Operate as an agentic engineer using eval-first execution,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ai-first-engineering",
+        "description": "Engineering operating model for teams where AI agents generate a",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ai-ppt-generator",
+        "description": "Generate PPT with Baidu Wenku AI. Smart template selection based on content.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ai-regression-testing",
+        "description": "Regression testing strategies for AI-assisted development.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "aihot",
+        "description": "AI HOT (aihot.virxact.com) 中文 AI 资讯查询 Skill。当用户想知道\"今天 AI 圈有什么\"、\"AI",
+        "version": "1.0.3",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "andonq",
+        "description": "AndonQ 腾讯云智能客服\"领域虾\" —",
+        "version": "2.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "android-clean-architecture",
+        "description": "Clean Architecture patterns for Android and Kotlin Multiplatform",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "anti-distill",
+        "description": "Anti-distillation defense for employee Skills. Clean your skill",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "api-connector-builder",
+        "description": "Build a new API connector or provider by matching the target repo's",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "api-gateway",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "apple-notes",
+        "description": "Manage Apple Notes via the `memo` CLI on macOS (create, view, edit,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "apple-reminders",
+        "description": "Manage Apple Reminders via the `remindctl` CLI on macOS (list, add,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "article-writing",
+        "description": "Write articles, guides, blog posts, tutorials, newsletter issues,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ask-matt",
+        "description": "Ask which skill or flow fits your situation. A router over the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "auto-updater",
+        "description": "Automatically update Clawdbot and all installed skills once daily.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "benchmark",
+        "description": "Use this skill to measure performance baselines, detect regressions",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "benchmark-methodology",
+        "description": "Use after competitive-platform-analysis has produced a tiered",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "benchmark-optimization-loop",
+        "description": "Use when the user asks to make something faster, try many variants,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "bilibili-all-in-one",
+        "description": ">",
+        "version": "1.0.18",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "blender-motion-state-inspection",
+        "description": "Use this skill when inspecting Blender characters, rigs, poses,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "blogwatcher",
+        "description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "blueprint",
+        "description": "Turn a one-line objective into a step-by-step construction plan",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "boss-skills",
+        "description": "Distill a real boss into an AI skill, or generate a boss skill from",
+        "version": "1.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "brand-discovery",
+        "description": "Use when a brand needs to discover or articulate its identity",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "buddy-sings",
+        "description": ">",
+        "version": "1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "bun-runtime",
+        "description": "Bun as runtime, package manager, bundler, and test runner. When to",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "byterover",
+        "description": "You MUST use this for gathering contexts before any work. This is",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "canary-watch",
+        "description": "Use this skill to monitor and verify a deployed URL after releases",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "caozhao-radar",
+        "description": "",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "carrier-relationship-management",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "claude-devfleet",
+        "description": "Orchestrate multi-agent coding tasks via Claude DevFleet — plan",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cli-anything-hub",
+        "description": "Discover agent-native CLIs for professional software. Access the",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "click-path-audit",
+        "description": "Trace every user-facing button/touchpoint through its full state",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cloudbase",
+        "description": "CloudBase is a full-stack development and deployment toolkit for",
+        "version": "2.15.4",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cnb-skill",
+        "description": "Interact with CNB (Cloud Native Build) platform via OpenAPI. Manage",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "coding-standards",
+        "description": "Baseline cross-project coding conventions for naming, readability,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "colleague-skill",
+        "description": "Distill a colleague into an AI Skill. Auto-collect",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "competitive-platform-analysis",
+        "description": "Use when scoping a competitive landscape — identifying,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "competitive-report-structure",
+        "description": "Use after benchmark-methodology has produced scored competitor",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "compose-multiplatform-patterns",
+        "description": "Compose Multiplatform and Jetpack Compose patterns for KMP projects",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "content-engine",
+        "description": "Create platform-native content systems for X, LinkedIn, TikTok,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "content-factory",
+        "description": "Multi-agent content production system. One piece of source content",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "content-ops",
+        "description": "Score, evaluate, and iteratively improve any content or strategy",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "content-repurposer",
+        "description": "Transform long-form content into platform-optimized snippets. Your",
+        "version": "1.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "continuous-agent-loop",
+        "description": "Patterns for continuous autonomous agent loops with quality gates,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "continuous-learning",
+        "description": "[DEPRECATED - use continuous-learning-v2] Legacy v1 stop-hook",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "continuous-learning-v2",
+        "description": "Instinct-based learning system that observes sessions via hooks,",
+        "version": "2.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cos-vectors",
+        "description": "腾讯云 COS",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cost-aware-llm-pipeline",
+        "description": "Cost optimization patterns for LLM API usage — model routing by",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "council",
+        "description": "Convene a four-voice council for ambiguous decisions, tradeoffs,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cpp-coding-standards",
+        "description": "C++ coding standards based on the C++ Core Guidelines",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "cpp-testing",
+        "description": "Use only when writing/updating/fixing C++ tests, configuring",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "crash-expert-skill",
+        "description": "Linux kernel vmcore/coredump analysis expert skill. Use when users",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "crosspost",
+        "description": "Multi-platform content distribution across X, LinkedIn, Threads,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "csharp-testing",
+        "description": "C# and .NET testing patterns with xUnit, FluentAssertions, mocking,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "customer-billing-ops",
+        "description": "Operate customer billing workflows such as subscriptions, refunds,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "customs-trade-compliance",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "dart-flutter-patterns",
+        "description": "Production-ready Dart and Flutter patterns covering null safety,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "darwin-skill",
+        "description": "Darwin Skill (达尔文.skill): autonomous skill optimizer inspired by",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "dashboard-builder",
+        "description": "Build monitoring dashboards that answer real operator questions for",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "defi-amm-security",
+        "description": "Security checklist for Solidity AMM contracts, liquidity pools, and",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "delivery-gate",
+        "description": "Stop hook that blocks Claude from finishing until quality checks",
+        "version": "1.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "deployment-patterns",
+        "description": "Deployment workflows, CI/CD pipeline patterns, Docker",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "diagnosing-bugs",
+        "description": "Diagnosis loop for hard bugs and performance regressions. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "django-security",
+        "description": "Django security best practices, authentication, authorization, CSRF",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "django-tdd",
+        "description": "Django testing strategies with pytest-django, TDD methodology,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "django-verification",
+        "description": "Verification loop for Django projects: migrations, linting, tests",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "dmux-workflows",
+        "description": "Multi-agent orchestration using dmux (tmux pane manager for AI",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "docker-essentials",
+        "description": "Essential Docker commands and workflows for container management,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "docker-patterns",
+        "description": "Docker and Docker Compose patterns for local development, container",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "documentation-lookup",
+        "description": "Use up-to-date library and framework docs via Context7 MCP instead",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "domain-modeling",
+        "description": "Build and sharpen a project's domain model. Use when the user wants",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "dotnet-patterns",
+        "description": "Idiomatic C# and .NET patterns, conventions, dependency injection,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ecc-guide",
+        "description": "Guide users through ECC's current agents, skills, commands, hooks,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ecc-recipes",
+        "description": "Map a described workflow to the right ECC command-GROUP with",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ecc-tools-cost-audit",
+        "description": "Evidence-first ECC Tools burn and billing audit workflow. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "edge-tts",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "energy-procurement",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "enterprise-agent-ops",
+        "description": "Operate long-lived agent workloads with observability, security",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "evm-token-decimals",
+        "description": "Prevent silent decimal mismatch bugs across EVM chains. Covers",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "fastapi-patterns",
+        "description": "FastAPI best practices covering project structure, Pydantic v2",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "fbs-bookwriter",
+        "description": "福帮手出品 |",
+        "version": "2.1.2",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "feishu-evolver-wrapper",
+        "description": "Feishu-integrated wrapper for the capability-evolver. Manages the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "fintech-engineer",
+        "description": "Expert fintech engineer specializing in financial systems, regulatory compliance (PCI DSS, AML, KYC), payment processing, banking integrations, and secure transaction architecture. Use when building p",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "flox-environments",
+        "description": "Create reproducible, cross-platform (macOS/Linux) development",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "flutter-dev",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "foundation-models-on-device",
+        "description": "Apple FoundationModels framework for on-device LLM — text",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "free-ride",
+        "description": "OpenRouter API key — get a free one at openrouter.ai/keys",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-a11y",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-dev",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-patterns",
+        "description": "Frontend development patterns for React, Next.js, state management,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-slides",
+        "description": "Create stunning, animation-rich HTML presentations from scratch or",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "fsharp-testing",
+        "description": "F# testing patterns with xUnit, FsUnit, Unquote, FsCheck",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "fullstack-dev",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gan-style-harness",
+        "description": "GAN-inspired Generator-Evaluator agent harness for building",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gateguard",
+        "description": "Fact-forcing gate that blocks Edit/Write/Bash (including MultiEdit)",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gemini",
+        "description": "Gemini CLI for one-shot Q&A, summaries, and generation.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "getnote",
+        "description": "|",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gif-sticker-maker",
+        "description": ">",
+        "version": "1.2",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "golang-patterns",
+        "description": "Idiomatic Go patterns, best practices, and conventions for building",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "golang-testing",
+        "description": "Go testing patterns including table-driven tests, subtests,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "google-workspace-ops",
+        "description": "Operate across Google Drive, Docs, Sheets, and Slides as one",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "grilling",
+        "description": "Grill the user relentlessly about a plan, decision, or idea. Use",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "growth-engine",
+        "description": "Run autonomous marketing experiments with pacing alerts and weekly scorecards. Generates experiment hypotheses, tracks metrics, sends alerts when pacing is off, and produces weekly growth reports. Use",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-add-tests",
+        "description": "Generate tests for a completed phase based on UAT criteria and implementation",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-audit-milestone",
+        "description": "Audit milestone completion against original intent before archiving",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-audit-uat",
+        "description": "Cross-phase audit of all outstanding UAT and verification items",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-autonomous",
+        "description": "Run all remaining phases autonomously — discuss→plan→execute per phase",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-capture",
+        "description": "Capture ideas, tasks, notes, and seeds to their destination",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-cleanup",
+        "description": "Archive accumulated phase directories from completed milestones",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-complete-milestone",
+        "description": "Archive completed milestone and prepare for next version",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-config",
+        "description": "Configure GSD settings — workflow toggles, advanced knobs,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-discuss-phase",
+        "description": "Gather phase context through adaptive questioning before planning.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-execute-phase",
+        "description": "Execute all plans in a phase with wave-based parallelization",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-explore",
+        "description": "Socratic ideation and idea routing — think through ideas before",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-extract-learnings",
+        "description": "Extract decisions, lessons, patterns, and surprises from completed",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-fast",
+        "description": "Execute a trivial task inline — no subagents, no planning overhead",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-forensics",
+        "description": "Post-mortem investigation for failed GSD workflows — diagnoses what went wrong.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-graphify",
+        "description": "Build, query, and inspect the project knowledge graph in .planning/graphs/",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-health",
+        "description": "Diagnose planning directory health and optionally repair issues",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-help",
+        "description": "Show available GSD commands and usage guide",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-import",
+        "description": "Ingest external plans with conflict detection against project",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ingest-docs",
+        "description": "Bootstrap or merge a .planning/ setup from existing ADRs, PRDs,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-manager",
+        "description": "Interactive command center for managing multiple phases from one terminal",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-milestone-summary",
+        "description": "Generate a comprehensive project summary from milestone artifacts",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-mvp-phase",
+        "description": "Plan a phase as a vertical MVP slice — user story, SPIDR splitting,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-new-milestone",
+        "description": "Start a new milestone cycle — update PROJECT.md and route to requirements",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-new-project",
+        "description": "Initialize a new project with deep context gathering and PROJECT.md",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-next",
+        "description": "Smart entry — detect project state and route to the right next GSD action.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ns-ideate",
+        "description": "exploration capture | explore sketch spike spec capture",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ns-manage",
+        "description": "config workspace | workstreams thread update ship inbox",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ns-project",
+        "description": "project lifecycle | milestones audits summary",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ns-workflow",
+        "description": "workflow | discuss plan execute verify phase progress",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-pause-work",
+        "description": "Create context handoff when pausing work mid-phase",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-phase",
+        "description": "CRUD for phases in ROADMAP.md — add, insert, remove, or edit phases",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-plan-phase",
+        "description": "Create detailed phase plan (PLAN.md) with verification loop",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-progress",
+        "description": "Check progress, advance workflow, or dispatch freeform intent — the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-resume-work",
+        "description": "Resume work from previous session with full context restoration",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-secure-phase",
+        "description": "Retroactively verify threat mitigations for a completed phase",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-spec-phase",
+        "description": "Clarify WHAT a phase delivers with ambiguity scoring; produces a",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-spike",
+        "description": "Spike an idea through experiential exploration, or propose what to",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-thread",
+        "description": "Manage persistent context threads for cross-session work",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-update",
+        "description": "Update GSD to latest version with changelog display",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-validate-phase",
+        "description": "Retroactively audit and fill Nyquist validation gaps for a completed phase",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-verify-work",
+        "description": "Validate built features through conversational UAT",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-workspace",
+        "description": "Manage GSD workspaces — create, list, or remove isolated workspace environments",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-workstreams",
+        "description": "Manage parallel workstreams — list, create, switch, status,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "handoff",
+        "description": "Compact the current conversation into a handoff document for",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "healthcare-cdss-patterns",
+        "description": "Clinical Decision Support System (CDSS) development patterns. Drug",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "healthcare-emr-patterns",
+        "description": "EMR/EHR development patterns for healthcare applications. Clinical",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "healthcare-eval-harness",
+        "description": "Patient safety evaluation harness for healthcare application",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "healthcare-phi-compliance",
+        "description": "Protected Health Information (PHI) and Personally Identifiable",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "hermes-imports",
+        "description": "Convert local Hermes operator workflows into sanitized ECC skills",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "hipaa-compliance",
+        "description": "HIPAA-specific entrypoint for healthcare privacy and security work.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "homelab-network-readiness",
+        "description": "Readiness checklist for homelab VLAN segmentation, local DNS",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "homelab-network-setup",
+        "description": "Practical home and homelab network planning for gateways, switches,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "homelab-pihole-dns",
+        "description": "Pi-hole installation, blocklist management, DNS-over-HTTPS setup,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "homelab-vlan-segmentation",
+        "description": "Segmenting home networks into VLANs for IoT, guest, trusted, and",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "homelab-wireguard-vpn",
+        "description": "WireGuard VPN server setup, peer configuration, key generation,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "humanize-ai-text",
+        "description": "Humanize AI-generated text to bypass detection. This humanizer",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "humanizer",
+        "description": ">",
+        "version": "2.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "humanizer-zh",
+        "description": "|",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ima-skills",
+        "description": "|",
+        "version": "1.1.7",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "impeccable",
+        "description": ">",
+        "version": "2.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "implement",
+        "description": "Implement a piece of work based on a spec or set of tickets.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "imsg",
+        "description": "iMessage/SMS CLI for listing chats, history, watch, and sending.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "inherit-legacy-style",
+        "description": "Legacy-project style inheritance skill. Use when the user types",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "intent-driven-development",
+        "description": "Turn ambiguous or high-impact product and engineering changes into",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "inventory-demand-planning",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "investor-materials",
+        "description": "Create and update pitch decks, one-pagers, investor memos,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ios-application-dev",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "iterative-retrieval",
+        "description": "Pattern for progressively refining context retrieval to solve the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ito-basket-compare",
+        "description": "Compare Itô prediction-market baskets against a user's knowledge",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ito-trade-planner",
+        "description": "Build a non-advisory prediction-market trade planning worksheet for",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "java-coding-standards",
+        "description": "Java coding standards for Spring Boot and Quarkus services:",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "jiaozhen-factcheck",
+        "description": "事实查证工具，对输入内容的具体说法、资讯、事件或常识进行真实性、准确性、可靠性判断。当用户需要较真一下，查证问题或判断信息真伪、识别谣言、询问真假，是真的吗，真的假的，能否xxx，可不可以，是谣言吗...等场景时调用。",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "jinshuju",
+        "description": "Use when the user wants to create or edit forms, collect or query",
+        "version": "1.3.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "jira-integration",
+        "description": "Use this skill when retrieving Jira tickets, analyzing",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "knowledge-ops",
+        "description": "Knowledge base management, ingestion, sync, and retrieval across",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kotlin-coroutines-flows",
+        "description": "Kotlin Coroutines and Flow patterns for Android and KMP —",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kotlin-exposed-patterns",
+        "description": "JetBrains Exposed ORM patterns including DSL queries, DAO pattern,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kotlin-ktor-patterns",
+        "description": "Ktor server patterns including routing DSL, plugins,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kotlin-patterns",
+        "description": "Idiomatic Kotlin patterns, best practices, and conventions for",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kotlin-testing",
+        "description": "Kotlin testing patterns with Kotest, MockK, coroutine testing,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "kubernetes-patterns",
+        "description": "Kubernetes workload patterns, resource management, RBAC, probes,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "laravel-patterns",
+        "description": "Laravel architecture patterns, routing/controllers, Eloquent ORM,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "laravel-plugin-discovery",
+        "description": "Discover and evaluate Laravel packages via LaraPlugins.io MCP. Use",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "laravel-security",
+        "description": "Laravel security best practices — authentication, authorization,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "laravel-tdd",
+        "description": "Laravel testing strategies with PHPUnit, Pest, model factories,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "laravel-verification",
+        "description": "Verification loop for Laravel projects: env checks, linting,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "lark-unified",
+        "description": "Unified Lark/Feishu CLI suite covering messaging, documents,",
+        "version": "1.0.3",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "latency-critical-systems",
+        "description": "Use for latency-sensitive systems such as realtime dashboards,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "lead-intelligence",
+        "description": "AI-native lead intelligence and outreach pipeline. Replaces Apollo,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "llm-trading-agent-security",
+        "description": "Security patterns for autonomous trading agents with wallet or",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "llm-wiki",
+        "description": "Build and maintain a personal knowledge base (wiki) using LLMs.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "logistics-exception-management",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "markdown-convert",
+        "description": "Convert public web pages into clean Markdown with markdown.new for",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "marketing-campaign",
+        "description": "End-to-end marketing campaign planning and execution. Covers",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "marketing-mode",
+        "description": "Marketing Mode combines 23 comprehensive marketing skills covering",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "marketing-skills",
+        "description": "TL;DR: 23 marketing playbooks (CRO, SEO, copy, analytics,",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "mcp-server-patterns",
+        "description": "Build MCP servers with Node/TypeScript SDK — tools, resources,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "mcporter",
+        "description": "Use the mcporter CLI to list, configure, auth, and call MCP",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "messages-ops",
+        "description": "Evidence-first live messaging workflow for ECC. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "minimax-music-gen",
+        "description": ">",
+        "version": "1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "minimax-music-playlist",
+        "description": ">",
+        "version": "2.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ml-adoption-playbook",
+        "description": "End-to-end methodology for AI agents and software engineers to add",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "moltguard",
+        "description": "MoltGuard — OpenClaw security guard by OpenGuardrails. Install",
+        "version": "6.8.16",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "motion-advanced",
+        "description": "Advanced motion patterns for React / Next.js — drag & drop,",
+        "version": "1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "motion-patterns",
+        "description": "Production-ready animation patterns for React / Next.js — button,",
+        "version": "1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "motion-ui",
+        "description": "Production-ready UI motion system for React/Next.js. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "mysql-patterns",
+        "description": "MySQL and MariaDB schema, query, indexing, transaction,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "nanoclaw-repl",
+        "description": "Operate and extend NanoClaw v2, ECC's zero-dependency session-aware",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "nestjs-patterns",
+        "description": "NestJS architecture patterns for modules, controllers, providers,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "network-bgp-diagnostics",
+        "description": "Diagnostics-only BGP troubleshooting patterns for neighbor state,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "network-config-validation",
+        "description": "Pre-deployment checks for router and switch configuration,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "network-interface-health",
+        "description": "Diagnose interface errors, drops, CRCs, duplex mismatches,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "news-summary",
+        "description": "This skill should be used when the user asks for news updates,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "nextjs-turbopack",
+        "description": "Next.js 16+ and Turbopack — incremental bundling, FS caching, dev",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "nutrient-document-processing",
+        "description": "Process, convert, OCR, extract, redact, sign, and fill documents",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "nuwa-skill",
+        "description": "|",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "obsidian",
+        "description": "Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "openai-whisper",
+        "description": "Local speech-to-text with the Whisper CLI (no API key).",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "openai-whisper-api",
+        "description": "Transcribe audio via OpenAI Audio Transcriptions API (Whisper).",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "openclaw-assets-to-workbuddy",
+        "description": "将 OpenClaw 用户的个人资产迁移到 WorkBuddy 对应位置，重点覆盖",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "openclaw-persona-forge",
+        "description": "为 OpenClaw AI Agent 锻造完整的龙虾灵魂方案。根据用户偏好或随机抽卡，",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "opensource-pipeline",
+        "description": "Open-source pipeline: fork, sanitize, and package private projects",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "oracle",
+        "description": "Use the @steipete/oracle CLI to bundle a prompt plus the right",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "orch-change-feature",
+        "description": "Orchestrate altering an existing, working feature to new desired",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "orch-fix-defect",
+        "description": "Orchestrate fixing a bug — reproduce it as a failing regression",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "orch-pipeline",
+        "description": "Shared orchestration engine for the orch-* skill family. Defines",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "outlook-api",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "parallel-execution-optimizer",
+        "description": "Use when the user wants a task done much faster through parallel",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "peekaboo",
+        "description": "Capture and automate macOS UI with the Peekaboo CLI.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "perl-patterns",
+        "description": "Modern Perl 5.36+ idioms, best practices, and conventions for",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "perl-security",
+        "description": "Comprehensive Perl security covering taint mode, input validation,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "perl-testing",
+        "description": "Perl testing patterns using Test2::V0, Test::More, prove runner,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "podcast-ops",
+        "description": "Podcast-to-Everything content pipeline. Takes a podcast RSS feed",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ponytail",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ponytail-audit",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ponytail-debt",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ponytail-gain",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ponytail-help",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "proactive-agent",
+        "description": "Transform AI agents from task-followers into proactive partners",
+        "version": "3.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "proactive-agent-lite",
+        "description": "Transform AI agents from task-followers into proactive partners",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "proactivity",
+        "description": "Anticipates needs, keeps work moving, and improves through use so",
+        "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "product-capability",
+        "description": "Translate PRD intent, roadmap asks, or product discussions into an",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "product-lens",
+        "description": "Use this skill to validate the \"why\" before building, run product",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "production-audit",
+        "description": "Local-evidence production readiness audit for shipped apps,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "production-scheduling",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "productivity",
+        "description": "Plan, focus, and complete work with energy management, time",
+        "version": "1.0.4",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "prompt-optimizer",
+        "description": "Analyze raw prompts, identify intent and gaps, match ECC",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "pytorch-patterns",
+        "description": "PyTorch deep learning patterns and best practices for building",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "qcc-company",
+        "description": "通过企查查 Connector",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "quality-nonconformance",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "quarkus-patterns",
+        "description": "Quarkus 3.x LTS architecture patterns with Camel for messaging,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "quarkus-security",
+        "description": "Quarkus Security best practices for authentication, authorization,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "quarkus-tdd",
+        "description": "Test-driven development for Quarkus 3.x LTS using JUnit 5, Mockito,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "quarkus-verification",
+        "description": "Verification loop for Quarkus projects: build, static analysis,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ralphinho-rfc-pipeline",
+        "description": "RFC-driven multi-agent DAG execution pattern with quality gates,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "react-native-dev",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "react-native-patterns",
+        "description": "React Native and Expo app patterns — Expo Router navigation, state",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "react-patterns",
+        "description": "React 18/19 patterns including hooks discipline, server/client",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "react-performance",
+        "description": "React and Next.js performance optimization patterns adapted from",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "react-testing",
+        "description": "React component testing with React Testing Library, Vitest/Jest,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "recursive-decision-ledger",
+        "description": "Use when the user asks for repeated rollouts, marked decision",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "regex-vs-llm-structured-text",
+        "description": "Decision framework for choosing between regex and LLM when parsing",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "resume-assistant",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "returns-reverse-logistics",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "revenue-intelligence",
+        "description": "Extract insights from Gong sales calls, build revenue attribution models, and generate client reports. Use when asked to \"analyze sales calls\", \"revenue attribution\", \"Gong insights\", \"client report\",",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "rust-patterns",
+        "description": "Idiomatic Rust patterns, ownership, error handling, traits,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "rust-testing",
+        "description": "Rust testing patterns including unit tests, integration tests,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "safety-guard",
+        "description": "Use this skill to prevent destructive operations when working on",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "sag",
+        "description": "ElevenLabs text-to-speech with mac-style say UX.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "sales-playbook",
+        "description": "Build value-based pricing frameworks, generate pre-call briefings, analyze sales calls for patterns, and create tiered pricing packages. Use when asked to \"create pricing tiers\", \"pre-call briefing\", ",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "santa-method",
+        "description": "Multi-agent adversarial verification with convergence loop. Two",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "scientific-thinking-scholar-evaluation",
+        "description": "Structured scholarly-work evaluation for papers, proposals,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "security-bounty-hunter",
+        "description": "Hunt for exploitable, bounty-worthy security issues in",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "self-evolve-wb",
+        "description": "",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "self-improving",
+        "description": "Self-reflection + Self-criticism + Self-learning + Self-organizing",
+        "version": "1.2.16",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "self-improving-agent",
+        "description": "Captures learnings, errors, and corrections to enable continuous",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "seo",
+        "description": "Audit, plan, and implement SEO improvements across technical SEO,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "setup-matt-pocock-skills",
+        "description": "Configure this repo for the engineering skills — set up its issue",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "shader-dev",
+        "description": "Comprehensive GLSL shader techniques for creating stunning visual",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill-creator",
+        "description": "Guide for creating effective skills. This skill should be used when",
+        "version": "0.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill-finder-cn",
+        "description": "Skill 查找器 | Skill Finder. 帮助发现和安装 ClawHub Skills | Discover and",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill-scanner",
+        "description": "Scan Clawdbot and MCP skills for malware, spyware, crypto-miners,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill-stocktake",
+        "description": "Use when auditing Claude skills and commands for quality. Supports",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill-vetter",
+        "description": "Security-first skill vetting for AI agents. Use before installing",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skyline",
+        "description": "WeChat Mini Program Skyline rendering engine. Use when developing",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "slack",
+        "description": "Use when you need to control Slack from Clawdbot via the slack",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "social-graph-ranker",
+        "description": "Weighted social-graph ranking for warm intro discovery, bridge",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "social-publisher",
+        "description": "Agent-driven scheduling and publishing of social media posts across",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "songsee",
+        "description": "Generate spectrograms and feature-panel visualizations from audio",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "sonoscli",
+        "description": "Control Sonos speakers (discover/status/play/volume/group).",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-analyze",
+        "description": "Perform a non-destructive cross-artifact consistency and quality",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-checklist",
+        "description": "Generate a custom checklist for the current feature based on user requirements.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-clarify",
+        "description": "Identify underspecified areas in the current feature spec by asking",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-implement",
+        "description": "Execute the implementation plan by processing and executing all",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-plan",
+        "description": "Execute the implementation planning workflow using the plan",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-specify",
+        "description": "Create or update a feature specification from a natural language",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "speckit-tasks",
+        "description": "Generate an actionable, dependency-ordered tasks.md for the feature",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "springboot-security",
+        "description": "Spring Security best practices for authn/authz, validation, CSRF,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "springboot-tdd",
+        "description": "Test-driven development for Spring Boot using JUnit 5, Mockito,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "springboot-verification",
+        "description": "Verification loop for Spring Boot projects: build, static",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "strategic-compact",
+        "description": "Suggests manual context compaction at logical intervals to preserve",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "summarize-pro",
+        "description": "When user asks to summarize text, articles, documents, meetings,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "swift-concurrency-6-2",
+        "description": "Swift 6.2 Approachable Concurrency — single-threaded by default,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "swiftui-patterns",
+        "description": "SwiftUI architecture patterns, state management with @Observable,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tapd-openapi",
+        "description": "TAPD OpenAPI skill，用于需求、缺陷、任务、迭代、Wiki、评论、工时、附件等 TAPD",
+        "version": "1.0.3",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "task-alignment",
+        "description": "Alignment conversation starting from a user's rough idea.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "task-implement",
+        "description": "Autonomous task execution driven by documents under",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tdd",
+        "description": "Test-driven development. Use when the user wants to build features",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tdd-workflow",
+        "description": "Use this skill when writing new features, fixing bugs, or",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "teach",
+        "description": "Teach the user a new skill or concept, within this workspace.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "team-agent-orchestration",
+        "description": "Run team-based orchestration for agent squads using work items,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "team-builder",
+        "description": "Interactive agent picker for composing and dispatching parallel teams",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencent-news",
+        "description": "7×24",
+        "version": "1.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencent-ssv-techforgood",
+        "description": "专注公益机构数字化赋能的智能助手，围绕腾讯技术公益数字工具箱（techforgood.qq.com）为社会组织匹配免费或低成本数字化产品，支持需求诊断、产品推荐、申领指引、数字化实施参考与必要的机构合规边界提示。当用户提到公益机构数字化、社会组织工具选型、技术公益工具箱、公益虾时使用。",
+        "version": "1.3.13",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencent-survey",
+        "description": "腾讯问卷（wj.qq.com）-",
+        "version": "1.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencentcloud-cls",
+        "description": "腾讯云日志服务 CLS 技能。支持 CQL",
+        "version": "1.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencentcloud-cos",
+        "description": "Credentials exist only in shell session environment variables;",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencentos-expert",
+        "description": "TencentOS Server",
+        "version": "2.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "terminal-ops",
+        "description": "Evidence-first repo execution workflow for ECC. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tinystruct-patterns",
+        "description": "Expert guidance for developing with the tinystruct Java framework.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tmux",
+        "description": "Remote-control tmux sessions for interactive CLIs by sending",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "to-spec",
+        "description": "Turn the current conversation into a spec and publish it to the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "to-tickets",
+        "description": "Break a plan, spec, or the current conversation into a set of",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "token-budget-advisor",
+        "description": "Offers the user an informed choice about how much response depth",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "trello",
+        "description": "Manage Trello boards, lists, and cards via the Trello REST API.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "triage",
+        "description": "Move issues and external PRs through a state machine of triage",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "uncloud",
+        "description": "Use when managing an Uncloud cluster — deploying services,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "us-stock-analysis",
+        "description": "Comprehensive US stock analysis including fundamental analysis",
+        "version": "0.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "using-superpowers",
+        "description": "Use when starting any conversation - establishes how to find and",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "vision-analysis",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "vite-patterns",
+        "description": "Vite build tool patterns including config, plugins, HMR, env",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "vue-patterns",
+        "description": "Vue.js 3 Composition API patterns, component architecture,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "wayfinder",
+        "description": "Plan a huge chunk of work — more than one agent session can hold —",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "web-scraper",
+        "description": "Web scraping and content comprehension agent — multi-strategy",
+        "version": "0.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "wechat-miniprogram",
+        "description": "WeChat Mini Program (微信小程序) development framework. Use when",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "wechat-publisher",
+        "description": "一键发布 Markdown 到微信公众号草稿箱。基于 wenyan-cli，支持多主题、代码高亮、图片自动上传。",
+        "version": "0.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "weiyun",
+        "description": "微云网盘 MCP 接口完整技能。包含",
+        "version": "1.0.5",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "windows-desktop-e2e",
+        "description": "E2E testing for Windows native desktop apps (WPF, WinForms,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "workspace-surface-audit",
+        "description": "Audit the active repo, MCP servers, plugins, connectors, env",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "writing-great-skills",
+        "description": "Reference for writing and editing skills well — the vocabulary and",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "x-api",
+        "description": "X/Twitter API integration for posting tweets, threads, reading",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "x-longform-post",
+        "description": "Write long-form X (Twitter) posts and threads in a founder/CEO",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "xiucheng-self-improving-agent",
+        "description": "Self-improving agent system that analyzes conversation quality,",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "yourself-skill",
+        "description": "Distill yourself into an AI Skill. Deconstruct chat history,",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "youtube-api-skill",
+        "description": "|",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "小红书助手",
+        "description": ">",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "美团生活助手",
+        "description": "【美团官方】美团生活助手，支持外卖、餐饮团购、酒店住宿、门票度假、休闲娱乐、闪购、医药等多品类优惠券/红包/神券的一键领取与历史领取记录查询。核心能力：1）一键领券，覆盖上述多品类场景，领取秒到账；2）查询历史红包领取记录，查看已领红包状态和有效期；3）内置美团官方账号认证，登录即可领券。触发场景：当用户说「美团发券」「美团领券」「美团优惠券」「美团券」「美团神券」「外卖券」「外卖红包」「外卖神券",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      }
+    ],
+    "browser": [
+      {
+        "name": "agent-browser",
+        "description": "Browser automation CLI for AI agents. Use when the user needs to",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "aiweko-memory-reports",
+        "description": "一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。适用于",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "browser",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "baidu-drive",
+        "description": "百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER:",
+        "version": "1.4.3",
+        "categories": [
+          "browser",
+          "file"
+        ]
+      },
+      {
+        "name": "browser-act",
+        "description": "Browser automation CLI for AI agents. NEVER run browser-act",
+        "version": "2.0.2",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "browser-automation",
+        "description": "Automate web browser interactions using natural language via CLI",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "browser-qa",
+        "description": "Use this skill to automate visual testing and UI interaction",
+        "version": "0.0.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "browser-skill",
+        "description": "|",
+        "version": "0.0.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "browser-use",
+        "description": "Automates browser interactions for web testing, form filling,",
+        "version": "2.0.2",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "browserwing",
+        "description": "Control browser automation through HTTP API. Supports page",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "didi-ride-skill",
+        "description": "中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置/取消订单。关键词：\"打车\"、\"叫车\"、\"去[地点]\"、\"回家\"、\"上班\"、\"下班\"、\"查价格\"、\"多少钱\"、\"路线\"、\"怎么走\"、\"步行到\"、\"附近\"、\"周边\"、\"司机\"、\"订单\"、\"查询订单\"。注意：即使用户未明确说\"打车\"，只要涉及从",
+        "version": "1.1.3",
+        "categories": [
+          "browser",
+          "code",
+          "finance"
+        ]
+      },
+      {
+        "name": "download-web-file",
+        "description": "从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "e2e-testing",
+        "description": "Playwright E2E testing patterns, Page Object Model, configuration,",
+        "version": "0.0.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "find-skills",
+        "description": "场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如\"我想做一个海报\"\"帮我分析股票\"），或明确说\"安装技能/find skills/找个skill\"时，自动从官方内置、本地已安装、SkillHub、虾评、GitHub、ClawHub 六层联合搜索并推荐最合适的技能，支持一键安装。已完全替代官方原 find-skills 插件。",
+        "version": "1.7.0",
+        "categories": [
+          "browser",
+          "code",
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "page-agent-browser",
+        "description": "Use page-agent (Alibaba open-source in-page GUI agent) together",
+        "version": "0.0.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "plan-canvas",
+        "description": "Open plans and HTML artifacts in a local browser canvas where the",
+        "version": "1.0.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "playwright",
+        "description": "Browser automation via Playwright MCP. Navigate websites, click",
+        "version": "1.0.3",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright-browser-automation",
+        "description": "Direct Playwright API for browser automation without MCP",
+        "version": "2.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright-mcp",
+        "description": "Browser automation via Playwright MCP server. Navigate websites,",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright-scraper-skill",
+        "description": "Playwright-based web scraping OpenClaw Skill with anti-bot",
+        "version": "1.2.0",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "tencent-campus-recruit",
+        "description": "当用户询问腾讯校园招聘相关问题时使用，包括：校招/实习投递流程与时间节点、岗位搜索与推荐、 招聘公告与宣讲会动态、组织架构/BG/部门介绍、简历诊断与优化、面试准备与模拟陪练、校招防诈骗识别。 通过 join.qq.com 官网接口获取实时岗位、公告和组织架构数据。触发词：腾讯校招、腾讯实习、腾讯面试、 腾讯求职、鹅厂、join.qq.com、投递腾讯、腾讯笔试、腾讯测评、群面、霸面。",
+        "version": "1.0.6",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "tencent-meeting-skill",
+        "description": "在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeting_id、meeting_code、参会成员、受邀成员、等候室、会议列表、我的会议、会议录制、录制回放、录制下载、会议转写、会议纪要、智能纪要、AI纪要、搜索转写。覆盖三大场景：(1)",
+        "version": "1.0.10",
+        "categories": [
+          "browser",
+          "code",
+          "video"
+        ]
+      },
+      {
+        "name": "tencentmap-webservice-skill",
+        "description": "腾讯位置服务 WebService API 开发技能。当开发者需要通过 HTTP 接口集成地理编码、地点搜索、路线规划、天气查询、IP",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "code"
+        ]
+      },
+      {
+        "name": "ui-demo",
+        "description": "Record polished UI demo videos using Playwright. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "video"
+        ]
+      },
+      {
+        "name": "web-access",
+        "description": "所有联网操作必须通过此 skill 处理，包括：搜索、网页抓取、登录后操作、网络交互等。",
+        "version": "2.5.2",
+        "categories": [
+          "browser"
+        ]
+      },
+      {
+        "name": "web-tools-guide",
+        "description": "MANDATORY before calling web_search, web_fetch, browser, or",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "search"
+        ]
+      },
+      {
+        "name": "wechat-article-pro",
+        "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "wechat-article-search",
+        "description": "搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号与链接。当用户需要查找微信公众号文章、整理参考资料或快速获取文章信息时使用此技能。",
+        "version": "0.1.0",
+        "categories": [
+          "browser",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "weread-skills",
+        "description": "微信读书助手 — 搜索书籍、管理书架、查看笔记划线、浏览书评、阅读统计、发现推荐好书",
+        "version": "1.0.3",
+        "categories": [
+          "browser"
+        ]
+      }
+    ],
+    "automation": [
+      {
+        "name": "agent-browser",
+        "description": "Browser automation CLI for AI agents. Use when the user needs to",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "aiweko-memory-reports",
+        "description": "一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。适用于",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "browser",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "automation-audit-ops",
+        "description": "Evidence-first automation inventory and overlap audit workflow for",
+        "version": "0.0.0",
+        "categories": [
+          "automation"
+        ]
+      },
+      {
+        "name": "automation-workflows",
+        "description": "Design and implement automation workflows to save time and scale",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "automation"
+        ]
+      },
+      {
+        "name": "browser-act",
+        "description": "Browser automation CLI for AI agents. NEVER run browser-act",
+        "version": "2.0.2",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "browser-automation",
+        "description": "Automate web browser interactions using natural language via CLI",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "browserwing",
+        "description": "Control browser automation through HTTP API. Supports page",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "desktop-control",
+        "description": "Advanced desktop automation with mouse, keyboard, and screen control",
+        "version": "0.0.0",
+        "categories": [
+          "automation"
+        ]
+      },
+      {
+        "name": "email-skill",
+        "description": "Email management and automation. Send, read, search, and organize",
+        "version": "0.1.0",
+        "categories": [
+          "email",
+          "search",
+          "automation"
+        ]
+      },
+      {
+        "name": "github-ops",
+        "description": "GitHub repository operations, automation, and management. Issue",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "automation"
+        ]
+      },
+      {
+        "name": "gptswarm",
+        "description": "图结构 LLM Agent 自改进框架（MIT）。把 Agent 建成可优化图，用 swarm.optimizer 做自组织/自优化。适用于想用「图+优化器」思路设计多 Agent 工作流并让其自我改进的场景。",
+        "version": "0.1.0",
+        "categories": [
+          "automation"
+        ]
+      },
+      {
+        "name": "n8n-workflow-automation",
+        "description": "Designs and outputs n8n workflow JSON with robust triggers,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "automation"
+        ]
+      },
+      {
+        "name": "netmiko-ssh-automation",
+        "description": "Safe Python Netmiko patterns for read-only collection, bounded",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright",
+        "description": "Browser automation via Playwright MCP. Navigate websites, click",
+        "version": "1.0.3",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright-browser-automation",
+        "description": "Direct Playwright API for browser automation without MCP",
+        "version": "2.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "playwright-mcp",
+        "description": "Browser automation via Playwright MCP server. Navigate websites,",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "sales-pipeline",
+        "description": "Automate sales pipeline with RB2B anonymous visitor routing, deal resurrection, trigger-based prospecting, and ICP learning. Use when asked to \"set up sales pipeline\", \"route website visitors\", \"resur",
+        "version": "1.0.0",
+        "categories": [
+          "automation"
+        ]
+      },
+      {
+        "name": "seo-ops",
+        "description": "SEO operations automation: generate content attack briefs from competitor gaps, optimize GSC data for quick wins, and scout emerging search trends. Use when asked to \"SEO audit\", \"content attack brief",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "search",
+          "data",
+          "automation"
+        ]
+      }
+    ],
+    "memory": [
+      {
+        "name": "agent-memory",
+        "description": "Agent Memory — 持久化记忆系统，让 AI agent 记住事实、从经验中学习、跨会话跟踪实体。默认存储到 ~/.agent-memory/memory.db。",
+        "version": "1.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "aiweko-memory-reports",
+        "description": "一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。适用于",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "browser",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "ck",
+        "description": "Persistent per-project memory for Claude Code. Auto-loads project",
+        "version": "2.0.0",
+        "categories": [
+          "memory",
+          "code"
+        ]
+      },
+      {
+        "name": "elite-longterm-memory",
+        "description": "Ultimate AI agent memory system for Cursor, Claude, ChatGPT &",
+        "version": "1.2.3",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "everos",
+        "description": "EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以可读 .md 文件为事实源，天然可 Git 版本化、可 diff、可直接 push 到私有 GitHub 仓库实现跨设备共享。适用于：需要让 AI Agent 在多次对话之间、多台电脑之间保持长期记忆；且希望记忆可读、可手编、可版本管理的场",
+        "version": "1.0.0",
+        "categories": [
+          "memory",
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-mempalace-recall",
+        "description": "Recall decisions, patterns, and surprises from MemPalace before planning",
+        "version": "0.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "memory-hygiene",
+        "description": "Audit, clean, and optimize Clawdbot's vector memory (LanceDB). Use",
+        "version": "0.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "memory-manager",
+        "description": "Local memory management for agents. Compression detection,",
+        "version": "0.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "memory-setup",
+        "description": "Enable and configure Moltbot/Clawdbot memory search for persistent",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "search"
+        ]
+      },
+      {
+        "name": "ontology",
+        "description": "Typed knowledge graph for structured agent memory and composable",
+        "version": "0.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "self-improving-agent-cn",
+        "description": "AI自我改进与记忆系统 - 解决'同类错误反复犯、用户纠正不长记性'的痛点。自动捕获错误、用户纠正、最佳实践，并转化为长期记忆。",
+        "version": "1.0.0",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "self-reflection",
+        "description": "Continuous self-improvement through structured reflection and memory",
+        "version": "1.1.1",
+        "categories": [
+          "memory"
+        ]
+      },
+      {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude / ChatGPT / Cursor / Gemini 等 20+ 框架。v2.2.0 新增技能树索引。",
+        "version": "2.2.0",
+        "categories": [
+          "meta",
+          "memory"
+        ]
+      },
+      {
+        "name": "swift-actor-persistence",
+        "description": "Thread-safe data persistence in Swift using actors — in-memory",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "data"
+        ]
+      }
+    ],
+    "email": [
+      {
+        "name": "agentmail",
+        "description": "API-first email platform designed for AI agents. Create and manage",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "email"
+        ]
+      },
+      {
+        "name": "caldav-calendar",
+        "description": "Sync and query CalDAV calendars (iCloud, Google, Fastmail,",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "email-ops",
+        "description": "Evidence-first mailbox triage, drafting, send verification, and",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "email-skill",
+        "description": "Email management and automation. Send, read, search, and organize",
+        "version": "0.1.0",
+        "categories": [
+          "email",
+          "search",
+          "automation"
+        ]
+      },
+      {
+        "name": "gmail",
+        "description": ">",
+        "version": "1.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "gog",
+        "description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
+        "version": "1.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "himalaya",
+        "description": "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read,",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "imap-smtp-email",
+        "description": "Read and send email via IMAP/SMTP. Check for new/unread messages,",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "investor-outreach",
+        "description": "Draft cold emails, warm intro blurbs, follow-ups, update emails,",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "mailtrap-email-integration",
+        "description": "Guides agents through integrating transactional email sending via",
+        "version": "0.0.0",
+        "categories": [
+          "email"
+        ]
+      },
+      {
+        "name": "outbound-engine",
+        "description": "Design, analyze, and optimize cold outbound email campaigns for",
+        "version": "1.0.0",
+        "categories": [
+          "image",
+          "email"
+        ]
+      },
+      {
+        "name": "qq-email",
+        "description": "QQ邮箱 IMAP receive and SMTP send via Node.js scripts; credentials",
+        "version": "1.0.0",
+        "categories": [
+          "email"
+        ]
       }
     ],
     "video": [
       {
         "name": "agnes-video-generator",
-        "description": "Agnes 视频生成工具...",
-        "version": "1.0.0"
+        "description": "",
+        "version": "1.1.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "fal-ai-media",
+        "description": "Unified media generation via fal.ai MCP — image, video, and audio.",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "hermes-self-evolution",
+        "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
+        "version": "main",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "manim-video",
+        "description": "Build reusable Manim explainers for technical concepts, graphs,",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "migraq",
+        "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
+        "version": "1.1.6",
+        "categories": [
+          "image",
+          "video",
+          "data"
+        ]
+      },
+      {
+        "name": "minimax-multimodal-toolkit",
+        "description": "Use mmx to generate text, images, video, speech, and music via the",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "ppt",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-generator",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "remotion-video-creation",
+        "description": "Best practices for Remotion - Video creation in React. 29",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "remotion-video-toolkit",
+        "description": "Complete toolkit for programmatic video creation with Remotion +",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "taste",
+        "description": "A creative-direction (taste) layer for music videos and short-form",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "tencent-meeting-skill",
+        "description": "在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeting_id、meeting_code、参会成员、受邀成员、等候室、会议列表、我的会议、会议录制、录制回放、录制下载、会议转写、会议纪要、智能纪要、AI纪要、搜索转写。覆盖三大场景：(1)",
+        "version": "1.0.10",
+        "categories": [
+          "browser",
+          "code",
+          "video"
+        ]
+      },
+      {
+        "name": "ui-demo",
+        "description": "Record polished UI demo videos using Playwright. Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "video"
+        ]
+      },
+      {
+        "name": "video-editing",
+        "description": "AI-assisted video editing workflows for cutting, structuring, and",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "video-frames",
+        "description": "Extract frames or short clips from videos using ffmpeg.",
+        "version": "1.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "video-generator-seedance",
+        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "videodb",
+        "description": "See, Understand, Act on video and audio. See- ingest from local",
+        "version": "0.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "wechat-article-pro",
+        "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "workrally",
+        "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
+        "version": "2.4.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "youtube-watcher",
+        "description": "Fetch and read transcripts from YouTube videos. Use when you need",
+        "version": "1.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "yt-competitive-analysis",
+        "description": "Analyze YouTube channels for outlier videos and packaging patterns.",
+        "version": "1.0.0",
+        "categories": [
+          "video"
+        ]
+      },
+      {
+        "name": "配网规划评审器",
+        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "finance",
+          "file"
+        ]
+      }
+    ],
+    "file": [
+      {
+        "name": "aiweko-memory-reports",
+        "description": "一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。适用于",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "browser",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "awesome-design-md",
+        "description": "Curated collection of 54 DESIGN.md files extracted from real",
+        "version": "1.0.0",
+        "categories": [
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "baidu-drive",
+        "description": "百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER:",
+        "version": "1.4.3",
+        "categories": [
+          "browser",
+          "file"
+        ]
+      },
+      {
+        "name": "brand-voice",
+        "description": "Build a source-derived writing style profile from real posts,",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "cloudq",
+        "description": "用户咨询腾讯云产品资源、AWS、阿里云等多云资源时，查看智能顾问架构图、架构目录、架构详情、架构评估结果、绘制架构图、开通智能顾问时、AI智能巡检、AI容量监测、AI混沌演练、AI云诊断、主动预警、架构健康度、云运维问答、云资源查询、云成本优化、安全合规、云资源盘点、闲置资源检查、云产品最佳实践等AIOps、ChatOps、CloudOps操作时使用。",
+        "version": "1.6.1",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "code-tour",
+        "description": "Create CodeTour `.tour` files — persona-targeted, step-by-step",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "content-hash-cache-pattern",
+        "description": "Cache expensive file processing results using SHA-256 content",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "download-web-file",
+        "description": "从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "everos",
+        "description": "EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以可读 .md 文件为事实源，天然可 Git 版本化、可 diff、可直接 push 到私有 GitHub 仓库实现跨设备共享。适用于：需要让 AI Agent 在多次对话之间、多台电脑之间保持长期记忆；且希望记忆可读、可手编、可版本管理的场",
+        "version": "1.0.0",
+        "categories": [
+          "memory",
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "excel-xlsx",
+        "description": "Create, inspect, and edit Microsoft Excel workbooks and XLSX files",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-code-review",
+        "description": "Review source files changed during a phase for bugs, security",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-mempalace-capture",
+        "description": "File a phase artifact into MemPalace; mirror decision facts into",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-profile-user",
+        "description": "Generate developer behavioral profile and create Claude-discoverable artifacts",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-settings",
+        "description": "Configure GSD workflow toggles and model profile",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "gsd-surface",
+        "description": "Toggle which skills are surfaced — apply a profile, list, or",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "healthcheck",
+        "description": "Track water and sleep with JSON file storage",
+        "version": "1.0.2",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "hermes-self-evolution",
+        "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
+        "version": "main",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "image",
+        "description": "Create, inspect, process, and optimize image files and visual",
+        "version": "1.0.4",
+        "categories": [
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "markdown-converter",
+        "description": "Convert documents and files to Markdown using markitdown. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "md-to-pdf-cjk",
+        "description": "Convert Markdown files to professional PDF documents with full CJK",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "notebooklm-studio",
+        "description": "Import sources (URLs, YouTube, files, text) into Google NotebookLM",
+        "version": "2.1.3",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "pdf-extract",
+        "description": "Extract text from PDF files for LLM processing",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "peiwang-buwangwo",
+        "description": "配网勿忘我 — 多人协作任务看板。纯 HTML 单文件应用，Gitee 云端同步，支持管理员/协作者双模式、自定义移动端日期选择器、三列状态徽章。",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "ppt",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-generator",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "repo-scan",
+        "description": "Cross-stack source code asset audit — classifies every file,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "skills-security-check",
+        "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "summarize",
+        "description": "Summarize URLs or files with the summarize CLI (web, PDFs, images,",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "wechat-article-search",
+        "description": "搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号与链接。当用户需要查找微信公众号文章、整理参考资料或快速获取文章信息时使用此技能。",
+        "version": "0.1.0",
+        "categories": [
+          "browser",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "word-docx",
+        "description": "Create, inspect, and edit Microsoft Word documents and DOCX files",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "workrally",
+        "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
+        "version": "2.4.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "配网规划评审器",
+        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "finance",
+          "file"
+        ]
       }
     ],
     "finance": [
       {
-        "name": "wind-finance",
-        "description": "Wind 金融数据服务...",
-        "version": "1.0.0"
+        "name": "akshare-stock",
+        "description": "A股量化数据分析工具，基于AkShare库获取A股行情、财务数据、板块信息等。用于回答关于A股股票查询、行情数据、财务分析、选股等问题。",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "data"
+        ]
       },
       {
-        "name": "wb-finance-skill",
-        "description": "金融/投资/股票/基金场景总入口...",
-        "version": "0.1.0"
-      }
-    ],
-    "general": [
+        "name": "didi-ride-skill",
+        "description": "中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置/取消订单。关键词：\"打车\"、\"叫车\"、\"去[地点]\"、\"回家\"、\"上班\"、\"下班\"、\"查价格\"、\"多少钱\"、\"路线\"、\"怎么走\"、\"步行到\"、\"附近\"、\"周边\"、\"司机\"、\"订单\"、\"查询订单\"。注意：即使用户未明确说\"打车\"，只要涉及从",
+        "version": "1.1.3",
+        "categories": [
+          "browser",
+          "code",
+          "finance"
+        ]
+      },
+      {
+        "name": "finance-billing-ops",
+        "description": "Evidence-first revenue, pricing, refunds, team-billing, and",
+        "version": "0.0.0",
+        "categories": [
+          "finance"
+        ]
+      },
+      {
+        "name": "finance-ops",
+        "description": "AI-powered financial analysis suite. Generates executive CFO",
+        "version": "1.0.0",
+        "categories": [
+          "finance"
+        ]
+      },
       {
         "name": "find-skills",
-        "description": "搜索和发现 OpenClaw 技能...",
-        "version": "1.0.0"
+        "description": "场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如\"我想做一个海报\"\"帮我分析股票\"），或明确说\"安装技能/find skills/找个skill\"时，自动从官方内置、本地已安装、SkillHub、虾评、GitHub、ClawHub 六层联合搜索并推荐最合适的技能，支持一键安装。已完全替代官方原 find-skills 插件。",
+        "version": "1.7.0",
+        "categories": [
+          "browser",
+          "code",
+          "finance",
+          "data"
+        ]
       },
       {
-        "name": "skill-creator",
-        "description": "创建有效技能的指南...",
-        "version": "1.0.0"
+        "name": "mx-finance-data",
+        "description": "基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业分析、信用研究、财报审计、资产配置等场景，适配机构与个人多元需求。返回结果包含",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "stock-analysis",
+        "description": "Analyze stocks and cryptocurrencies using Yahoo Finance data.",
+        "version": "6.2.0",
+        "categories": [
+          "finance",
+          "data"
+        ]
+      },
+      {
+        "name": "tushare-finance",
+        "description": "获取中国金融市场数据（A股、港股、美股、基金、期货、债券）。支持220+个Tushare",
+        "version": "0.0.0",
+        "categories": [
+          "finance"
+        ]
+      },
+      {
+        "name": "配网规划评审器",
+        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "finance",
+          "file"
+        ]
+      }
+    ],
+    "search": [
+      {
+        "name": "anysearch",
+        "description": "API key for higher rate limits. Anonymous access available with lower rate limits.",
+        "version": "3.0.1",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "atxp",
+        "description": "Access ATXP paid API tools for web search, AI image generation,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search"
+        ]
+      },
+      {
+        "name": "autoresearch",
+        "description": "Run Karpathy-style autoresearch optimization on any content.",
+        "version": "1.0.1",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "baidu-search",
+        "description": "Search the web using Baidu AI Search Engine (BDSE). Use for live",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "brave-search",
+        "description": "Web search and content extraction via Brave Search API. Use for",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "citation-manager",
+        "description": "Add real references and standardize citations for research papers",
+        "version": "1.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "clawddocs",
+        "description": "Clawdbot documentation expert with decision tree navigation, search",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "clawdhub",
+        "description": "Use the ClawdHub CLI to search, install, update, and publish agent",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "ddg-web-search",
+        "description": "Web search without an API key using DuckDuckGo Lite via web_fetch.",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "deep-research",
+        "description": "Multi-source deep research using firecrawl and exa MCPs. Searches",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "deep-research-pro",
+        "description": "Multi-source deep research agent. Searches the web, synthesizes",
+        "version": "1.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "discord",
+        "description": "Use when you need to control Discord from Clawdbot via the discord tool: send messages, react, post or upload stickers, upload emojis, run polls, manage threads/pins/search, fetch permissions or membe",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "duckduckgo-search",
+        "description": "Performs web searches using DuckDuckGo to retrieve real-time",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "email-skill",
+        "description": "Email management and automation. Send, read, search, and organize",
+        "version": "0.1.0",
+        "categories": [
+          "email",
+          "search",
+          "automation"
+        ]
+      },
+      {
+        "name": "exa-search",
+        "description": "Neural search via Exa MCP for web, code, and company research. Use",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "exa-web-search-free",
+        "description": "Free AI search via Exa MCP. Web search for news/info, code search",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "find-skills-skill",
+        "description": "Search and discover OpenClaw skills from various sources. Use",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "firecrawl-search",
+        "description": "Web search and scraping via Firecrawl API. Use when you need to",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "gifgrep",
+        "description": "Search GIF providers with CLI/TUI, download results, and extract stills/sheets.",
+        "version": "1.0.1",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "ito-data-atlas-agent",
+        "description": "Design background Data Atlas style agents for Itô basket research,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "ito-market-intelligence",
+        "description": "Research prediction-market events, venues, underliers, liquidity,",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "liang-tavily-search",
+        "description": "Web search using Tavily's LLM-optimized API. Returns relevant",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "market-research",
+        "description": "Conduct market research, competitive analysis, investor due",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "memory-setup",
+        "description": "Enable and configure Moltbot/Clawdbot memory search for persistent",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "search"
+        ]
+      },
+      {
+        "name": "multi-search-engine",
+        "description": "Multi search engine integration with 16 engines (7 CN + 9 Global).",
+        "version": "2.1.3",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "mx-finance-data",
+        "description": "基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业分析、信用研究、财报审计、资产配置等场景，适配机构与个人多元需求。返回结果包含",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "neodata-financial-search",
+        "description": "NeoData Financial Search — natural language financial data search.",
+        "version": "1.0.1",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "openclaw-tavily-search",
+        "description": "Web search via Tavily API (alternative to Brave). Use when the user",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "orch-add-feature",
+        "description": "Orchestrate building a brand-new feature end to end — research,",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "perplexity",
+        "description": "Search the web with AI-powered answers via Perplexity API. Returns",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "prediction-market-oracle-research",
+        "description": "Research prediction markets as data sources or oracle signals for",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "prismfy-search",
+        "description": ">",
+        "version": "1.2.1",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "qmd",
+        "description": "Local search/indexing CLI (BM25 + vectors + rerank) with MCP mode.",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "research",
+        "description": "Investigate a question against high-trust primary sources and",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "research-ops",
+        "description": "Evidence-first current-state research workflow for ECC. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "scientific-db-pubmed-database",
+        "description": "Direct PubMed and NCBI E-utilities search workflows for biomedical",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data"
+        ]
+      },
+      {
+        "name": "search-first",
+        "description": "Research-before-coding workflow. Search for existing tools,",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "seo-ops",
+        "description": "SEO operations automation: generate content attack briefs from competitor gaps, optimize GSC data for quick wins, and scout emerging search trends. Use when asked to \"SEO audit\", \"content attack brief",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "search",
+          "data",
+          "automation"
+        ]
+      },
+      {
+        "name": "session-logs",
+        "description": "Search and analyze your own session logs (older/parent conversations) using jq.",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "skill-scout",
+        "description": "Search existing local, marketplace, GitHub, and web skill sources",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "search"
+        ]
+      },
+      {
+        "name": "spotify-player",
+        "description": "Terminal Spotify playback/search via spogo (preferred) or spotify_player.",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "tavily",
+        "description": "AI-optimized web search using Tavily Search API. Use when you need",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "tavily-search",
+        "description": "AI-optimized web search via Tavily API. Returns concise, relevant",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "tencent-yuanbao-standard-search",
+        "description": "Search the web using TencentCloud Web Search API (WSA). Prioritize",
+        "version": "1.0.1",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "web-search",
+        "description": "This skill should be used when users need to search the web for",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "web-search-exa",
+        "description": "Neural web search, content extraction, company and people",
+        "version": "0.0.0",
+        "categories": [
+          "search"
+        ]
+      },
+      {
+        "name": "web-tools-guide",
+        "description": "MANDATORY before calling web_search, web_fetch, browser, or",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "search"
+        ]
+      },
+      {
+        "name": "wechat-article-search",
+        "description": "搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号与链接。当用户需要查找微信公众号文章、整理参考资料或快速获取文章信息时使用此技能。",
+        "version": "0.1.0",
+        "categories": [
+          "browser",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "xurl",
+        "description": "A Twitter research and content intelligence skill. Use to analyze",
+        "version": "1.0.0",
+        "categories": [
+          "search"
+        ]
+      }
+    ],
+    "meta": [
+      {
+        "name": "hookify-rules",
+        "description": "This skill should be used when the user asks to create a hookify",
+        "version": "0.0.0",
+        "categories": [
+          "meta"
+        ]
+      },
+      {
+        "name": "motion-foundations",
+        "description": "Motion tokens, spring presets, performance rules, device",
+        "version": "1",
+        "categories": [
+          "meta"
+        ]
+      },
+      {
+        "name": "nuxt4-patterns",
+        "description": "Nuxt 4 app patterns for hydration safety, performance, route rules,",
+        "version": "0.0.0",
+        "categories": [
+          "meta"
+        ]
+      },
+      {
+        "name": "rules-distill",
+        "description": "Scan skills to extract cross-cutting principles and distill them",
+        "version": "0.0.0",
+        "categories": [
+          "meta"
+        ]
+      },
+      {
+        "name": "skill-comply",
+        "description": "Visualize whether skills, rules, and agent definitions are actually",
+        "version": "0.0.0",
+        "categories": [
+          "meta"
+        ]
+      },
+      {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude / ChatGPT / Cursor / Gemini 等 20+ 框架。v2.2.0 新增技能树索引。",
+        "version": "2.2.0",
+        "categories": [
+          "meta",
+          "memory"
+        ]
+      },
+      {
+        "name": "speckit-constitution",
+        "description": "Create or update the project constitution from interactive or",
+        "version": "0.0.0",
+        "categories": [
+          "meta"
+        ]
       }
     ]
-  }
+  },
+  "total": 659,
+  "version": "2.3.0",
+  "generated_at": "2026-08-10T22:04:21.622918",
+  "skills_dir": "C:\\Users\\user/.workbuddy/skills"
 }

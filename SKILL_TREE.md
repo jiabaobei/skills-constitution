@@ -1,83 +1,809 @@
 # 技能树索引
 
-**生成时间**: 2026-08-10T15:52:00
-**总技能数**: 655
-**技能目录**: `~/.workbuddy/skills`
+**生成时间**: 2026-08-10T22:04:21.622918
+**总技能数**: 659
+**技能目录**: `C:\Users\user/.workbuddy/skills`
 
 ---
 
 ## 分类概览
 
-本索引按功能类型分类全部技能，Agent 执行时**按分支定位**，减少 80% 扫描量。
+## ⚙️ 自动化工作流 (18 个)
 
-### 📜 元规则类 (2 个)
-- `skills-constitution` (v2.2.0): Skills 宪法 —— 凌驾于全部技能之上的元规则
-- `skills-security-check` (v1.0.0): Skill 安全审查工具，对技能进行全面安全审计
+- `agent-browser` (v0.0.0): Browser automation CLI for AI agents. Use when the user needs to
+- `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
+- `automation-audit-ops` (v0.0.0): Evidence-first automation inventory and overlap audit workflow for
+- `automation-workflows` (v0.0.0): Design and implement automation workflows to save time and scale
+- `browser-act` (v2.0.2): Browser automation CLI for AI agents. NEVER run browser-act
+- `browser-automation` (v0.0.0): Automate web browser interactions using natural language via CLI
+- `browserwing` (v1.0.0): Control browser automation through HTTP API. Supports page
+- `desktop-control` (v0.0.0): Advanced desktop automation with mouse, keyboard, and screen control
+- `email-skill` (v0.1.0): Email management and automation. Send, read, search, and organize
+- `github-ops` (v0.0.0): GitHub repository operations, automation, and management. Issue
+- `gptswarm` (v0.1.0): 图结构 LLM Agent 自改进框架（MIT）。把 Agent 建成可优化图，用 swarm.optimizer 做自组织/自优化。适用于想用「图+优化器」思...
+- `n8n-workflow-automation` (v0.0.0): Designs and outputs n8n workflow JSON with robust triggers,
+- `netmiko-ssh-automation` (v0.0.0): Safe Python Netmiko patterns for read-only collection, bounded
+- `playwright` (v1.0.3): Browser automation via Playwright MCP. Navigate websites, click
+- `playwright-browser-automation` (v2.0.0): Direct Playwright API for browser automation without MCP
+- `playwright-mcp` (v0.0.0): Browser automation via Playwright MCP server. Navigate websites,
+- `sales-pipeline` (v1.0.0): Automate sales pipeline with RB2B anonymous visitor routing, deal resurrection, ...
+- `seo-ops` (v1.0.0): SEO operations automation: generate content attack briefs from competitor gaps, ...
 
-### 🧠 记忆管理类 (6 个)
-- `aiweko-memory-reports` (v1.0.0): 一键为工作空间搭建本地三层记忆体系
-- `agent-memory` (v1.0.0): Agent Memory — 持久化记忆系统
-- `elite-longterm-memory` (v1.0.0): 精英长期记忆系统
-- `memory-hygiene` (v1.0.0): 记忆卫生清理工具
-- `memory-manager` (v1.0.0): 记忆管理器
-- `memory-setup` (v1.0.0): 记忆系统初始化配置
+## 🌐 网页自动化类 (28 个)
 
-### 🌐 网页自动化类 (2 个)
-- `browser-skill` (v0.1.9): 腾讯开源浏览器自动化工具 bsk CLI
-- `agent-browser` (v0.25.3): Playwright 浏览器自动化 CLI
+- `agent-browser` (v0.0.0): Browser automation CLI for AI agents. Use when the user needs to
+- `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
+- `baidu-drive` (v1.4.3): 百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER:
+- `browser-act` (v2.0.2): Browser automation CLI for AI agents. NEVER run browser-act
+- `browser-automation` (v0.0.0): Automate web browser interactions using natural language via CLI
+- `browser-qa` (v0.0.0): Use this skill to automate visual testing and UI interaction
+- `browser-skill` (v0.0.0): |
+- `browser-use` (v2.0.2): Automates browser interactions for web testing, form filling,
+- `browserwing` (v1.0.0): Control browser automation through HTTP API. Supports page
+- `didi-ride-skill` (v1.1.3): 中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置...
+- `download-web-file` (v0.0.0): 从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。
+- `e2e-testing` (v0.0.0): Playwright E2E testing patterns, Page Object Model, configuration,
+- `find-skills` (v1.7.0): 场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如"我想做一个海报""帮我分析股票"），或明确说"安装技能/find skills/找个sk...
+- `page-agent-browser` (v0.0.0): Use page-agent (Alibaba open-source in-page GUI agent) together
+- `plan-canvas` (v1.0.0): Open plans and HTML artifacts in a local browser canvas where the
+- `playwright` (v1.0.3): Browser automation via Playwright MCP. Navigate websites, click
+- `playwright-browser-automation` (v2.0.0): Direct Playwright API for browser automation without MCP
+- `playwright-mcp` (v0.0.0): Browser automation via Playwright MCP server. Navigate websites,
+- `playwright-scraper-skill` (v1.2.0): Playwright-based web scraping OpenClaw Skill with anti-bot
+- `tencent-campus-recruit` (v1.0.6): 当用户询问腾讯校园招聘相关问题时使用，包括：校招/实习投递流程与时间节点、岗位搜索与推荐、 招聘公告与宣讲会动态、组织架构/BG/部门介绍、简历诊断与优化、面试...
+- `tencent-meeting-skill` (v1.0.10): 在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeti...
+- `tencentmap-webservice-skill` (v1.0.0): 腾讯位置服务 WebService API 开发技能。当开发者需要通过 HTTP 接口集成地理编码、地点搜索、路线规划、天气查询、IP
+- `ui-demo` (v0.0.0): Record polished UI demo videos using Playwright. Use when the user
+- `web-access` (v2.5.2): 所有联网操作必须通过此 skill 处理，包括：搜索、网页抓取、登录后操作、网络交互等。
+- `web-tools-guide` (v0.0.0): MANDATORY before calling web_search, web_fetch, browser, or
+- `wechat-article-pro` (v1.0.0): 微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章
+- `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
+- `weread-skills` (v1.0.3): 微信读书助手 — 搜索书籍、管理书架、查看笔记划线、浏览书评、阅读统计、发现推荐好书
 
-### 💻 代码开发类 (1 个)
-- `code-review` (v1.0.0): 代码审查工具
+## 💻 代码开发类 (92 个)
 
-### 📄 文档处理类 (4 个)
-- `pdf` (v1.0.0): PDF 处理工具
-- `docx` (v1.0.0): Word 文档处理工具
-- `xlsx` (v1.0.0): Excel 表格处理工具
-- `pptx` (v1.0.0): PowerPoint 演示文稿处理
+- `accessibility` (v0.0.0): Design, implement, and audit inclusive digital products using WCAG
+- `agent-eval` (v0.0.0): Head-to-head comparison of coding agents (Claude Code, Aider,
+- `agent-introspection-debugging` (v0.0.0): Structured self-debugging workflow for AI agent failures using
+- `agentic-os` (v0.0.0): Build persistent multi-agent operating systems on Claude Code.
+- `angular-developer` (v0.0.0): Generates Angular code and provides architectural guidance. Trigger
+- `api-design` (v0.0.0): REST API design patterns including resource naming, status codes,
+- `architecture-decision-records` (v0.0.0): Capture architectural decisions made during Claude Code sessions as
+- `autonomous-agent-harness` (v0.0.0): Transform Claude Code into a fully autonomous agent system with
+- `autonomous-loops` (v0.0.0): Patterns and architectures for autonomous Claude Code loops — from
+- `cisco-ios-patterns` (v0.0.0): Cisco IOS and IOS-XE review patterns for show commands, config
+- `ck` (v2.0.0): Persistent per-project memory for Claude Code. Auto-loads project
+- `code` (v1.0.4): Coding workflow with planning, implementation, verification, and
+- `code-review` (v0.0.0): Review the changes since a fixed point (commit, branch, tag, or
+- `code-tour` (v0.0.0): Create CodeTour `.tour` files — persona-targeted, step-by-step
+- `codebase-design` (v0.0.0): Shared vocabulary for designing deep modules. Use when the user
+- `codebase-onboarding` (v0.0.0): Analyze an unfamiliar codebase and generate a structured onboarding
+- `codehealth-mcp` (v0.0.0): Real-time structural Code Health via CodeScene MCP — review before
+- `config-gc` (v0.0.0): Garbage collection for your Claude Code configuration. Periodically
+- `configure-ecc` (v0.0.0): Interactive installer for Everything Claude Code — guides users
+- `connections-optimizer` (v0.0.0): Reorganize the user's X and LinkedIn network with review-first
+- `context-budget` (v0.0.0): Audits Claude Code context window consumption across agents,
+- `cost-tracking` (v0.0.0): Track and report Claude Code token usage, spending, and budgets
+- `didi-ride-skill` (v1.1.3): 中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置...
+- `education` (v3.4.1): Generate study plans, quizzes, flashcards, review materials, track
+- `error-handling` (v0.0.0): Patterns for robust error handling across TypeScript, Python, and
+- `eval-harness` (v0.0.0): Formal evaluation framework for Claude Code sessions implementing
+- `everos` (v1.0.0): EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以...
+- `evolver` (v0.0.0): GitHub API token for auto-issue reporting and releases.
+- `exa-search` (v0.0.0): Neural search via Exa MCP for web, code, and company research. Use
+- `exa-web-search-free` (v0.0.0): Free AI search via Exa MCP. Web search for news/info, code search
+- `find-skills` (v1.7.0): 场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如"我想做一个海报""帮我分析股票"），或明确说"安装技能/find skills/找个sk...
+- `flutter-dart-code-review` (v0.0.0): Library-agnostic Flutter/Dart code review checklist covering widget
+- `generating-python-installer` (v0.0.0): Commercial-grade Python installer expert for Windows: Nuitka
+- `git-essentials` (v0.0.0): Essential Git commands and workflows for version control,
+- `git-workflow` (v0.0.0): Git workflow patterns including branching strategies, commit
+- `github` (v0.0.0): Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`,
+- `github-ops` (v0.0.0): GitHub repository operations, automation, and management. Issue
+- `growth-log` (v1.1.0): Use after a complex task, failure, or when reviewing what was
+- `gsd-audit-fix` (v0.0.0): Autonomous audit-to-fix pipeline — find issues, classify, fix, test, commit
+- `gsd-code-review` (v0.0.0): Review source files changed during a phase for bugs, security
+- `gsd-debug` (v0.0.0): Systematic debugging with persistent state across context resets
+- `gsd-docs-update` (v0.0.0): Generate or update project documentation verified against the codebase
+- `gsd-eval-review` (v0.0.0): Audit an executed AI phase's evaluation coverage and produce an
+- `gsd-inbox` (v0.0.0): Triage and review open GitHub issues and PRs against project
+- `gsd-map-codebase` (v0.0.0): Analyze codebase with parallel mapper agents to produce
+- `gsd-ns-context` (v0.0.0): codebase intel | map graphify docs learnings mempalace
+- `gsd-ns-review` (v0.0.0): quality gates | code review debug audit security eval ui
+- `gsd-onboard` (v0.0.0): Guide existing codebase onboarding through mapping, doc ingest, and
+- `gsd-plan-review-convergence` (v0.0.0): Cross-AI plan convergence - replan until review concerns are resolved.
+- `gsd-pr-branch` (v0.0.0): Create a clean PR branch by filtering out .planning/ commits —
+- `gsd-quick` (v0.0.0): Execute a quick task with GSD guarantees (atomic commits, state
+- `gsd-review` (v0.0.0): Request cross-AI peer review of phase plans from external AI CLIs
+- `gsd-review-backlog` (v0.0.0): Review and promote backlog items to active milestone
+- `gsd-ship` (v0.0.0): Create PR, run review, and prepare for merge after verification passes
+- `gsd-stats` (v0.0.0): Display project statistics — phases, plans, requirements, git
+- `gsd-ui-review` (v0.0.0): Retroactive 6-pillar visual audit of implemented frontend code
+- `gsd-ultraplan-phase` (v0.0.0): [BETA] Offload plan phase to CodeBuddy's ultraplan cloud; review
+- `gsd-undo` (v0.0.0): Safe git revert. Roll back phase or plan commits using the phase
+- `improve-codebase-architecture` (v0.0.0): Scan a codebase for deepening opportunities, present them as a
+- `ios-icon-gen` (v0.0.0): Generate iOS app icons as PNG imagesets for Xcode asset catalogs
+- `loop-design-check` (v0.0.0): Design a goal-oriented agent loop, and review it for the ways
+- `model-usage` (v0.0.0): Use CodexBar CLI local cost usage to summarize per-model usage for
+- `netmiko-ssh-automation` (v0.0.0): Safe Python Netmiko patterns for read-only collection, bounded
+- `nodejs-keccak256` (v1.0.0): Prevent Ethereum hashing bugs in JavaScript and TypeScript. Node's
+- `opencode-controller` (v0.0.0): Control and operate Opencode via slash commands. Use this skill to
+- `orch-refine-code` (v0.0.0): Orchestrate a behavior-preserving refactor — confirm tests are
+- `peiwang-buwangwo` (v0.0.0): 配网勿忘我 — 多人协作任务看板。纯 HTML 单文件应用，Gitee 云端同步，支持管理员/协作者双模式、自定义移动端日期选择器、三列状态徽章。
+- `plankton-code-quality` (v0.0.0): Write-time code quality enforcement using Plankton —
+- `ponytail-review` (v0.0.0): >
+- `pr-review` (v1.0): >
+- `prediction-market-risk-review` (v0.0.0): Review prediction-market, basket, oracle, and trading-agent
+- `project-flow-ops` (v0.0.0): Operate execution flow across GitHub and Linear by triaging issues
+- `python-patterns` (v0.0.0): Pythonic idioms, PEP 8 standards, type hints, and best practices
+- `python-testing` (v0.0.0): Python testing strategies using pytest, TDD methodology, fixtures,
+- `repo-scan` (v0.0.0): Cross-stack source code asset audit — classifies every file,
+- `resolving-merge-conflicts` (v0.0.0): Use when you need to resolve an in-progress git merge/rebase conflict.
+- `scientific-pkg-gget` (v0.0.0): gget CLI and Python workflow for quick genomic database queries,
+- `scientific-thinking-literature-review` (v0.0.0): Systematic literature-review workflow for academic, biomedical,
+- `security-review` (v0.0.0): Use this skill when adding authentication, handling user input,
+- `security-scan` (v0.0.0): Scan your Claude Code configuration (.claude/ directory) for
+- `setup-pre-commit` (v1.0.0): Set up Husky pre-commit hooks with lint-staged (Prettier), type
+- `skill-scout` (v0.0.0): Search existing local, marketplace, GitHub, and web skill sources
+- `skill_2053081574105186304` (v1.51.3): GitHub API token for auto-issue reporting and releases.
+- `speckit-baseline` (v0.0.0): Generate feature specifications by analyzing existing source code.
+- `speckit-taskstoissues` (v0.0.0): Convert existing tasks into actionable, dependency-ordered GitHub
+- `swift-protocol-di-testing` (v0.0.0): Protocol-based dependency injection for testable Swift code — mock
+- `team-ops` (v1.0.0): Audit team performance using the Elon Algorithm (identify A/B/C players) and ext...
+- `tencent-meeting-skill` (v1.0.10): 在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeti...
+- `tencentmap-jsapi-gl-skill` (v1.0.0): 腾讯地图 JavaScript GL（JSAPIGL）开发指南。适用于地图应用或者工具的编写。在编写、审查或调试使用腾讯地图
+- `tencentmap-webservice-skill` (v1.0.0): 腾讯位置服务 WebService API 开发技能。当开发者需要通过 HTTP 接口集成地理编码、地点搜索、路线规划、天气查询、IP
+- `unified-notifications-ops` (v0.0.0): Operate notifications as one ECC-native workflow across GitHub,
+- `verification-loop` (v0.0.0): A comprehensive verification system for Claude Code sessions.
 
-### 🎬 视频生成类 (1 个)
-- `agnes-video-generator` (v1.0.0): Agnes 视频生成工具
+## 📊 数据分析类 (29 个)
 
-### 💰 金融投资类 (2 个)
-- `wind-finance` (v1.0.0): Wind 金融数据服务
-- `wb-finance-skill` (v0.1.0): 金融/投资/股票/基金场景总入口
+- `admapix` (v0.0.0): AdMapix raw data layer for ad creatives, apps, rankings,
+- `akshare-stock` (v0.0.0): A股量化数据分析工具，基于AkShare库获取A股行情、财务数据、板块信息等。用于回答关于A股股票查询、行情数据、财务分析、选股等问题。
+- `backend-patterns` (v0.0.0): Backend architecture patterns, API design, database optimization,
+- `clickhouse-io` (v0.0.0): ClickHouse database patterns, query optimization, analytics, and
+- `conversion-ops` (v1.0.0): Score any landing page with a CRO audit framework, and convert survey data into ...
+- `data-analysis` (v1.0.2): Data analysis and visualization. Query databases, generate reports,
+- `data-analyst` (v1.0.0): Data visualization, report generation, SQL queries, and spreadsheet
+- `data-scraper-agent` (v0.0.0): Build a fully automated AI-powered data collection agent for any
+- `data-throughput-accelerator` (v0.0.0): Use when large data ingestion, backfill, export, ETL, warehouse
+- `database-migrations` (v0.0.0): Database migration best practices for schema changes, data
+- `diagram-generator` (v0.0.0): Generate and edit diagrams with the mcp-diagram-generator MCP server. Use this s...
+- `find-skills` (v1.7.0): 场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如"我想做一个海报""帮我分析股票"），或明确说"安装技能/find skills/找个sk...
+- `ito-data-atlas-agent` (v0.0.0): Design background Data Atlas style agents for Itô basket research,
+- `migraq` (v1.1.6): 腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、...
+- `mle-workflow` (v0.0.0): Production machine-learning engineering workflow for data
+- `mx-finance-data` (v0.0.0): 基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业...
+- `neodata-financial-search` (v1.0.1): NeoData Financial Search — natural language financial data search.
+- `notion` (v0.0.0): Notion API for creating and managing pages, databases, and blocks.
+- `openclaw-backup` (v0.0.0): Backup and restore OpenClaw data. Use when user asks to create
+- `postgres-patterns` (v0.0.0): PostgreSQL database patterns for query optimization, schema design,
+- `prediction-market-oracle-research` (v0.0.0): Research prediction markets as data sources or oracle signals for
+- `redis-patterns` (v0.0.0): Redis data structure patterns, caching strategies, distributed
+- `scientific-db-pubmed-database` (v0.0.0): Direct PubMed and NCBI E-utilities search workflows for biomedical
+- `scientific-db-uspto-database` (v0.0.0): USPTO patent and trademark data workflow for official record
+- `scientific-pkg-gget` (v0.0.0): gget CLI and Python workflow for quick genomic database queries,
+- `seo-ops` (v1.0.0): SEO operations automation: generate content attack briefs from competitor gaps, ...
+- `stock-analysis` (v6.2.0): Analyze stocks and cryptocurrencies using Yahoo Finance data.
+- `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
+- `tencent-musician-skills` (v1.0.1): 腾讯音乐人智能分析助手（数据分析 +
 
-### 🔧 通用工具类 (2 个)
-- `find-skills` (v1.0.0): 搜索和发现 OpenClaw 技能
-- `skill-creator` (v1.0.0): 创建有效技能的指南
+## 📄 文档处理类 (25 个)
 
----
+- `1password` (v0.0.0): Set up and use 1Password CLI (op). Use when installing the CLI,
+- `canvas-design` (v1.0.3): Create beautiful visual art in .png and .pdf documents using design
+- `download-web-file` (v0.0.0): 从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。
+- `excel-xlsx` (v1.0.2): Create, inspect, and edit Microsoft Excel workbooks and XLSX files
+- `kdocs` (v2.5.7): 操作金山文档（WPS 云文档 / Kdocs / 365.kdocs.cn / www.kdocs.cn）云文档的官方
+- `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
+- `md-to-pdf-cjk` (v1.0.0): Convert Markdown files to professional PDF documents with full CJK
+- `microsoft-excel` (v1.0): >
+- `minimax-docx` (v1.0.0): >
+- `minimax-pdf` (v1.0): >
+- `minimax-xlsx` (v1.0): Open, create, read, analyze, edit, or validate Excel/spreadsheet
+- `nano-pdf` (v0.0.0): Edit PDFs with natural-language instructions using the nano-pdf CLI.
+- `office-cli` (v0.0.0): OfficeCLI —— 零依赖办公套件 CLI。支持创建、读取、编辑、预览
+- `pdf` (v0.0.0): Comprehensive PDF manipulation toolkit for extracting text and
+- `pdf-extract` (v0.0.0): Extract text from PDF files for LLM processing
+- `pdfkit-py` (v1.0.1): 仅用于对已存在的 .pdf
+- `powerpoint-pptx` (v1.0.1): Create, inspect, and edit Microsoft PowerPoint presentations and
+- `pptx-generator` (v1.0): Generate, edit, and read PowerPoint presentations. Create from
+- `seo-ops` (v1.0.0): SEO operations automation: generate content attack briefs from competitor gaps, ...
+- `skills-security-check` (v1.0.2): 腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全
+- `smart-page` (v1.0.1): 腾讯文档智能页面（Smart
+- `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
+- `tencent-docs` (v1.0.36): 腾讯文档（docs.qq.com）-在线云文档平台，是创建、编辑、管理文档的首选
+- `word-docx` (v1.0.2): Create, inspect, and edit Microsoft Word documents and DOCX files
+- `配网规划评审器` (v0.0.0): 配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场...
 
-## 使用说明
+## 📧 邮件通信类 (12 个)
 
-### Agent 执行流程
-1. 判断任务类型（代码/文档/搜索/生成/金融...）
-2. 查对应分支（如"代码类"→ `skill_tree.json.categories.code`）
-3. 在分支内匹配 description
-4. 命中 → 加载执行；未命中 → 全量扫描兜底
+- `agentmail` (v0.0.0): API-first email platform designed for AI agents. Create and manage
+- `caldav-calendar` (v0.0.0): Sync and query CalDAV calendars (iCloud, Google, Fastmail,
+- `email-ops` (v0.0.0): Evidence-first mailbox triage, drafting, send verification, and
+- `email-skill` (v0.1.0): Email management and automation. Send, read, search, and organize
+- `gmail` (v1.0): >
+- `gog` (v1.0.0): Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.
+- `himalaya` (v0.0.0): CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read,
+- `imap-smtp-email` (v0.0.0): Read and send email via IMAP/SMTP. Check for new/unread messages,
+- `investor-outreach` (v0.0.0): Draft cold emails, warm intro blurbs, follow-ups, update emails,
+- `mailtrap-email-integration` (v0.0.0): Guides agents through integrating transactional email sending via
+- `outbound-engine` (v1.0.0): Design, analyze, and optimize cold outbound email campaigns for
+- `qq-email` (v1.0.0): QQ邮箱 IMAP receive and SMTP send via Node.js scripts; credentials
 
-### 定期更新
-```bash
-python scripts/build_skill_tree.py
-```
+## 📁 文件管理类 (33 个)
 
-或等待 GitHub Actions 自动更新（每天凌晨 2 点）。
+- `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
+- `awesome-design-md` (v1.0.0): Curated collection of 54 DESIGN.md files extracted from real
+- `baidu-drive` (v1.4.3): 百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER:
+- `brand-voice` (v0.0.0): Build a source-derived writing style profile from real posts,
+- `cloudq` (v1.6.1): 用户咨询腾讯云产品资源、AWS、阿里云等多云资源时，查看智能顾问架构图、架构目录、架构详情、架构评估结果、绘制架构图、开通智能顾问时、AI智能巡检、AI容量监测...
+- `code-tour` (v0.0.0): Create CodeTour `.tour` files — persona-targeted, step-by-step
+- `content-hash-cache-pattern` (v0.0.0): Cache expensive file processing results using SHA-256 content
+- `download-web-file` (v0.0.0): 从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。
+- `everos` (v1.0.0): EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以...
+- `excel-xlsx` (v1.0.2): Create, inspect, and edit Microsoft Excel workbooks and XLSX files
+- `gsd-code-review` (v0.0.0): Review source files changed during a phase for bugs, security
+- `gsd-mempalace-capture` (v0.0.0): File a phase artifact into MemPalace; mirror decision facts into
+- `gsd-profile-user` (v0.0.0): Generate developer behavioral profile and create Claude-discoverable artifacts
+- `gsd-settings` (v0.0.0): Configure GSD workflow toggles and model profile
+- `gsd-surface` (v0.0.0): Toggle which skills are surfaced — apply a profile, list, or
+- `healthcheck` (v1.0.2): Track water and sleep with JSON file storage
+- `hermes-self-evolution` (vmain): 用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API...
+- `image` (v1.0.4): Create, inspect, process, and optimize image files and visual
+- `markdown-converter` (v0.0.0): Convert documents and files to Markdown using markitdown. Use when
+- `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
+- `md-to-pdf-cjk` (v1.0.0): Convert Markdown files to professional PDF documents with full CJK
+- `notebooklm-studio` (v2.1.3): Import sources (URLs, YouTube, files, text) into Google NotebookLM
+- `pdf-extract` (v0.0.0): Extract text from PDF files for LLM processing
+- `peiwang-buwangwo` (v0.0.0): 配网勿忘我 — 多人协作任务看板。纯 HTML 单文件应用，Gitee 云端同步，支持管理员/协作者双模式、自定义移动端日期选择器、三列状态徽章。
+- `ppt` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `ppt-generator` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `repo-scan` (v0.0.0): Cross-stack source code asset audit — classifies every file,
+- `skills-security-check` (v1.0.2): 腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全
+- `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
+- `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
+- `word-docx` (v1.0.2): Create, inspect, and edit Microsoft Word documents and DOCX files
+- `workrally` (v2.4.0): WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管...
+- `配网规划评审器` (v0.0.0): 配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场...
 
----
+## 💰 金融投资类 (9 个)
 
-## 分类规则
+- `akshare-stock` (v0.0.0): A股量化数据分析工具，基于AkShare库获取A股行情、财务数据、板块信息等。用于回答关于A股股票查询、行情数据、财务分析、选股等问题。
+- `didi-ride-skill` (v1.1.3): 中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置...
+- `finance-billing-ops` (v0.0.0): Evidence-first revenue, pricing, refunds, team-billing, and
+- `finance-ops` (v1.0.0): AI-powered financial analysis suite. Generates executive CFO
+- `find-skills` (v1.7.0): 场景驱动+关键词双模式技能发现工具。当用户用自然语言描述场景/需求（如"我想做一个海报""帮我分析股票"），或明确说"安装技能/find skills/找个sk...
+- `mx-finance-data` (v0.0.0): 基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业...
+- `stock-analysis` (v6.2.0): Analyze stocks and cryptocurrencies using Yahoo Finance data.
+- `tushare-finance` (v0.0.0): 获取中国金融市场数据（A股、港股、美股、基金、期货、债券）。支持220+个Tushare
+- `配网规划评审器` (v0.0.0): 配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场...
 
-| 分类 | 关键词 |
-|------|--------|
-| meta | constitution, rule, 规范, 元规则, 宪法 |
-| memory | memory, memor, recall, remember, 记忆, 持久化 |
-| browser | browser, bsk, 自动化, 网页, 爬虫, search, 搜索 |
-| code | code, 编程, 开发, review, git, commit, 测试 |
-| doc | docx, pdf, xlsx, pptx, 文档, wps, office |
-| video | video, 视频, agnes |
-| finance | finance, 金融, 股票, 投资 |
-| general | 其他未匹配技能 |
+## 🔧 通用工具类 (358 个)
 
----
+- `agent-architecture-audit` (v0.0.0): Full-stack diagnostic for agent and LLM applications. Audits the
+- `agent-mbti` (v0.1.1): AI Agent personality diagnosis and configuration system based on
+- `agent-payment-x402` (v0.0.0): Add x402 payment execution to AI agents with per-task budgets,
+- `agent-phone-call` (v1.0.0): >
+- `agent-self-evaluation` (v0.0.0): Use after completing any non-trivial task. The agent self-rates its
+- `agent-sort` (v0.0.0): Build an evidence-backed ECC install plan for a specific repo by
+- `agent-team-orchestration` (v1.0.0): Orchestrate multi-agent teams with defined roles, task lifecycles,
+- `agentic-engineering` (v0.0.0): Operate as an agentic engineer using eval-first execution,
+- `ai-first-engineering` (v0.0.0): Engineering operating model for teams where AI agents generate a
+- `ai-ppt-generator` (v0.0.0): Generate PPT with Baidu Wenku AI. Smart template selection based on content.
+- `ai-regression-testing` (v0.0.0): Regression testing strategies for AI-assisted development.
+- `aihot` (v1.0.3): AI HOT (aihot.virxact.com) 中文 AI 资讯查询 Skill。当用户想知道"今天 AI 圈有什么"、"AI
+- `andonq` (v2.0.0): AndonQ 腾讯云智能客服"领域虾" —
+- `android-clean-architecture` (v0.0.0): Clean Architecture patterns for Android and Kotlin Multiplatform
+- `anti-distill` (v1.0.0): Anti-distillation defense for employee Skills. Clean your skill
+- `api-connector-builder` (v1.0.0): Build a new API connector or provider by matching the target repo's
+- `api-gateway` (v1.0): >
+- `apple-notes` (v0.0.0): Manage Apple Notes via the `memo` CLI on macOS (create, view, edit,
+- `apple-reminders` (v0.0.0): Manage Apple Reminders via the `remindctl` CLI on macOS (list, add,
+- `article-writing` (v0.0.0): Write articles, guides, blog posts, tutorials, newsletter issues,
+- `ask-matt` (v0.0.0): Ask which skill or flow fits your situation. A router over the
+- `auto-updater` (v1.0.0): Automatically update Clawdbot and all installed skills once daily.
+- `benchmark` (v0.0.0): Use this skill to measure performance baselines, detect regressions
+- `benchmark-methodology` (v0.0.0): Use after competitive-platform-analysis has produced a tiered
+- `benchmark-optimization-loop` (v0.0.0): Use when the user asks to make something faster, try many variants,
+- `bilibili-all-in-one` (v1.0.18): >
+- `blender-motion-state-inspection` (v0.0.0): Use this skill when inspecting Blender characters, rigs, poses,
+- `blogwatcher` (v0.0.0): Monitor blogs and RSS/Atom feeds for updates using the blogwatcher CLI.
+- `blueprint` (v0.0.0): Turn a one-line objective into a step-by-step construction plan
+- `boss-skills` (v1.1.0): Distill a real boss into an AI skill, or generate a boss skill from
+- `brand-discovery` (v0.0.0): Use when a brand needs to discover or articulate its identity
+- `buddy-sings` (v1.1): >
+- `bun-runtime` (v0.0.0): Bun as runtime, package manager, bundler, and test runner. When to
+- `byterover` (v0.0.0): You MUST use this for gathering contexts before any work. This is
+- `canary-watch` (v0.0.0): Use this skill to monitor and verify a deployed URL after releases
+- `caozhao-radar` (v0.0.0): 
+- `carrier-relationship-management` (v1.0.0): >
+- `claude-devfleet` (v0.0.0): Orchestrate multi-agent coding tasks via Claude DevFleet — plan
+- `cli-anything-hub` (v1.0.1): Discover agent-native CLIs for professional software. Access the
+- `click-path-audit` (v0.0.0): Trace every user-facing button/touchpoint through its full state
+- `cloudbase` (v2.15.4): CloudBase is a full-stack development and deployment toolkit for
+- `cnb-skill` (v1.0.0): Interact with CNB (Cloud Native Build) platform via OpenAPI. Manage
+- `coding-standards` (v0.0.0): Baseline cross-project coding conventions for naming, readability,
+- `colleague-skill` (v1.0.0): Distill a colleague into an AI Skill. Auto-collect
+- `competitive-platform-analysis` (v0.0.0): Use when scoping a competitive landscape — identifying,
+- `competitive-report-structure` (v0.0.0): Use after benchmark-methodology has produced scored competitor
+- `compose-multiplatform-patterns` (v0.0.0): Compose Multiplatform and Jetpack Compose patterns for KMP projects
+- `content-engine` (v0.0.0): Create platform-native content systems for X, LinkedIn, TikTok,
+- `content-factory` (v1.0.0): Multi-agent content production system. One piece of source content
+- `content-ops` (v1.0.0): Score, evaluate, and iteratively improve any content or strategy
+- `content-repurposer` (v1.1.0): Transform long-form content into platform-optimized snippets. Your
+- `continuous-agent-loop` (v0.0.0): Patterns for continuous autonomous agent loops with quality gates,
+- `continuous-learning` (v0.0.0): [DEPRECATED - use continuous-learning-v2] Legacy v1 stop-hook
+- `continuous-learning-v2` (v2.1.0): Instinct-based learning system that observes sessions via hooks,
+- `cos-vectors` (v1.0.1): 腾讯云 COS
+- `cost-aware-llm-pipeline` (v0.0.0): Cost optimization patterns for LLM API usage — model routing by
+- `council` (v0.0.0): Convene a four-voice council for ambiguous decisions, tradeoffs,
+- `cpp-coding-standards` (v0.0.0): C++ coding standards based on the C++ Core Guidelines
+- `cpp-testing` (v0.0.0): Use only when writing/updating/fixing C++ tests, configuring
+- `crash-expert-skill` (v1.0.0): Linux kernel vmcore/coredump analysis expert skill. Use when users
+- `crosspost` (v0.0.0): Multi-platform content distribution across X, LinkedIn, Threads,
+- `csharp-testing` (v0.0.0): C# and .NET testing patterns with xUnit, FluentAssertions, mocking,
+- `customer-billing-ops` (v0.0.0): Operate customer billing workflows such as subscriptions, refunds,
+- `customs-trade-compliance` (v1.0.0): >
+- `dart-flutter-patterns` (v0.0.0): Production-ready Dart and Flutter patterns covering null safety,
+- `darwin-skill` (v0.0.0): Darwin Skill (达尔文.skill): autonomous skill optimizer inspired by
+- `dashboard-builder` (v1.0.0): Build monitoring dashboards that answer real operator questions for
+- `defi-amm-security` (v1.0.0): Security checklist for Solidity AMM contracts, liquidity pools, and
+- `delivery-gate` (v1.1.1): Stop hook that blocks Claude from finishing until quality checks
+- `deployment-patterns` (v0.0.0): Deployment workflows, CI/CD pipeline patterns, Docker
+- `diagnosing-bugs` (v0.0.0): Diagnosis loop for hard bugs and performance regressions. Use when
+- `django-security` (v0.0.0): Django security best practices, authentication, authorization, CSRF
+- `django-tdd` (v0.0.0): Django testing strategies with pytest-django, TDD methodology,
+- `django-verification` (v0.0.0): Verification loop for Django projects: migrations, linting, tests
+- `dmux-workflows` (v0.0.0): Multi-agent orchestration using dmux (tmux pane manager for AI
+- `docker-essentials` (v0.0.0): Essential Docker commands and workflows for container management,
+- `docker-patterns` (v0.0.0): Docker and Docker Compose patterns for local development, container
+- `documentation-lookup` (v0.0.0): Use up-to-date library and framework docs via Context7 MCP instead
+- `domain-modeling` (v0.0.0): Build and sharpen a project's domain model. Use when the user wants
+- `dotnet-patterns` (v0.0.0): Idiomatic C# and .NET patterns, conventions, dependency injection,
+- `ecc-guide` (v0.0.0): Guide users through ECC's current agents, skills, commands, hooks,
+- `ecc-recipes` (v1.0.0): Map a described workflow to the right ECC command-GROUP with
+- `ecc-tools-cost-audit` (v0.0.0): Evidence-first ECC Tools burn and billing audit workflow. Use when
+- `edge-tts` (v0.0.0): >
+- `energy-procurement` (v1.0.0): >
+- `enterprise-agent-ops` (v0.0.0): Operate long-lived agent workloads with observability, security
+- `evm-token-decimals` (v1.0.0): Prevent silent decimal mismatch bugs across EVM chains. Covers
+- `fastapi-patterns` (v0.0.0): FastAPI best practices covering project structure, Pydantic v2
+- `fbs-bookwriter` (v2.1.2): 福帮手出品 |
+- `feishu-evolver-wrapper` (v0.0.0): Feishu-integrated wrapper for the capability-evolver. Manages the
+- `fintech-engineer` (v0.0.0): Expert fintech engineer specializing in financial systems, regulatory compliance...
+- `flox-environments` (v0.0.0): Create reproducible, cross-platform (macOS/Linux) development
+- `flutter-dev` (v1.0.0): >
+- `foundation-models-on-device` (v0.0.0): Apple FoundationModels framework for on-device LLM — text
+- `free-ride` (v0.0.0): OpenRouter API key — get a free one at openrouter.ai/keys
+- `frontend-a11y` (v0.0.0): >
+- `frontend-dev` (v1.0.0): >
+- `frontend-patterns` (v0.0.0): Frontend development patterns for React, Next.js, state management,
+- `frontend-slides` (v0.0.0): Create stunning, animation-rich HTML presentations from scratch or
+- `fsharp-testing` (v0.0.0): F# testing patterns with xUnit, FsUnit, Unquote, FsCheck
+- `fullstack-dev` (v1.0.0): >
+- `gan-style-harness` (v0.0.0): GAN-inspired Generator-Evaluator agent harness for building
+- `gateguard` (v0.0.0): Fact-forcing gate that blocks Edit/Write/Bash (including MultiEdit)
+- `gemini` (v0.0.0): Gemini CLI for one-shot Q&A, summaries, and generation.
+- `getnote` (v0.0.0): |
+- `gif-sticker-maker` (v1.2): >
+- `golang-patterns` (v0.0.0): Idiomatic Go patterns, best practices, and conventions for building
+- `golang-testing` (v0.0.0): Go testing patterns including table-driven tests, subtests,
+- `google-workspace-ops` (v0.0.0): Operate across Google Drive, Docs, Sheets, and Slides as one
+- `grilling` (v0.0.0): Grill the user relentlessly about a plan, decision, or idea. Use
+- `growth-engine` (v1.0.0): Run autonomous marketing experiments with pacing alerts and weekly scorecards. G...
+- `gsd-add-tests` (v0.0.0): Generate tests for a completed phase based on UAT criteria and implementation
+- `gsd-audit-milestone` (v0.0.0): Audit milestone completion against original intent before archiving
+- `gsd-audit-uat` (v0.0.0): Cross-phase audit of all outstanding UAT and verification items
+- `gsd-autonomous` (v0.0.0): Run all remaining phases autonomously — discuss→plan→execute per phase
+- `gsd-capture` (v0.0.0): Capture ideas, tasks, notes, and seeds to their destination
+- `gsd-cleanup` (v0.0.0): Archive accumulated phase directories from completed milestones
+- `gsd-complete-milestone` (v0.0.0): Archive completed milestone and prepare for next version
+- `gsd-config` (v0.0.0): Configure GSD settings — workflow toggles, advanced knobs,
+- `gsd-discuss-phase` (v0.0.0): Gather phase context through adaptive questioning before planning.
+- `gsd-execute-phase` (v0.0.0): Execute all plans in a phase with wave-based parallelization
+- `gsd-explore` (v0.0.0): Socratic ideation and idea routing — think through ideas before
+- `gsd-extract-learnings` (v0.0.0): Extract decisions, lessons, patterns, and surprises from completed
+- `gsd-fast` (v0.0.0): Execute a trivial task inline — no subagents, no planning overhead
+- `gsd-forensics` (v0.0.0): Post-mortem investigation for failed GSD workflows — diagnoses what went wrong.
+- `gsd-graphify` (v0.0.0): Build, query, and inspect the project knowledge graph in .planning/graphs/
+- `gsd-health` (v0.0.0): Diagnose planning directory health and optionally repair issues
+- `gsd-help` (v0.0.0): Show available GSD commands and usage guide
+- `gsd-import` (v0.0.0): Ingest external plans with conflict detection against project
+- `gsd-ingest-docs` (v0.0.0): Bootstrap or merge a .planning/ setup from existing ADRs, PRDs,
+- `gsd-manager` (v0.0.0): Interactive command center for managing multiple phases from one terminal
+- `gsd-milestone-summary` (v0.0.0): Generate a comprehensive project summary from milestone artifacts
+- `gsd-mvp-phase` (v0.0.0): Plan a phase as a vertical MVP slice — user story, SPIDR splitting,
+- `gsd-new-milestone` (v0.0.0): Start a new milestone cycle — update PROJECT.md and route to requirements
+- `gsd-new-project` (v0.0.0): Initialize a new project with deep context gathering and PROJECT.md
+- `gsd-next` (v0.0.0): Smart entry — detect project state and route to the right next GSD action.
+- `gsd-ns-ideate` (v0.0.0): exploration capture | explore sketch spike spec capture
+- `gsd-ns-manage` (v0.0.0): config workspace | workstreams thread update ship inbox
+- `gsd-ns-project` (v0.0.0): project lifecycle | milestones audits summary
+- `gsd-ns-workflow` (v0.0.0): workflow | discuss plan execute verify phase progress
+- `gsd-pause-work` (v0.0.0): Create context handoff when pausing work mid-phase
+- `gsd-phase` (v0.0.0): CRUD for phases in ROADMAP.md — add, insert, remove, or edit phases
+- `gsd-plan-phase` (v0.0.0): Create detailed phase plan (PLAN.md) with verification loop
+- `gsd-progress` (v0.0.0): Check progress, advance workflow, or dispatch freeform intent — the
+- `gsd-resume-work` (v0.0.0): Resume work from previous session with full context restoration
+- `gsd-secure-phase` (v0.0.0): Retroactively verify threat mitigations for a completed phase
+- `gsd-spec-phase` (v0.0.0): Clarify WHAT a phase delivers with ambiguity scoring; produces a
+- `gsd-spike` (v0.0.0): Spike an idea through experiential exploration, or propose what to
+- `gsd-thread` (v0.0.0): Manage persistent context threads for cross-session work
+- `gsd-update` (v0.0.0): Update GSD to latest version with changelog display
+- `gsd-validate-phase` (v0.0.0): Retroactively audit and fill Nyquist validation gaps for a completed phase
+- `gsd-verify-work` (v0.0.0): Validate built features through conversational UAT
+- `gsd-workspace` (v0.0.0): Manage GSD workspaces — create, list, or remove isolated workspace environments
+- `gsd-workstreams` (v0.0.0): Manage parallel workstreams — list, create, switch, status,
+- `handoff` (v1.0.0): Compact the current conversation into a handoff document for
+- `healthcare-cdss-patterns` (v1.0.0): Clinical Decision Support System (CDSS) development patterns. Drug
+- `healthcare-emr-patterns` (v1.0.0): EMR/EHR development patterns for healthcare applications. Clinical
+- `healthcare-eval-harness` (v1.0.0): Patient safety evaluation harness for healthcare application
+- `healthcare-phi-compliance` (v1.0.0): Protected Health Information (PHI) and Personally Identifiable
+- `hermes-imports` (v0.0.0): Convert local Hermes operator workflows into sanitized ECC skills
+- `hipaa-compliance` (v1.0.0): HIPAA-specific entrypoint for healthcare privacy and security work.
+- `homelab-network-readiness` (v0.0.0): Readiness checklist for homelab VLAN segmentation, local DNS
+- `homelab-network-setup` (v0.0.0): Practical home and homelab network planning for gateways, switches,
+- `homelab-pihole-dns` (v0.0.0): Pi-hole installation, blocklist management, DNS-over-HTTPS setup,
+- `homelab-vlan-segmentation` (v0.0.0): Segmenting home networks into VLANs for IoT, guest, trusted, and
+- `homelab-wireguard-vpn` (v0.0.0): WireGuard VPN server setup, peer configuration, key generation,
+- `humanize-ai-text` (v0.0.0): Humanize AI-generated text to bypass detection. This humanizer
+- `humanizer` (v2.1.1): >
+- `humanizer-zh` (v0.0.0): |
+- `ima-skills` (v1.1.7): |
+- `impeccable` (v2.0.0): >
+- `implement` (v0.0.0): Implement a piece of work based on a spec or set of tickets.
+- `imsg` (v1.0.0): iMessage/SMS CLI for listing chats, history, watch, and sending.
+- `inherit-legacy-style` (v0.0.0): Legacy-project style inheritance skill. Use when the user types
+- `intent-driven-development` (v0.0.0): Turn ambiguous or high-impact product and engineering changes into
+- `inventory-demand-planning` (v1.0.0): >
+- `investor-materials` (v0.0.0): Create and update pitch decks, one-pagers, investor memos,
+- `ios-application-dev` (v1.0.0): >
+- `iterative-retrieval` (v0.0.0): Pattern for progressively refining context retrieval to solve the
+- `ito-basket-compare` (v0.0.0): Compare Itô prediction-market baskets against a user's knowledge
+- `ito-trade-planner` (v0.0.0): Build a non-advisory prediction-market trade planning worksheet for
+- `java-coding-standards` (v0.0.0): Java coding standards for Spring Boot and Quarkus services:
+- `jiaozhen-factcheck` (v1.0.1): 事实查证工具，对输入内容的具体说法、资讯、事件或常识进行真实性、准确性、可靠性判断。当用户需要较真一下，查证问题或判断信息真伪、识别谣言、询问真假，是真的吗，真...
+- `jinshuju` (v1.3.0): Use when the user wants to create or edit forms, collect or query
+- `jira-integration` (v0.0.0): Use this skill when retrieving Jira tickets, analyzing
+- `knowledge-ops` (v0.0.0): Knowledge base management, ingestion, sync, and retrieval across
+- `kotlin-coroutines-flows` (v0.0.0): Kotlin Coroutines and Flow patterns for Android and KMP —
+- `kotlin-exposed-patterns` (v0.0.0): JetBrains Exposed ORM patterns including DSL queries, DAO pattern,
+- `kotlin-ktor-patterns` (v0.0.0): Ktor server patterns including routing DSL, plugins,
+- `kotlin-patterns` (v0.0.0): Idiomatic Kotlin patterns, best practices, and conventions for
+- `kotlin-testing` (v0.0.0): Kotlin testing patterns with Kotest, MockK, coroutine testing,
+- `kubernetes-patterns` (v0.0.0): Kubernetes workload patterns, resource management, RBAC, probes,
+- `laravel-patterns` (v0.0.0): Laravel architecture patterns, routing/controllers, Eloquent ORM,
+- `laravel-plugin-discovery` (v0.0.0): Discover and evaluate Laravel packages via LaraPlugins.io MCP. Use
+- `laravel-security` (v0.0.0): Laravel security best practices — authentication, authorization,
+- `laravel-tdd` (v0.0.0): Laravel testing strategies with PHPUnit, Pest, model factories,
+- `laravel-verification` (v0.0.0): Verification loop for Laravel projects: env checks, linting,
+- `lark-unified` (v1.0.3): Unified Lark/Feishu CLI suite covering messaging, documents,
+- `latency-critical-systems` (v0.0.0): Use for latency-sensitive systems such as realtime dashboards,
+- `lead-intelligence` (v0.0.0): AI-native lead intelligence and outreach pipeline. Replaces Apollo,
+- `llm-trading-agent-security` (v1.0.0): Security patterns for autonomous trading agents with wallet or
+- `llm-wiki` (v1.0.0): Build and maintain a personal knowledge base (wiki) using LLMs.
+- `logistics-exception-management` (v1.0.0): >
+- `markdown-convert` (v0.0.0): Convert public web pages into clean Markdown with markdown.new for
+- `marketing-campaign` (v0.0.0): End-to-end marketing campaign planning and execution. Covers
+- `marketing-mode` (v1.0.0): Marketing Mode combines 23 comprehensive marketing skills covering
+- `marketing-skills` (v1.0.0): TL;DR: 23 marketing playbooks (CRO, SEO, copy, analytics,
+- `mcp-server-patterns` (v0.0.0): Build MCP servers with Node/TypeScript SDK — tools, resources,
+- `mcporter` (v1.0.0): Use the mcporter CLI to list, configure, auth, and call MCP
+- `messages-ops` (v0.0.0): Evidence-first live messaging workflow for ECC. Use when the user
+- `minimax-music-gen` (v1.1): >
+- `minimax-music-playlist` (v2.0): >
+- `ml-adoption-playbook` (v0.0.0): End-to-end methodology for AI agents and software engineers to add
+- `moltguard` (v6.8.16): MoltGuard — OpenClaw security guard by OpenGuardrails. Install
+- `motion-advanced` (v1): Advanced motion patterns for React / Next.js — drag & drop,
+- `motion-patterns` (v1): Production-ready animation patterns for React / Next.js — button,
+- `motion-ui` (v0.0.0): Production-ready UI motion system for React/Next.js. Use when
+- `mysql-patterns` (v0.0.0): MySQL and MariaDB schema, query, indexing, transaction,
+- `nanoclaw-repl` (v0.0.0): Operate and extend NanoClaw v2, ECC's zero-dependency session-aware
+- `nestjs-patterns` (v0.0.0): NestJS architecture patterns for modules, controllers, providers,
+- `network-bgp-diagnostics` (v0.0.0): Diagnostics-only BGP troubleshooting patterns for neighbor state,
+- `network-config-validation` (v0.0.0): Pre-deployment checks for router and switch configuration,
+- `network-interface-health` (v0.0.0): Diagnose interface errors, drops, CRCs, duplex mismatches,
+- `news-summary` (v0.0.0): This skill should be used when the user asks for news updates,
+- `nextjs-turbopack` (v0.0.0): Next.js 16+ and Turbopack — incremental bundling, FS caching, dev
+- `nutrient-document-processing` (v0.0.0): Process, convert, OCR, extract, redact, sign, and fill documents
+- `nuwa-skill` (v0.0.0): |
+- `obsidian` (v0.0.0): Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.
+- `openai-whisper` (v1.0.0): Local speech-to-text with the Whisper CLI (no API key).
+- `openai-whisper-api` (v1.0.0): Transcribe audio via OpenAI Audio Transcriptions API (Whisper).
+- `openclaw-assets-to-workbuddy` (v1.0.1): 将 OpenClaw 用户的个人资产迁移到 WorkBuddy 对应位置，重点覆盖
+- `openclaw-persona-forge` (v0.0.0): 为 OpenClaw AI Agent 锻造完整的龙虾灵魂方案。根据用户偏好或随机抽卡，
+- `opensource-pipeline` (v0.0.0): Open-source pipeline: fork, sanitize, and package private projects
+- `oracle` (v1.0.1): Use the @steipete/oracle CLI to bundle a prompt plus the right
+- `orch-change-feature` (v0.0.0): Orchestrate altering an existing, working feature to new desired
+- `orch-fix-defect` (v0.0.0): Orchestrate fixing a bug — reproduce it as a failing regression
+- `orch-pipeline` (v0.0.0): Shared orchestration engine for the orch-* skill family. Defines
+- `outlook-api` (v1.0): >
+- `parallel-execution-optimizer` (v0.0.0): Use when the user wants a task done much faster through parallel
+- `peekaboo` (v1.0.0): Capture and automate macOS UI with the Peekaboo CLI.
+- `perl-patterns` (v0.0.0): Modern Perl 5.36+ idioms, best practices, and conventions for
+- `perl-security` (v0.0.0): Comprehensive Perl security covering taint mode, input validation,
+- `perl-testing` (v0.0.0): Perl testing patterns using Test2::V0, Test::More, prove runner,
+- `podcast-ops` (v1.0.0): Podcast-to-Everything content pipeline. Takes a podcast RSS feed
+- `ponytail` (v0.0.0): >
+- `ponytail-audit` (v0.0.0): >
+- `ponytail-debt` (v0.0.0): >
+- `ponytail-gain` (v0.0.0): >
+- `ponytail-help` (v0.0.0): >
+- `proactive-agent` (v3.1.0): Transform AI agents from task-followers into proactive partners
+- `proactive-agent-lite` (v0.0.0): Transform AI agents from task-followers into proactive partners
+- `proactivity` (v1.0.1): Anticipates needs, keeps work moving, and improves through use so
+- `product-capability` (v0.0.0): Translate PRD intent, roadmap asks, or product discussions into an
+- `product-lens` (v0.0.0): Use this skill to validate the "why" before building, run product
+- `production-audit` (v0.0.0): Local-evidence production readiness audit for shipped apps,
+- `production-scheduling` (v1.0.0): >
+- `productivity` (v1.0.4): Plan, focus, and complete work with energy management, time
+- `prompt-optimizer` (v1.0.0): Analyze raw prompts, identify intent and gaps, match ECC
+- `pytorch-patterns` (v0.0.0): PyTorch deep learning patterns and best practices for building
+- `qcc-company` (v1.0.0): 通过企查查 Connector
+- `quality-nonconformance` (v1.0.0): >
+- `quarkus-patterns` (v0.0.0): Quarkus 3.x LTS architecture patterns with Camel for messaging,
+- `quarkus-security` (v0.0.0): Quarkus Security best practices for authentication, authorization,
+- `quarkus-tdd` (v0.0.0): Test-driven development for Quarkus 3.x LTS using JUnit 5, Mockito,
+- `quarkus-verification` (v0.0.0): Verification loop for Quarkus projects: build, static analysis,
+- `ralphinho-rfc-pipeline` (v0.0.0): RFC-driven multi-agent DAG execution pattern with quality gates,
+- `react-native-dev` (v1.0.0): >
+- `react-native-patterns` (v0.0.0): React Native and Expo app patterns — Expo Router navigation, state
+- `react-patterns` (v0.0.0): React 18/19 patterns including hooks discipline, server/client
+- `react-performance` (v0.0.0): React and Next.js performance optimization patterns adapted from
+- `react-testing` (v0.0.0): React component testing with React Testing Library, Vitest/Jest,
+- `recursive-decision-ledger` (v0.0.0): Use when the user asks for repeated rollouts, marked decision
+- `regex-vs-llm-structured-text` (v0.0.0): Decision framework for choosing between regex and LLM when parsing
+- `resume-assistant` (v1.0.0): >
+- `returns-reverse-logistics` (v1.0.0): >
+- `revenue-intelligence` (v1.0.0): Extract insights from Gong sales calls, build revenue attribution models, and ge...
+- `rust-patterns` (v0.0.0): Idiomatic Rust patterns, ownership, error handling, traits,
+- `rust-testing` (v0.0.0): Rust testing patterns including unit tests, integration tests,
+- `safety-guard` (v0.0.0): Use this skill to prevent destructive operations when working on
+- `sag` (v1.0.0): ElevenLabs text-to-speech with mac-style say UX.
+- `sales-playbook` (v1.0.0): Build value-based pricing frameworks, generate pre-call briefings, analyze sales...
+- `santa-method` (v0.0.0): Multi-agent adversarial verification with convergence loop. Two
+- `scientific-thinking-scholar-evaluation` (v0.0.0): Structured scholarly-work evaluation for papers, proposals,
+- `security-bounty-hunter` (v1.0.0): Hunt for exploitable, bounty-worthy security issues in
+- `self-evolve-wb` (v0.0.0): 
+- `self-improving` (v1.2.16): Self-reflection + Self-criticism + Self-learning + Self-organizing
+- `self-improving-agent` (v0.0.0): Captures learnings, errors, and corrections to enable continuous
+- `seo` (v0.0.0): Audit, plan, and implement SEO improvements across technical SEO,
+- `setup-matt-pocock-skills` (v0.0.0): Configure this repo for the engineering skills — set up its issue
+- `shader-dev` (v1.0): Comprehensive GLSL shader techniques for creating stunning visual
+- `skill-creator` (v0.1.0): Guide for creating effective skills. This skill should be used when
+- `skill-finder-cn` (v0.0.0): Skill 查找器 | Skill Finder. 帮助发现和安装 ClawHub Skills | Discover and
+- `skill-scanner` (v0.0.0): Scan Clawdbot and MCP skills for malware, spyware, crypto-miners,
+- `skill-stocktake` (v0.0.0): Use when auditing Claude skills and commands for quality. Supports
+- `skill-vetter` (v1.0.0): Security-first skill vetting for AI agents. Use before installing
+- `skyline` (v1.0.0): WeChat Mini Program Skyline rendering engine. Use when developing
+- `slack` (v0.0.0): Use when you need to control Slack from Clawdbot via the slack
+- `social-graph-ranker` (v0.0.0): Weighted social-graph ranking for warm intro discovery, bridge
+- `social-publisher` (v0.0.0): Agent-driven scheduling and publishing of social media posts across
+- `songsee` (v1.0.0): Generate spectrograms and feature-panel visualizations from audio
+- `sonoscli` (v0.0.0): Control Sonos speakers (discover/status/play/volume/group).
+- `speckit-analyze` (v0.0.0): Perform a non-destructive cross-artifact consistency and quality
+- `speckit-checklist` (v0.0.0): Generate a custom checklist for the current feature based on user requirements.
+- `speckit-clarify` (v0.0.0): Identify underspecified areas in the current feature spec by asking
+- `speckit-implement` (v0.0.0): Execute the implementation plan by processing and executing all
+- `speckit-plan` (v0.0.0): Execute the implementation planning workflow using the plan
+- `speckit-specify` (v0.0.0): Create or update a feature specification from a natural language
+- `speckit-tasks` (v0.0.0): Generate an actionable, dependency-ordered tasks.md for the feature
+- `springboot-security` (v0.0.0): Spring Security best practices for authn/authz, validation, CSRF,
+- `springboot-tdd` (v0.0.0): Test-driven development for Spring Boot using JUnit 5, Mockito,
+- `springboot-verification` (v0.0.0): Verification loop for Spring Boot projects: build, static
+- `strategic-compact` (v0.0.0): Suggests manual context compaction at logical intervals to preserve
+- `summarize-pro` (v0.0.0): When user asks to summarize text, articles, documents, meetings,
+- `swift-concurrency-6-2` (v0.0.0): Swift 6.2 Approachable Concurrency — single-threaded by default,
+- `swiftui-patterns` (v0.0.0): SwiftUI architecture patterns, state management with @Observable,
+- `tapd-openapi` (v1.0.3): TAPD OpenAPI skill，用于需求、缺陷、任务、迭代、Wiki、评论、工时、附件等 TAPD
+- `task-alignment` (v0.0.0): Alignment conversation starting from a user's rough idea.
+- `task-implement` (v0.0.0): Autonomous task execution driven by documents under
+- `tdd` (v0.0.0): Test-driven development. Use when the user wants to build features
+- `tdd-workflow` (v0.0.0): Use this skill when writing new features, fixing bugs, or
+- `teach` (v0.0.0): Teach the user a new skill or concept, within this workspace.
+- `team-agent-orchestration` (v0.0.0): Run team-based orchestration for agent squads using work items,
+- `team-builder` (v0.0.0): Interactive agent picker for composing and dispatching parallel teams
+- `tencent-news` (v1.1.0): 7×24
+- `tencent-ssv-techforgood` (v1.3.13): 专注公益机构数字化赋能的智能助手，围绕腾讯技术公益数字工具箱（techforgood.qq.com）为社会组织匹配免费或低成本数字化产品，支持需求诊断、产品推荐...
+- `tencent-survey` (v1.1.1): 腾讯问卷（wj.qq.com）-
+- `tencentcloud-cls` (v1.1.0): 腾讯云日志服务 CLS 技能。支持 CQL
+- `tencentcloud-cos` (v0.0.0): Credentials exist only in shell session environment variables;
+- `tencentos-expert` (v2.0.1): TencentOS Server
+- `terminal-ops` (v0.0.0): Evidence-first repo execution workflow for ECC. Use when the user
+- `tinystruct-patterns` (v0.0.0): Expert guidance for developing with the tinystruct Java framework.
+- `tmux` (v1.0.0): Remote-control tmux sessions for interactive CLIs by sending
+- `to-spec` (v0.0.0): Turn the current conversation into a spec and publish it to the
+- `to-tickets` (v0.0.0): Break a plan, spec, or the current conversation into a set of
+- `token-budget-advisor` (v0.0.0): Offers the user an informed choice about how much response depth
+- `trello` (v1.0.0): Manage Trello boards, lists, and cards via the Trello REST API.
+- `triage` (v0.0.0): Move issues and external PRs through a state machine of triage
+- `uncloud` (v0.0.0): Use when managing an Uncloud cluster — deploying services,
+- `us-stock-analysis` (v0.1.1): Comprehensive US stock analysis including fundamental analysis
+- `using-superpowers` (v0.0.0): Use when starting any conversation - establishes how to find and
+- `vision-analysis` (v1.0): >
+- `vite-patterns` (v0.0.0): Vite build tool patterns including config, plugins, HMR, env
+- `vue-patterns` (v0.0.0): Vue.js 3 Composition API patterns, component architecture,
+- `wayfinder` (v0.0.0): Plan a huge chunk of work — more than one agent session can hold —
+- `web-scraper` (v0.1.1): Web scraping and content comprehension agent — multi-strategy
+- `wechat-miniprogram` (v1.0.0): WeChat Mini Program (微信小程序) development framework. Use when
+- `wechat-publisher` (v0.1.0): 一键发布 Markdown 到微信公众号草稿箱。基于 wenyan-cli，支持多主题、代码高亮、图片自动上传。
+- `weiyun` (v1.0.5): 微云网盘 MCP 接口完整技能。包含
+- `windows-desktop-e2e` (v0.0.0): E2E testing for Windows native desktop apps (WPF, WinForms,
+- `workspace-surface-audit` (v0.0.0): Audit the active repo, MCP servers, plugins, connectors, env
+- `writing-great-skills` (v0.0.0): Reference for writing and editing skills well — the vocabulary and
+- `x-api` (v0.0.0): X/Twitter API integration for posting tweets, threads, reading
+- `x-longform-post` (v1.0.0): Write long-form X (Twitter) posts and threads in a founder/CEO
+- `xiucheng-self-improving-agent` (v1.0.0): Self-improving agent system that analyzes conversation quality,
+- `yourself-skill` (v1.0.0): Distill yourself into an AI Skill. Deconstruct chat history,
+- `youtube-api-skill` (v1.0): |
+- `小红书助手` (v1.0.0): >
+- `美团生活助手` (v1.0.0): 【美团官方】美团生活助手，支持外卖、餐饮团购、酒店住宿、门票度假、休闲娱乐、闪购、医药等多品类优惠券/红包/神券的一键领取与历史领取记录查询。核心能力：1）一键...
 
-*本索引由 `scripts/build_skill_tree.py` 自动生成，请勿手动编辑。*
+## 🖼️ 图像生成类 (61 个)
+
+- `accessibility` (v0.0.0): Design, implement, and audit inclusive digital products using WCAG
+- `agent-harness-construction` (v0.0.0): Design and optimize AI agent action spaces, tool definitions, and
+- `agentmail` (v0.0.0): API-first email platform designed for AI agents. Create and manage
+- `android-native-dev` (v1.0.0): Android native application development and UI design guide. Covers
+- `api-design` (v0.0.0): REST API design patterns including resource naming, status codes,
+- `atxp` (v0.0.0): Access ATXP paid API tools for web search, AI image generation,
+- `automation-workflows` (v0.0.0): Design and implement automation workflows to save time and scale
+- `awesome-design-md` (v1.0.0): Curated collection of 54 DESIGN.md files extracted from real
+- `backend-patterns` (v0.0.0): Backend architecture patterns, API design, database optimization,
+- `canvas-design` (v1.0.3): Create beautiful visual art in .png and .pdf documents using design
+- `codebase-design` (v0.0.0): Shared vocabulary for designing deep modules. Use when the user
+- `deck-generator` (v1.0.0): Generate professional presentations with AI-generated images. Use
+- `design-system` (v0.0.0): Use this skill to generate or audit design systems, check visual
+- `django-celery` (v0.0.0): Django + Celery async task patterns — configuration, task design,
+- `django-patterns` (v0.0.0): Django architecture patterns, REST API design with DRF, ORM best
+- `dynamic-workflow-mode` (v0.0.0): Design task-local harnesses, eval gates, and reusable skill
+- `fal-ai-media` (v0.0.0): Unified media generation via fal.ai MCP — image, video, and audio.
+- `frontend-design-3` (v0.0.0): Create distinctive, production-grade frontend interfaces with high
+- `frontend-design-direction` (v0.0.0): Set an ECC-specific frontend design direction for production UI
+- `grill-me` (v1.0.0): Interview the user relentlessly about a plan or design until
+- `grill-with-docs` (v0.0.0): A relentless interview to sharpen a plan or design, which also
+- `gsd-ai-integration-phase` (v0.0.0): Generate an AI-SPEC.md design contract for phases that involve
+- `gsd-sketch` (v0.0.0): Sketch UI/design ideas with throwaway HTML mockups, or propose what
+- `gsd-ui-phase` (v0.0.0): Generate UI design contract (UI-SPEC.md) for frontend phases
+- `hermes-self-evolution` (vmain): 用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API...
+- `hexagonal-architecture` (v0.0.0): Design, implement, and refactor Ports & Adapters systems with clear
+- `image` (v1.0.4): Create, inspect, process, and optimize image files and visual
+- `ios-icon-gen` (v0.0.0): Generate iOS app icons as PNG imagesets for Xcode asset catalogs
+- `ito-data-atlas-agent` (v0.0.0): Design background Data Atlas style agents for Itô basket research,
+- `jpa-patterns` (v0.0.0): JPA/Hibernate patterns for entity design, relationships, query
+- `liquid-glass-design` (v0.0.0): iOS 26 Liquid Glass design system — dynamic glass material with
+- `loop-design-check` (v0.0.0): Design a goal-oriented agent loop, and review it for the ways
+- `make-interfaces-feel-better` (v0.0.0): Apply concrete design-engineering details that make interfaces feel
+- `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
+- `migraq` (v1.1.6): 腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、...
+- `minimax-multimodal-toolkit` (v0.0.0): Use mmx to generate text, images, video, speech, and music via the
+- `n8n-workflow-automation` (v0.0.0): Designs and outputs n8n workflow JSON with robust triggers,
+- `nano-banana-pro` (v1.0.1): Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use
+- `ocr-local` (v0.0.0): Extract text from images using Tesseract.js OCR (100% local, no API
+- `openai-image-gen` (v1.0.1): Batch-generate images via OpenAI Images API. Random prompt sampler
+- `orch-build-mvp` (v0.0.0): Orchestrate bootstrapping a working MVP from a design or spec
+- `outbound-engine` (v1.0.0): Design, analyze, and optimize cold outbound email campaigns for
+- `plan-orchestrate` (v0.0.0): Read a plan document, decompose it into steps, design a per-step
+- `postgres-patterns` (v0.0.0): PostgreSQL database patterns for query optimization, schema design,
+- `ppt` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `ppt-generator` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `prisma-patterns` (v0.0.0): Prisma ORM patterns for TypeScript backends — schema design, query
+- `prompt-engineering-expert` (v0.0.0): Advanced expert in prompt engineering, custom instructions design,
+- `prototype` (v0.0.0): Build a throwaway prototype to answer a design question. Use when
+- `recsys-pipeline-architect` (v0.0.0): Design composable recommendation, ranking, and feed pipelines using
+- `springboot-patterns` (v0.0.0): Spring Boot architecture patterns, REST API design, layered
+- `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
+- `superdesign` (v0.0.0): Expert frontend design guidelines for creating beautiful, modern
+- `tdesign-miniprogram` (v1.0.0): TDesign WeChat Mini Program UI component library by Tencent. Use
+- `ui-to-vue` (v0.0.0): Use when the user has UI screenshots or design exports that need
+- `ui-ux-pro-max` (v0.0.0): UI/UX design intelligence and implementation guidance for building
+- `video-generator-seedance` (v0.0.0): 使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。
+- `visa-doc-translate` (v0.0.0): Translate visa application documents (images) to English and create
+- `wechat-article-pro` (v1.0.0): 微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章
+- `workrally` (v2.4.0): WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管...
+- `配网规划评审器` (v0.0.0): 配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场...
+
+## 🧠 记忆管理类 (14 个)
+
+- `agent-memory` (v1.0.0): Agent Memory — 持久化记忆系统，让 AI agent 记住事实、从经验中学习、跨会话跟踪实体。默认存储到 ~/.agent-memory/memo...
+- `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
+- `ck` (v2.0.0): Persistent per-project memory for Claude Code. Auto-loads project
+- `elite-longterm-memory` (v1.2.3): Ultimate AI agent memory system for Cursor, Claude, ChatGPT &
+- `everos` (v1.0.0): EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以...
+- `gsd-mempalace-recall` (v0.0.0): Recall decisions, patterns, and surprises from MemPalace before planning
+- `memory-hygiene` (v0.0.0): Audit, clean, and optimize Clawdbot's vector memory (LanceDB). Use
+- `memory-manager` (v0.0.0): Local memory management for agents. Compression detection,
+- `memory-setup` (v0.0.0): Enable and configure Moltbot/Clawdbot memory search for persistent
+- `ontology` (v0.0.0): Typed knowledge graph for structured agent memory and composable
+- `self-improving-agent-cn` (v1.0.0): AI自我改进与记忆系统 - 解决'同类错误反复犯、用户纠正不长记性'的痛点。自动捕获错误、用户纠正、最佳实践，并转化为长期记忆。
+- `self-reflection` (v1.1.1): Continuous self-improvement through structured reflection and memory
+- `skills-constitution` (v2.2.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
+
+## 📜 元规则类 (7 个)
+
+- `hookify-rules` (v0.0.0): This skill should be used when the user asks to create a hookify
+- `motion-foundations` (v1): Motion tokens, spring presets, performance rules, device
+- `nuxt4-patterns` (v0.0.0): Nuxt 4 app patterns for hydration safety, performance, route rules,
+- `rules-distill` (v0.0.0): Scan skills to extract cross-cutting principles and distill them
+- `skill-comply` (v0.0.0): Visualize whether skills, rules, and agent definitions are actually
+- `skills-constitution` (v2.2.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `speckit-constitution` (v0.0.0): Create or update the project constitution from interactive or
+
+## 🔍 搜索研究类 (49 个)
+
+- `anysearch` (v3.0.1): API key for higher rate limits. Anonymous access available with lower rate limit...
+- `atxp` (v0.0.0): Access ATXP paid API tools for web search, AI image generation,
+- `autoresearch` (v1.0.1): Run Karpathy-style autoresearch optimization on any content.
+- `baidu-search` (v0.0.0): Search the web using Baidu AI Search Engine (BDSE). Use for live
+- `brave-search` (v0.0.0): Web search and content extraction via Brave Search API. Use for
+- `citation-manager` (v1.0.0): Add real references and standardize citations for research papers
+- `clawddocs` (v0.0.0): Clawdbot documentation expert with decision tree navigation, search
+- `clawdhub` (v0.0.0): Use the ClawdHub CLI to search, install, update, and publish agent
+- `ddg-web-search` (v0.0.0): Web search without an API key using DuckDuckGo Lite via web_fetch.
+- `deep-research` (v0.0.0): Multi-source deep research using firecrawl and exa MCPs. Searches
+- `deep-research-pro` (v1.0.0): Multi-source deep research agent. Searches the web, synthesizes
+- `discord` (v0.0.0): Use when you need to control Discord from Clawdbot via the discord tool: send me...
+- `duckduckgo-search` (v0.0.0): Performs web searches using DuckDuckGo to retrieve real-time
+- `email-skill` (v0.1.0): Email management and automation. Send, read, search, and organize
+- `exa-search` (v0.0.0): Neural search via Exa MCP for web, code, and company research. Use
+- `exa-web-search-free` (v0.0.0): Free AI search via Exa MCP. Web search for news/info, code search
+- `find-skills-skill` (v0.0.0): Search and discover OpenClaw skills from various sources. Use
+- `firecrawl-search` (v0.0.0): Web search and scraping via Firecrawl API. Use when you need to
+- `gifgrep` (v1.0.1): Search GIF providers with CLI/TUI, download results, and extract stills/sheets.
+- `ito-data-atlas-agent` (v0.0.0): Design background Data Atlas style agents for Itô basket research,
+- `ito-market-intelligence` (v0.0.0): Research prediction-market events, venues, underliers, liquidity,
+- `liang-tavily-search` (v0.0.0): Web search using Tavily's LLM-optimized API. Returns relevant
+- `market-research` (v0.0.0): Conduct market research, competitive analysis, investor due
+- `memory-setup` (v0.0.0): Enable and configure Moltbot/Clawdbot memory search for persistent
+- `multi-search-engine` (v2.1.3): Multi search engine integration with 16 engines (7 CN + 9 Global).
+- `mx-finance-data` (v0.0.0): 基于东方财富数据库，支持自然语言查询金融数据，覆盖A港美、基金、债券等多种资产，含实时行情、公司信息、估值、财务报表等，可用于投资研究、交易复盘、市场监控、行业...
+- `neodata-financial-search` (v1.0.1): NeoData Financial Search — natural language financial data search.
+- `openclaw-tavily-search` (v0.0.0): Web search via Tavily API (alternative to Brave). Use when the user
+- `orch-add-feature` (v0.0.0): Orchestrate building a brand-new feature end to end — research,
+- `perplexity` (v0.0.0): Search the web with AI-powered answers via Perplexity API. Returns
+- `prediction-market-oracle-research` (v0.0.0): Research prediction markets as data sources or oracle signals for
+- `prismfy-search` (v1.2.1): >
+- `qmd` (v0.0.0): Local search/indexing CLI (BM25 + vectors + rerank) with MCP mode.
+- `research` (v0.0.0): Investigate a question against high-trust primary sources and
+- `research-ops` (v0.0.0): Evidence-first current-state research workflow for ECC. Use when
+- `scientific-db-pubmed-database` (v0.0.0): Direct PubMed and NCBI E-utilities search workflows for biomedical
+- `search-first` (v0.0.0): Research-before-coding workflow. Search for existing tools,
+- `seo-ops` (v1.0.0): SEO operations automation: generate content attack briefs from competitor gaps, ...
+- `session-logs` (v0.0.0): Search and analyze your own session logs (older/parent conversations) using jq.
+- `skill-scout` (v0.0.0): Search existing local, marketplace, GitHub, and web skill sources
+- `spotify-player` (v0.0.0): Terminal Spotify playback/search via spogo (preferred) or spotify_player.
+- `tavily` (v0.0.0): AI-optimized web search using Tavily Search API. Use when you need
+- `tavily-search` (v0.0.0): AI-optimized web search via Tavily API. Returns concise, relevant
+- `tencent-yuanbao-standard-search` (v1.0.1): Search the web using TencentCloud Web Search API (WSA). Prioritize
+- `web-search` (v0.0.0): This skill should be used when users need to search the web for
+- `web-search-exa` (v0.0.0): Neural web search, content extraction, company and people
+- `web-tools-guide` (v0.0.0): MANDATORY before calling web_search, web_fetch, browser, or
+- `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
+- `xurl` (v1.0.0): A Twitter research and content intelligence skill. Use to analyze
+
+## 🎬 视频生成类 (23 个)
+
+- `agnes-video-generator` (v1.1.0): 
+- `fal-ai-media` (v0.0.0): Unified media generation via fal.ai MCP — image, video, and audio.
+- `hermes-self-evolution` (vmain): 用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API...
+- `manim-video` (v0.0.0): Build reusable Manim explainers for technical concepts, graphs,
+- `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
+- `migraq` (v1.1.6): 腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、...
+- `minimax-multimodal-toolkit` (v0.0.0): Use mmx to generate text, images, video, speech, and music via the
+- `ppt` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `ppt-generator` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
+- `remotion-video-creation` (v0.0.0): Best practices for Remotion - Video creation in React. 29
+- `remotion-video-toolkit` (v0.0.0): Complete toolkit for programmatic video creation with Remotion +
+- `taste` (v0.0.0): A creative-direction (taste) layer for music videos and short-form
+- `tencent-meeting-skill` (v1.0.10): 在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeti...
+- `ui-demo` (v0.0.0): Record polished UI demo videos using Playwright. Use when the user
+- `video-editing` (v0.0.0): AI-assisted video editing workflows for cutting, structuring, and
+- `video-frames` (v1.0.0): Extract frames or short clips from videos using ffmpeg.
+- `video-generator-seedance` (v0.0.0): 使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。
+- `videodb` (v0.0.0): See, Understand, Act on video and audio. See- ingest from local
+- `wechat-article-pro` (v1.0.0): 微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章
+- `workrally` (v2.4.0): WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管...
+- `youtube-watcher` (v1.0.0): Fetch and read transcripts from YouTube videos. Use when you need
+- `yt-competitive-analysis` (v1.0.0): Analyze YouTube channels for outlier videos and packaging patterns.
+- `配网规划评审器` (v0.0.0): 配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场...

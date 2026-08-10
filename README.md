@@ -3,8 +3,20 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](SKILL.md)
-[![Skills Indexed](https://img.shields.io/badge/skills_indexed-655-green.svg)](SKILL_TREE.md)
+[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](SKILL.md)
+[![Skills Indexed](https://img.shields.io/badge/skills_indexed-659-green.svg)](SKILL_TREE.md)
+
+## ✅ 宪法生效检查清单
+
+> 在抱怨"Agent 还是不调用技能"之前，请先逐项确认（大部分问题出在这里）：
+
+- [ ] 我的记忆层有 `INSTALLED_SKILLS` 清单（名称 + 一句话描述）
+- [ ] 我安装了 file-ops 或等效的**文件读取**技能
+- [ ] 我安装了 find-skills 或等效的**技能搜索**技能
+- [ ] 我运行过 `python scripts/build_skill_tree.py`，生成了**真实的**技能索引
+- [ ] 我所有技能的 `SKILL.md` 描述都写清楚了"什么时候该用我"
+
+> 五项全勾，宪法才能完整自举执行。缺任何一项，效果都会打折——先补配置，再谈效果。
 
 ## 🚀 快速开始
 
@@ -13,7 +25,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.2.0
+## Skills 宪法（Skills Constitution）v2.3.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -68,7 +80,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.2.0）
+## 📋 宪法条款（v2.3.0）
 
 ### 第零条：查记忆（Pre-Check Memory）
 执行前查阅平台记忆层，确认相关规则和历史上下文。
