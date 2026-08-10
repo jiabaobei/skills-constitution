@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      SKILLS_DIR: ${{ github.event.inputs.skills_dir }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,19 +22,37 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml
 
-      - name: Run skill tree builder
-        run: python scripts/build_skill_tree.py
-
-      - name: Validate JSON
-        run: python -m json.tool skill_tree.json > /dev/null
-
-      - name: Check skill tree consistency
+      # 若显式传入 SKILLS_DIR 且目录存在，则重新生成索引并校验；
+      # 否则（GitHub runner 无本机技能目录）只校验已提交的索引文件。
+      - name: Rebuild skill tree (optional, only if SKILLS_DIR provided)
+        if: ${{ env.SKILLS_DIR != '' }}
         run: |
+          if [ ! -d "$SKILLS_DIR" ]; then
+            echo "SKILLS_DIR set but not found: $SKILLS_DIR"
+            exit 1
+          fi
+          python scripts/build_skill_tree.py
+
+      - name: Validate committed skill tree index
+        run: |
+          python -m json.tool skill_tree.json > /dev/null
           python -c "
           import json
           with open('skill_tree.json') as f:
               tree = json.load(f)
-          assert tree['total'] > 0, 'No skills indexed'
-          assert len(tree['categories']) > 0, 'No categories'
+          assert tree['total'] > 0, 'skill_tree.json indexed 0 skills'
+          assert len(tree['categories']) > 0, 'No categories in index'
           print(f'✓ Validated {tree[\"total\"]} skills across {len(tree[\"categories\"])} categories')
+          "
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          python -c "
+          import re
+          content = open('SKILL.md', encoding='utf-8').read()
+          m = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+          assert m, 'SKILL.md missing YAML frontmatter'
+          fm = m.group(1)
+          assert re.search(r'^version:\\s*\\S+', fm, re.MULTILINE), 'SKILL.md frontmatter missing version'
+          print('✓ SKILL.md frontmatter OK')
           "

@@ -3,15 +3,21 @@ name: Build Skill Tree
 on:
   push:
     paths:
-      - '.workbuddy/skills/**/SKILL.md'
       - 'scripts/build_skill_tree.py'
   schedule:
     - cron: '0 2 * * *'  # 每天凌晨 2 点自动更新
-  workflow_dispatch:  # 支持手动触发
+  workflow_dispatch:  # 支持手动触发（需填写 skills_dir）
+    inputs:
+      skills_dir:
+        description: 'Path to the skills directory to index (e.g. ~/.workbuddy/skills). Leave empty to skip on runner.'
+        required: false
+        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SKILLS_DIR: ${{ github.event.inputs.skills_dir }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,12 +30,19 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml
 
-      - name: Build skill tree
+      # GitHub runner 没有本机技能目录，扫不到技能 → 跳过，绝不生成空索引覆盖仓库。
+      # 真正生成索引请在本地运行：python scripts/build_skill_tree.py
+      - name: Build skill tree (only when SKILLS_DIR provided)
         run: |
-          mkdir -p ~/.workbuddy/skills
+          if [ -z "$SKILLS_DIR" ] || [ ! -d "$SKILLS_DIR" ]; then
+            echo "SKILLS_DIR not set or not found on runner — skipping auto-build."
+            echo "This repo's index is generated locally. Run scripts/build_skill_tree.py on your machine, then commit."
+            exit 0
+          fi
           python scripts/build_skill_tree.py
 
       - name: Commit and push if changed
+        if: ${{ github.event.inputs.skills_dir != '' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
