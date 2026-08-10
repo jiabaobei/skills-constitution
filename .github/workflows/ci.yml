@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Run skill tree builder
+        run: python scripts/build_skill_tree.py
+
+      - name: Validate JSON
+        run: python -m json.tool skill_tree.json > /dev/null
+
+      - name: Check skill tree consistency
+        run: |
+          python -c "
+          import json
+          with open('skill_tree.json') as f:
+              tree = json.load(f)
+          assert tree['total'] > 0, 'No skills indexed'
+          assert len(tree['categories']) > 0, 'No categories'
+          print(f'✓ Validated {tree[\"total\"]} skills across {len(tree[\"categories\"])} categories')
+          "

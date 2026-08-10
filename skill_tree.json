@@ -1,0 +1,124 @@
+{
+  "version": "2.2.0",
+  "generated_at": "2026-08-10T15:52:00",
+  "skills_dir": "~/.workbuddy/skills",
+  "total": 655,
+  "categories": {
+    "meta": [
+      {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能之上的元规则...",
+        "version": "2.2.0"
+      },
+      {
+        "name": "skills-security-check",
+        "description": "Skill 安全审查工具，对技能及其配套文件进行全面安全审计...",
+        "version": "1.0.0"
+      }
+    ],
+    "memory": [
+      {
+        "name": "aiweko-memory-reports",
+        "description": "一键为工作空间搭建本地三层记忆体系...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "agent-memory",
+        "description": "Agent Memory — 持久化记忆系统...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "elite-longterm-memory",
+        "description": "精英长期记忆系统...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "memory-hygiene",
+        "description": "记忆卫生清理工具...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "memory-manager",
+        "description": "记忆管理器...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "memory-setup",
+        "description": "记忆系统初始化配置...",
+        "version": "1.0.0"
+      }
+    ],
+    "browser": [
+      {
+        "name": "browser-skill",
+        "description": "腾讯开源浏览器自动化工具 bsk CLI...",
+        "version": "0.1.9"
+      },
+      {
+        "name": "agent-browser",
+        "description": "Playwright 浏览器自动化 CLI...",
+        "version": "0.25.3"
+      }
+    ],
+    "code": [
+      {
+        "name": "code-review",
+        "description": "代码审查工具...",
+        "version": "1.0.0"
+      }
+    ],
+    "doc": [
+      {
+        "name": "pdf",
+        "description": "PDF 处理工具...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "docx",
+        "description": "Word 文档处理工具...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "xlsx",
+        "description": "Excel 表格处理工具...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "pptx",
+        "description": "PowerPoint 演示文稿处理...",
+        "version": "1.0.0"
+      }
+    ],
+    "video": [
+      {
+        "name": "agnes-video-generator",
+        "description": "Agnes 视频生成工具...",
+        "version": "1.0.0"
+      }
+    ],
+    "finance": [
+      {
+        "name": "wind-finance",
+        "description": "Wind 金融数据服务...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "wb-finance-skill",
+        "description": "金融/投资/股票/基金场景总入口...",
+        "version": "0.1.0"
+      }
+    ],
+    "general": [
+      {
+        "name": "find-skills",
+        "description": "搜索和发现 OpenClaw 技能...",
+        "version": "1.0.0"
+      },
+      {
+        "name": "skill-creator",
+        "description": "创建有效技能的指南...",
+        "version": "1.0.0"
+      }
+    ]
+  }
+}

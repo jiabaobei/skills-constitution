@@ -1,0 +1,38 @@
+name: Build Skill Tree
+
+on:
+  push:
+    paths:
+      - '.workbuddy/skills/**/SKILL.md'
+      - 'scripts/build_skill_tree.py'
+  schedule:
+    - cron: '0 2 * * *'  # 每天凌晨 2 点自动更新
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Build skill tree
+        run: |
+          mkdir -p ~/.workbuddy/skills
+          python scripts/build_skill_tree.py
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add skill_tree.json SKILL_TREE.md
+          git diff --staged --quiet || git commit -m "chore: update skill tree index [skip ci]"
+          git push
