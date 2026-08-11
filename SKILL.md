@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.3.0 新增记忆层必备内容、误判回退与生效检查清单，修复索引数据自洽性。"
-version: 2.3.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.4.0 优化技能树分类关键词（image/video 精确匹配）、新增技能安装后的技能树与记忆同步规范。"
+version: 2.4.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.3.0** — 新增「记忆层必备内容」引导 +「零号条款-C 误判回退」+「宪法生效检查清单」；技能索引改为脚本生成、数据自洽可校验（修复索引 total 与真实技能数不一致的问题）
+> **v2.4.0** — 优化技能树分类关键词（image/video 精确匹配，修复误分类）；新增「技能安装 → 同步技能树 → 更新记忆」闭环规范
 
 ---
 

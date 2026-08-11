@@ -14,8 +14,7 @@
         "description": "Create beautiful visual art in .png and .pdf documents using design",
         "version": "1.0.3",
         "categories": [
-          "doc",
-          "image"
+          "doc"
         ]
       },
       {
@@ -210,13 +209,21 @@
         ]
       },
       {
+        "name": "xiaozhao-radar-sync",
+        "description": "校招雷达周同步工作流 —— 每周(或手动)拉取腾讯文档智能表格「27届实习提前批信息汇总」→ 生成 jobs.json → 推送到 GitHub(jiabaobei/xiaozhao-radar) → GitHub Pages 自动部署 → 同步升版本号。触发词:「同步校招」「同步校招雷达数据」「校招数据更新」「跑一下校招同步」。纯标准库，无需 pip 依赖。",
+        "version": "1.0.0",
+        "categories": [
+          "code",
+          "doc",
+          "automation"
+        ]
+      },
+      {
         "name": "配网规划评审器",
         "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
         "version": "0.0.0",
         "categories": [
           "doc",
-          "image",
-          "video",
           "finance",
           "file"
         ]
@@ -228,8 +235,7 @@
         "description": "Design, implement, and audit inclusive digital products using WCAG",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "image"
+          "code"
         ]
       },
       {
@@ -269,8 +275,7 @@
         "description": "REST API design patterns including resource naming, status codes,",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "image"
+          "code"
         ]
       },
       {
@@ -295,6 +300,17 @@
         "version": "0.0.0",
         "categories": [
           "code"
+        ]
+      },
+      {
+        "name": "browser-testing-with-devtools",
+        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "code",
+          "data",
+          "file"
         ]
       },
       {
@@ -331,6 +347,22 @@
         ]
       },
       {
+        "name": "code-review-and-quality",
+        "description": "Conducts multi-axis code review. Use before merging any change. Use when reviewing code written by yourself, another agent, or a human. Use when you need to assess code quality across multiple dimensi",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "code-simplification",
+        "description": "Simplifies code for clarity. Use when refactoring code for clarity without changing behavior. Use when code works but is harder to read, maintain, or extend than it should be. Use when reviewing code ",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
         "name": "code-tour",
         "description": "Create CodeTour `.tour` files — persona-targeted, step-by-step",
         "version": "0.0.0",
@@ -344,8 +376,7 @@
         "description": "Shared vocabulary for designing deep modules. Use when the user",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "image"
+          "code"
         ]
       },
       {
@@ -405,6 +436,22 @@
         ]
       },
       {
+        "name": "debugging-and-error-recovery",
+        "description": "Guides systematic root-cause debugging. Use when tests fail, builds break, behavior doesn't match expectations, or you encounter any unexpected error. Use when you need a systematic approach to findin",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "deprecation-and-migration",
+        "description": "Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when deciding whether to maintain or sunset existi",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
         "name": "didi-ride-skill",
         "description": "中国城市出行服务。当用户表达任何交通出行需求时必须使用此技能——包括打车/叫车/网约车、查价格、路线规划（公交/驾车/步行/骑行）、周边搜索、查询订单/司机位置/取消订单。关键词：\"打车\"、\"叫车\"、\"去[地点]\"、\"回家\"、\"上班\"、\"下班\"、\"查价格\"、\"多少钱\"、\"路线\"、\"怎么走\"、\"步行到\"、\"附近\"、\"周边\"、\"司机\"、\"订单\"、\"查询订单\"。注意：即使用户未明确说\"打车\"，只要涉及从",
         "version": "1.1.3",
@@ -412,6 +459,22 @@
           "browser",
           "code",
           "finance"
+        ]
+      },
+      {
+        "name": "documentation-and-adrs",
+        "description": "Records decisions and documentation. Use when making architectural decisions, changing public APIs, shipping features, or when you need to record context that future engineers and agents will need to ",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "doubt-driven-development",
+        "description": "Subjects every non-trivial decision to a fresh-context adversarial review before it stands. Use when correctness matters more than speed, when working in unfamiliar code, when stakes are high (product",
+        "version": "0.0.0",
+        "categories": [
+          "code"
         ]
       },
       {
@@ -512,6 +575,14 @@
       {
         "name": "git-workflow",
         "description": "Git workflow patterns including branching strategies, commit",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "git-workflow-and-versioning",
+        "description": "Structures git workflow practices. Use when making any code change. Use when committing, branching, resolving conflicts, or when you need to organize work across multiple parallel streams. Use when cu",
         "version": "0.0.0",
         "categories": [
           "code"
@@ -704,8 +775,33 @@
         ]
       },
       {
+        "name": "idea-refine",
+        "description": "Refines raw ideas into sharp, actionable concepts through structured divergent and convergent thinking. Use when an idea is still vague, when you need to stress-test assumptions before committing to a",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
         "name": "improve-codebase-architecture",
         "description": "Scan a codebase for deepening opportunities, present them as a",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "incremental-implementation",
+        "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "interview-me",
+        "description": "Extracts what the user actually wants instead of what they think they should want. Achieves this through one-question-at-a-time interview until ~95% confidence about the underlying intent. Use when an",
         "version": "0.0.0",
         "categories": [
           "code"
@@ -725,8 +821,7 @@
         "description": "Design a goal-oriented agent loop, and review it for the ways",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "image"
+          "code"
         ]
       },
       {
@@ -752,6 +847,15 @@
         "version": "1.0.0",
         "categories": [
           "code"
+        ]
+      },
+      {
+        "name": "observability-and-instrumentation",
+        "description": "Instruments code so production behavior is visible and diagnosable. Use when adding logging, metrics, tracing, or alerting. Use when shipping any feature that runs in production and you need evidence ",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
         ]
       },
       {
@@ -870,6 +974,15 @@
         ]
       },
       {
+        "name": "security-and-hardening",
+        "description": "Hardens code against vulnerabilities. Use when handling user input, authentication, data storage, or external integrations. Use when building any feature that accepts untrusted data, manages user sess",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
+        ]
+      },
+      {
         "name": "security-review",
         "description": "Use this skill when adding authentication, handling user input,",
         "version": "0.0.0",
@@ -906,6 +1019,24 @@
         "name": "skill_2053081574105186304",
         "description": "GitHub API token for auto-issue reporting and releases.",
         "version": "1.51.3",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.3.0",
+        "categories": [
+          "meta",
+          "memory",
+          "code"
+        ]
+      },
+      {
+        "name": "source-driven-development",
+        "description": "Grounds every implementation decision in official documentation. Use when you want authoritative, source-cited code free from outdated patterns. Use when building with any framework or library where c",
+        "version": "0.0.0",
         "categories": [
           "code"
         ]
@@ -970,6 +1101,14 @@
         ]
       },
       {
+        "name": "test-driven-development",
+        "description": "Drives development with tests. Use when implementing any logic, fixing any bug, or changing any behavior. Use when you need to prove that code works, when a bug report arrives, or when you're about to",
+        "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
         "name": "unified-notifications-ops",
         "description": "Operate notifications as one ECC-native workflow across GitHub,",
         "version": "0.0.0",
@@ -984,536 +1123,15 @@
         "categories": [
           "code"
         ]
-      }
-    ],
-    "image": [
-      {
-        "name": "accessibility",
-        "description": "Design, implement, and audit inclusive digital products using WCAG",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "image"
-        ]
       },
       {
-        "name": "agent-harness-construction",
-        "description": "Design and optimize AI agent action spaces, tool definitions, and",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "agentmail",
-        "description": "API-first email platform designed for AI agents. Create and manage",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "email"
-        ]
-      },
-      {
-        "name": "android-native-dev",
-        "description": "Android native application development and UI design guide. Covers",
+        "name": "xiaozhao-radar-sync",
+        "description": "校招雷达周同步工作流 —— 每周(或手动)拉取腾讯文档智能表格「27届实习提前批信息汇总」→ 生成 jobs.json → 推送到 GitHub(jiabaobei/xiaozhao-radar) → GitHub Pages 自动部署 → 同步升版本号。触发词:「同步校招」「同步校招雷达数据」「校招数据更新」「跑一下校招同步」。纯标准库，无需 pip 依赖。",
         "version": "1.0.0",
         "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "api-design",
-        "description": "REST API design patterns including resource naming, status codes,",
-        "version": "0.0.0",
-        "categories": [
           "code",
-          "image"
-        ]
-      },
-      {
-        "name": "atxp",
-        "description": "Access ATXP paid API tools for web search, AI image generation,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "search"
-        ]
-      },
-      {
-        "name": "automation-workflows",
-        "description": "Design and implement automation workflows to save time and scale",
-        "version": "0.0.0",
-        "categories": [
-          "image",
+          "doc",
           "automation"
-        ]
-      },
-      {
-        "name": "awesome-design-md",
-        "description": "Curated collection of 54 DESIGN.md files extracted from real",
-        "version": "1.0.0",
-        "categories": [
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "backend-patterns",
-        "description": "Backend architecture patterns, API design, database optimization,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "data"
-        ]
-      },
-      {
-        "name": "canvas-design",
-        "description": "Create beautiful visual art in .png and .pdf documents using design",
-        "version": "1.0.3",
-        "categories": [
-          "doc",
-          "image"
-        ]
-      },
-      {
-        "name": "codebase-design",
-        "description": "Shared vocabulary for designing deep modules. Use when the user",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "image"
-        ]
-      },
-      {
-        "name": "deck-generator",
-        "description": "Generate professional presentations with AI-generated images. Use",
-        "version": "1.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "design-system",
-        "description": "Use this skill to generate or audit design systems, check visual",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "django-celery",
-        "description": "Django + Celery async task patterns — configuration, task design,",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "django-patterns",
-        "description": "Django architecture patterns, REST API design with DRF, ORM best",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "dynamic-workflow-mode",
-        "description": "Design task-local harnesses, eval gates, and reusable skill",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "fal-ai-media",
-        "description": "Unified media generation via fal.ai MCP — image, video, and audio.",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "frontend-design-3",
-        "description": "Create distinctive, production-grade frontend interfaces with high",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "frontend-design-direction",
-        "description": "Set an ECC-specific frontend design direction for production UI",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "grill-me",
-        "description": "Interview the user relentlessly about a plan or design until",
-        "version": "1.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "grill-with-docs",
-        "description": "A relentless interview to sharpen a plan or design, which also",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "gsd-ai-integration-phase",
-        "description": "Generate an AI-SPEC.md design contract for phases that involve",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "gsd-sketch",
-        "description": "Sketch UI/design ideas with throwaway HTML mockups, or propose what",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "gsd-ui-phase",
-        "description": "Generate UI design contract (UI-SPEC.md) for frontend phases",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "hermes-self-evolution",
-        "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
-        "version": "main",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "hexagonal-architecture",
-        "description": "Design, implement, and refactor Ports & Adapters systems with clear",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "image",
-        "description": "Create, inspect, process, and optimize image files and visual",
-        "version": "1.0.4",
-        "categories": [
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "ios-icon-gen",
-        "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "image"
-        ]
-      },
-      {
-        "name": "ito-data-atlas-agent",
-        "description": "Design background Data Atlas style agents for Itô basket research,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "search",
-          "data"
-        ]
-      },
-      {
-        "name": "jpa-patterns",
-        "description": "JPA/Hibernate patterns for entity design, relationships, query",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "liquid-glass-design",
-        "description": "iOS 26 Liquid Glass design system — dynamic glass material with",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "loop-design-check",
-        "description": "Design a goal-oriented agent loop, and review it for the ways",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "image"
-        ]
-      },
-      {
-        "name": "make-interfaces-feel-better",
-        "description": "Apply concrete design-engineering details that make interfaces feel",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "markitdown-skill",
-        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
-        "version": "1.0.1",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "migraq",
-        "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
-        "version": "1.1.6",
-        "categories": [
-          "image",
-          "video",
-          "data"
-        ]
-      },
-      {
-        "name": "minimax-multimodal-toolkit",
-        "description": "Use mmx to generate text, images, video, speech, and music via the",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "n8n-workflow-automation",
-        "description": "Designs and outputs n8n workflow JSON with robust triggers,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "automation"
-        ]
-      },
-      {
-        "name": "nano-banana-pro",
-        "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use",
-        "version": "1.0.1",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "ocr-local",
-        "description": "Extract text from images using Tesseract.js OCR (100% local, no API",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "openai-image-gen",
-        "description": "Batch-generate images via OpenAI Images API. Random prompt sampler",
-        "version": "1.0.1",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "orch-build-mvp",
-        "description": "Orchestrate bootstrapping a working MVP from a design or spec",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "outbound-engine",
-        "description": "Design, analyze, and optimize cold outbound email campaigns for",
-        "version": "1.0.0",
-        "categories": [
-          "image",
-          "email"
-        ]
-      },
-      {
-        "name": "plan-orchestrate",
-        "description": "Read a plan document, decompose it into steps, design a per-step",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "postgres-patterns",
-        "description": "PostgreSQL database patterns for query optimization, schema design,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "data"
-        ]
-      },
-      {
-        "name": "ppt",
-        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-generator",
-        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "prisma-patterns",
-        "description": "Prisma ORM patterns for TypeScript backends — schema design, query",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "prompt-engineering-expert",
-        "description": "Advanced expert in prompt engineering, custom instructions design,",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "prototype",
-        "description": "Build a throwaway prototype to answer a design question. Use when",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "recsys-pipeline-architect",
-        "description": "Design composable recommendation, ranking, and feed pipelines using",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "springboot-patterns",
-        "description": "Spring Boot architecture patterns, REST API design, layered",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "summarize",
-        "description": "Summarize URLs or files with the summarize CLI (web, PDFs, images,",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "superdesign",
-        "description": "Expert frontend design guidelines for creating beautiful, modern",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "tdesign-miniprogram",
-        "description": "TDesign WeChat Mini Program UI component library by Tencent. Use",
-        "version": "1.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "ui-to-vue",
-        "description": "Use when the user has UI screenshots or design exports that need",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "ui-ux-pro-max",
-        "description": "UI/UX design intelligence and implementation guidance for building",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "video-generator-seedance",
-        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "visa-doc-translate",
-        "description": "Translate visa application documents (images) to English and create",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "wechat-article-pro",
-        "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
-        "version": "1.0.0",
-        "categories": [
-          "browser",
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "workrally",
-        "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
-        "version": "2.4.0",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "配网规划评审器",
-        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "finance",
-          "file"
         ]
       }
     ],
@@ -1540,8 +1158,18 @@
         "description": "Backend architecture patterns, API design, database optimization,",
         "version": "0.0.0",
         "categories": [
-          "image",
           "data"
+        ]
+      },
+      {
+        "name": "browser-testing-with-devtools",
+        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "code",
+          "data",
+          "file"
         ]
       },
       {
@@ -1624,7 +1252,6 @@
         "description": "Design background Data Atlas style agents for Itô basket research,",
         "version": "0.0.0",
         "categories": [
-          "image",
           "search",
           "data"
         ]
@@ -1634,8 +1261,6 @@
         "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
         "version": "1.1.6",
         "categories": [
-          "image",
-          "video",
           "data"
         ]
       },
@@ -1675,8 +1300,25 @@
         ]
       },
       {
+        "name": "observability-and-instrumentation",
+        "description": "Instruments code so production behavior is visible and diagnosable. Use when adding logging, metrics, tracing, or alerting. Use when shipping any feature that runs in production and you need evidence ",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
+        ]
+      },
+      {
         "name": "openclaw-backup",
         "description": "Backup and restore OpenClaw data. Use when user asks to create",
+        "version": "0.0.0",
+        "categories": [
+          "data"
+        ]
+      },
+      {
+        "name": "performance-optimization",
+        "description": "Optimizes application performance across frontend, backend, queries, and databases. Use when performance requirements exist, when you suspect performance regressions, when Core Web Vitals or load time",
         "version": "0.0.0",
         "categories": [
           "data"
@@ -1687,7 +1329,6 @@
         "description": "PostgreSQL database patterns for query optimization, schema design,",
         "version": "0.0.0",
         "categories": [
-          "image",
           "data"
         ]
       },
@@ -1728,6 +1369,15 @@
       {
         "name": "scientific-pkg-gget",
         "description": "gget CLI and Python workflow for quick genomic database queries,",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "data"
+        ]
+      },
+      {
+        "name": "security-and-hardening",
+        "description": "Hardens code against vulnerabilities. Use when handling user input, authentication, data storage, or external integrations. Use when building any feature that accepts untrusted data, manages user sess",
         "version": "0.0.0",
         "categories": [
           "code",
@@ -1776,6 +1426,14 @@
       {
         "name": "agent-architecture-audit",
         "description": "Full-stack diagnostic for agent and LLM applications. Audits the",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "agent-harness-construction",
+        "description": "Design and optimize AI agent action spaces, tool definitions, and",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -1886,9 +1544,25 @@
         ]
       },
       {
+        "name": "android-native-dev",
+        "description": "Android native application development and UI design guide. Covers",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "anti-distill",
         "description": "Anti-distillation defense for employee Skills. Clean your skill",
         "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "api-and-interface-design",
+        "description": "Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface. Use when creating REST or GraphQL endpoints, defining type contracts between modules, or es",
+        "version": "0.0.0",
         "categories": [
           "general"
         ]
@@ -2334,8 +2008,32 @@
         ]
       },
       {
+        "name": "design-system",
+        "description": "Use this skill to generate or audit design systems, check visual",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "diagnosing-bugs",
         "description": "Diagnosis loop for hard bugs and performance regressions. Use when",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "django-celery",
+        "description": "Django + Celery async task patterns — configuration, task design,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "django-patterns",
+        "description": "Django architecture patterns, REST API design with DRF, ORM best",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -2408,6 +2106,14 @@
       {
         "name": "dotnet-patterns",
         "description": "Idiomatic C# and .NET patterns, conventions, dependency injection,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "dynamic-workflow-mode",
+        "description": "Design task-local harnesses, eval gates, and reusable skill",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -2542,6 +2248,22 @@
         ]
       },
       {
+        "name": "frontend-design-3",
+        "description": "Create distinctive, production-grade frontend interfaces with high",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-design-direction",
+        "description": "Set an ECC-specific frontend design direction for production UI",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "frontend-dev",
         "description": ">",
         "version": "1.0.0",
@@ -2560,6 +2282,14 @@
       {
         "name": "frontend-slides",
         "description": "Create stunning, animation-rich HTML presentations from scratch or",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "frontend-ui-engineering",
+        "description": "Builds production-quality, accessible, responsive user-facing UIs. Use when building or modifying interfaces and pages, creating components, implementing layouts, meeting WCAG accessibility requiremen",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -2646,6 +2376,22 @@
         ]
       },
       {
+        "name": "grill-me",
+        "description": "Interview the user relentlessly about a plan or design until",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "grill-with-docs",
+        "description": "A relentless interview to sharpen a plan or design, which also",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "grilling",
         "description": "Grill the user relentlessly about a plan, decision, or idea. Use",
         "version": "0.0.0",
@@ -2664,6 +2410,14 @@
       {
         "name": "gsd-add-tests",
         "description": "Generate tests for a completed phase based on UAT criteria and implementation",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ai-integration-phase",
+        "description": "Generate an AI-SPEC.md design contract for phases that involve",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -2942,6 +2696,14 @@
         ]
       },
       {
+        "name": "gsd-sketch",
+        "description": "Sketch UI/design ideas with throwaway HTML mockups, or propose what",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "gsd-spec-phase",
         "description": "Clarify WHAT a phase delivers with ambiguity scoring; produces a",
         "version": "0.0.0",
@@ -2960,6 +2722,14 @@
       {
         "name": "gsd-thread",
         "description": "Manage persistent context threads for cross-session work",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gsd-ui-phase",
+        "description": "Generate UI design contract (UI-SPEC.md) for frontend phases",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3048,6 +2818,14 @@
       {
         "name": "hermes-imports",
         "description": "Convert local Hermes operator workflows into sanitized ECC skills",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "hexagonal-architecture",
+        "description": "Design, implement, and refactor Ports & Adapters systems with clear",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3254,6 +3032,14 @@
         ]
       },
       {
+        "name": "jpa-patterns",
+        "description": "JPA/Hibernate patterns for entity design, relationships, query",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "knowledge-ops",
         "description": "Knowledge base management, ingestion, sync, and retrieval across",
         "version": "0.0.0",
@@ -3374,6 +3160,14 @@
         ]
       },
       {
+        "name": "liquid-glass-design",
+        "description": "iOS 26 Liquid Glass design system — dynamic glass material with",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "llm-trading-agent-security",
         "description": "Security patterns for autonomous trading agents with wallet or",
         "version": "1.0.0",
@@ -3393,6 +3187,14 @@
         "name": "logistics-exception-management",
         "description": ">",
         "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "make-interfaces-feel-better",
+        "description": "Apply concrete design-engineering details that make interfaces feel",
+        "version": "0.0.0",
         "categories": [
           "general"
         ]
@@ -3646,6 +3448,14 @@
         ]
       },
       {
+        "name": "orch-build-mvp",
+        "description": "Orchestrate bootstrapping a working MVP from a design or spec",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "orch-change-feature",
         "description": "Orchestrate altering an existing, working feature to new desired",
         "version": "0.0.0",
@@ -3718,6 +3528,22 @@
         ]
       },
       {
+        "name": "plan-orchestrate",
+        "description": "Read a plan document, decompose it into steps, design a per-step",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "planning-and-task-breakdown",
+        "description": "Breaks work into ordered tasks. Use when you have a spec or clear requirements and need to break work into implementable tasks. Use when a task feels too large to start, when you need to estimate scop",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "podcast-ops",
         "description": "Podcast-to-Everything content pipeline. Takes a podcast RSS feed",
         "version": "1.0.0",
@@ -3760,6 +3586,14 @@
       {
         "name": "ponytail-help",
         "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "prisma-patterns",
+        "description": "Prisma ORM patterns for TypeScript backends — schema design, query",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3830,9 +3664,25 @@
         ]
       },
       {
+        "name": "prompt-engineering-expert",
+        "description": "Advanced expert in prompt engineering, custom instructions design,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "prompt-optimizer",
         "description": "Analyze raw prompts, identify intent and gaps, match ECC",
         "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "prototype",
+        "description": "Build a throwaway prototype to answer a design question. Use when",
+        "version": "0.0.0",
         "categories": [
           "general"
         ]
@@ -3936,6 +3786,14 @@
       {
         "name": "react-testing",
         "description": "React component testing with React Testing Library, Vitest/Jest,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "recsys-pipeline-architect",
+        "description": "Design composable recommendation, ranking, and feed pipelines using",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -4094,6 +3952,14 @@
         ]
       },
       {
+        "name": "shipping-and-launch",
+        "description": "Prepares production launches. Use when preparing to deploy to production. Use when you need a pre-launch checklist, when setting up monitoring, when planning a staged rollout, or when you need a rollb",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "skill-creator",
         "description": "Guide for creating effective skills. This skill should be used when",
         "version": "0.1.0",
@@ -4182,6 +4048,14 @@
         ]
       },
       {
+        "name": "spec-driven-development",
+        "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear, ambiguous, or only exist as a vague ide",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "speckit-analyze",
         "description": "Perform a non-destructive cross-artifact consistency and quality",
         "version": "0.0.0",
@@ -4238,6 +4112,14 @@
         ]
       },
       {
+        "name": "springboot-patterns",
+        "description": "Spring Boot architecture patterns, REST API design, layered",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "springboot-security",
         "description": "Spring Security best practices for authn/authz, validation, CSRF,",
         "version": "0.0.0",
@@ -4272,6 +4154,14 @@
       {
         "name": "summarize-pro",
         "description": "When user asks to summarize text, articles, documents, meetings,",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "superdesign",
+        "description": "Expert frontend design guidelines for creating beautiful, modern",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -4329,6 +4219,14 @@
         "name": "tdd-workflow",
         "description": "Use this skill when writing new features, fixing bugs, or",
         "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tdesign-miniprogram",
+        "description": "TDesign WeChat Mini Program UI component library by Tencent. Use",
+        "version": "1.0.0",
         "categories": [
           "general"
         ]
@@ -4470,6 +4368,22 @@
         ]
       },
       {
+        "name": "ui-to-vue",
+        "description": "Use when the user has UI screenshots or design exports that need",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "ui-ux-pro-max",
+        "description": "UI/UX design intelligence and implementation guidance for building",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "uncloud",
         "description": "Use when managing an Uncloud cluster — deploying services,",
         "version": "0.0.0",
@@ -4481,6 +4395,14 @@
         "name": "us-stock-analysis",
         "description": "Comprehensive US stock analysis including fundamental analysis",
         "version": "0.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "using-agent-skills",
+        "description": "Discovers and invokes agent skills. Use when starting a session or when you need to discover which skill applies to the current task. This is the meta-skill that governs how all other skills are disco",
+        "version": "0.0.0",
         "categories": [
           "general"
         ]
@@ -4703,6 +4625,17 @@
         ]
       },
       {
+        "name": "browser-testing-with-devtools",
+        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "code",
+          "data",
+          "file"
+        ]
+      },
+      {
         "name": "browser-use",
         "description": "Automates browser interactions for web testing, form filling,",
         "version": "2.0.2",
@@ -4867,9 +4800,7 @@
         "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
         "version": "1.0.0",
         "categories": [
-          "browser",
-          "image",
-          "video"
+          "browser"
         ]
       },
       {
@@ -4925,7 +4856,6 @@
         "description": "Design and implement automation workflows to save time and scale",
         "version": "0.0.0",
         "categories": [
-          "image",
           "automation"
         ]
       },
@@ -4953,6 +4883,14 @@
         "version": "1.0.0",
         "categories": [
           "browser",
+          "automation"
+        ]
+      },
+      {
+        "name": "ci-cd-and-automation",
+        "description": "Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines. Use when you need to automate quality gates, configure test runners in CI, or establish deployment stra",
+        "version": "0.0.0",
+        "categories": [
           "automation"
         ]
       },
@@ -4996,7 +4934,6 @@
         "description": "Designs and outputs n8n workflow JSON with robust triggers,",
         "version": "0.0.0",
         "categories": [
-          "image",
           "automation"
         ]
       },
@@ -5052,6 +4989,16 @@
           "doc",
           "search",
           "data",
+          "automation"
+        ]
+      },
+      {
+        "name": "xiaozhao-radar-sync",
+        "description": "校招雷达周同步工作流 —— 每周(或手动)拉取腾讯文档智能表格「27届实习提前批信息汇总」→ 生成 jobs.json → 推送到 GitHub(jiabaobei/xiaozhao-radar) → GitHub Pages 自动部署 → 同步升版本号。触发词:「同步校招」「同步校招雷达数据」「校招数据更新」「跑一下校招同步」。纯标准库，无需 pip 依赖。",
+        "version": "1.0.0",
+        "categories": [
+          "code",
+          "doc",
           "automation"
         ]
       }
@@ -5162,11 +5109,12 @@
       },
       {
         "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude / ChatGPT / Cursor / Gemini 等 20+ 框架。v2.2.0 新增技能树索引。",
-        "version": "2.2.0",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.3.0",
         "categories": [
           "meta",
-          "memory"
+          "memory",
+          "code"
         ]
       },
       {
@@ -5185,7 +5133,6 @@
         "description": "API-first email platform designed for AI agents. Create and manage",
         "version": "0.0.0",
         "categories": [
-          "image",
           "email"
         ]
       },
@@ -5268,7 +5215,6 @@
         "description": "Design, analyze, and optimize cold outbound email campaigns for",
         "version": "1.0.0",
         "categories": [
-          "image",
           "email"
         ]
       },
@@ -5300,16 +5246,6 @@
         ]
       },
       {
-        "name": "hermes-self-evolution",
-        "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
-        "version": "main",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
         "name": "manim-video",
         "description": "Build reusable Manim explainers for technical concepts, graphs,",
         "version": "0.0.0",
@@ -5329,42 +5265,12 @@
         ]
       },
       {
-        "name": "migraq",
-        "description": "腾讯云迁移平台（CMG/MSP）全流程能力。触发词：资源扫描、扫描阿里云/AWS/华为云/GCP资源、生成云资源清单、选型推荐、对标腾讯云、推荐规格、帮我推荐、给我推荐、ECS对应什么腾讯云产品、成本分析、TCO、迁移报价、询价、价格计算器、cmg-scan、cmg-recommend、cmg-tco",
-        "version": "1.1.6",
-        "categories": [
-          "image",
-          "video",
-          "data"
-        ]
-      },
-      {
         "name": "minimax-multimodal-toolkit",
         "description": "Use mmx to generate text, images, video, speech, and music via the",
         "version": "0.0.0",
         "categories": [
           "image",
           "video"
-        ]
-      },
-      {
-        "name": "ppt",
-        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-generator",
-        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video",
-          "file"
         ]
       },
       {
@@ -5444,16 +5350,6 @@
         ]
       },
       {
-        "name": "wechat-article-pro",
-        "description": "微信公众号文章发布专业版。功能：1)联网搜索热点信息 2)AI生成微信公众号封面图 3)撰写3000-5000字深度文章",
-        "version": "1.0.0",
-        "categories": [
-          "browser",
-          "image",
-          "video"
-        ]
-      },
-      {
         "name": "workrally",
         "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
         "version": "2.4.0",
@@ -5478,18 +5374,6 @@
         "categories": [
           "video"
         ]
-      },
-      {
-        "name": "配网规划评审器",
-        "description": "配网规划/可研项目评审专家 skill。当用户需要评审基层单位（县公司/供电所）上报的配电网规划或可研项目、生成评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及配网规划/可研项目材料（Word/PDF 规划报告或可研报告 + Excel 估算书/指标表）、要求\"评审配网规划\"\"评审这个项目\"\"配网可研评审\"\"配网规划评审\"\"可研评审要点\"\"规划项目打分\"\"对比这几个规划项目\"\"配网项",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "finance",
-          "file"
-        ]
       }
     ],
     "file": [
@@ -5509,7 +5393,6 @@
         "description": "Curated collection of 54 DESIGN.md files extracted from real",
         "version": "1.0.0",
         "categories": [
-          "image",
           "file"
         ]
       },
@@ -5527,6 +5410,17 @@
         "description": "Build a source-derived writing style profile from real posts,",
         "version": "0.0.0",
         "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "browser-testing-with-devtools",
+        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "code",
+          "data",
           "file"
         ]
       },
@@ -5552,6 +5446,15 @@
         "description": "Cache expensive file processing results using SHA-256 content",
         "version": "0.0.0",
         "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "context-engineering",
+        "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.",
+        "version": "0.0.0",
+        "categories": [
+          "meta",
           "file"
         ]
       },
@@ -5638,8 +5541,6 @@
         "description": "用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API 调用、无需 GPU。适用于「让某个技能越用越好」的元任务。",
         "version": "main",
         "categories": [
-          "image",
-          "video",
           "file"
         ]
       },
@@ -5649,6 +5550,15 @@
         "version": "1.0.4",
         "categories": [
           "image",
+          "file"
+        ]
+      },
+      {
+        "name": "incremental-implementation",
+        "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big",
+        "version": "0.0.0",
+        "categories": [
+          "code",
           "file"
         ]
       },
@@ -5711,8 +5621,6 @@
         "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
         "version": "0.0.0",
         "categories": [
-          "image",
-          "video",
           "file"
         ]
       },
@@ -5721,8 +5629,6 @@
         "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
         "version": "0.0.0",
         "categories": [
-          "image",
-          "video",
           "file"
         ]
       },
@@ -5789,8 +5695,6 @@
         "version": "0.0.0",
         "categories": [
           "doc",
-          "image",
-          "video",
           "finance",
           "file"
         ]
@@ -5876,8 +5780,6 @@
         "version": "0.0.0",
         "categories": [
           "doc",
-          "image",
-          "video",
           "finance",
           "file"
         ]
@@ -6046,7 +5948,6 @@
         "description": "Design background Data Atlas style agents for Itô basket research,",
         "version": "0.0.0",
         "categories": [
-          "image",
           "search",
           "data"
         ]
@@ -6297,7 +6198,143 @@
         ]
       }
     ],
+    "image": [
+      {
+        "name": "atxp",
+        "description": "Access ATXP paid API tools for web search, AI image generation,",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "search"
+        ]
+      },
+      {
+        "name": "deck-generator",
+        "description": "Generate professional presentations with AI-generated images. Use",
+        "version": "1.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "fal-ai-media",
+        "description": "Unified media generation via fal.ai MCP — image, video, and audio.",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "image",
+        "description": "Create, inspect, process, and optimize image files and visual",
+        "version": "1.0.4",
+        "categories": [
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "ios-icon-gen",
+        "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "minimax-multimodal-toolkit",
+        "description": "Use mmx to generate text, images, video, speech, and music via the",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "nano-banana-pro",
+        "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use",
+        "version": "1.0.1",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "ocr-local",
+        "description": "Extract text from images using Tesseract.js OCR (100% local, no API",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "openai-image-gen",
+        "description": "Batch-generate images via OpenAI Images API. Random prompt sampler",
+        "version": "1.0.1",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "summarize",
+        "description": "Summarize URLs or files with the summarize CLI (web, PDFs, images,",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "video-generator-seedance",
+        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "visa-doc-translate",
+        "description": "Translate visa application documents (images) to English and create",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "workrally",
+        "description": "WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管理、资产库、媒资管理、无限画布、文件上传下载等。 Use when user asks to generate images, generate videos, manage projects, upload files, download",
+        "version": "2.4.0",
+        "categories": [
+          "image",
+          "video",
+          "file"
+        ]
+      }
+    ],
     "meta": [
+      {
+        "name": "context-engineering",
+        "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.",
+        "version": "0.0.0",
+        "categories": [
+          "meta",
+          "file"
+        ]
+      },
       {
         "name": "hookify-rules",
         "description": "This skill should be used when the user asks to create a hookify",
@@ -6340,11 +6377,12 @@
       },
       {
         "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude / ChatGPT / Cursor / Gemini 等 20+ 框架。v2.2.0 新增技能树索引。",
-        "version": "2.2.0",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.3.0",
         "categories": [
           "meta",
-          "memory"
+          "memory",
+          "code"
         ]
       },
       {
@@ -6357,8 +6395,8 @@
       }
     ]
   },
-  "total": 659,
+  "total": 684,
   "version": "2.3.0",
-  "generated_at": "2026-08-10T22:04:21.622918",
+  "generated_at": "2026-08-11T13:39:22.759714",
   "skills_dir": "C:\\Users\\user/.workbuddy/skills"
 }

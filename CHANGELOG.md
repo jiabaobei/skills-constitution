@@ -4,6 +4,22 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [2.4.0] - 2026-08-11
+
+### 新增
+- **技能安装→同步闭环规范**：新增技能安装后的强制收尾流程——① 重跑 `build_skill_tree.py` 重建技能树索引；② 将新技能同步进用户记忆库（记录技能名/位置/更新方法）；③ 三处副本（用户级 / repo / project）技能树文件保持一致。解决"装了新技能但索引和记忆不同步"的问题
+
+### 优化
+- **技能树分类关键词精确化**：`image` 分支移除宽泛的 `design`/`生成` 关键词（此前会把 `api-and-interface-design`、`frontend-ui-engineering` 等非图片技能误分类到 image），改用精确词 `图生/文生图/图生图/生成图片/ai图片/ai绘图/picset/image-gen/image-generation/photoshop`；`video` 分支同步将宽泛 `生成` 改为 `视频生成/视频制作/video-gen` 等精确词
+- 分类修正效果实测：image 分支 63→14、video 分支 24→17，误分类技能归位到 general/code 等正确分支
+
+### 变更
+- 版本号从 v2.3.0 升级到 v2.4.0
+- `skill_tree.json` 重建：total=684、14 个分类，数据自洽（分类条数和 768 ≥ total 684）
+
+### 修复
+- 修复 `api-and-interface-design`、`frontend-ui-engineering` 等技能因 `design` 关键词被误分类到 image 分支的问题
+
 ## [2.3.0] - 2026-08-10
 
 ### 新增
