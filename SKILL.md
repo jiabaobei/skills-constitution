@@ -317,7 +317,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.3.0
+## Skills 宪法（Skills Constitution）v2.4.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

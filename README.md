@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills_indexed-659-green.svg)](SKILL_TREE.md)
 
 ## ✅ 宪法生效检查清单
@@ -25,7 +25,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.3.0
+## Skills 宪法（Skills Constitution）v2.4.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -80,7 +80,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.3.0）
+## 📋 宪法条款（v2.4.0）
 
 ### 第零条：查记忆（Pre-Check Memory）
 执行前查阅平台记忆层，确认相关规则和历史上下文。
