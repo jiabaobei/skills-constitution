@@ -1,7 +1,9 @@
 # 技能树索引
 
-**生成时间**: 2026-08-11T13:48:06.755202
-**总技能数**: 684
+**生成时间**: 2026-08-12T12:08:11.306233
+**总技能数**: 685
+**已装库/工具数**: 3
+**总条目数**: 688
 **技能目录**: `C:\Users\user/.workbuddy/skills`
 
 ---
@@ -255,7 +257,7 @@
 - `outbound-engine` (v1.0.0): Design, analyze, and optimize cold outbound email campaigns for
 - `qq-email` (v1.0.0): QQ邮箱 IMAP receive and SMTP send via Node.js scripts; credentials
 
-## 📁 文件管理类 (36 个)
+## 📁 文件管理类 (37 个)
 
 - `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
 - `awesome-design-md` (v1.0.0): Curated collection of 54 DESIGN.md files extracted from real
@@ -278,6 +280,7 @@
 - `hermes-self-evolution` (vmain): 用 DSPy + GEPA 对 WorkBuddy 的 SKILL.md 技能文件做进化式自我改进（自动生成评测集→进化提示词→约束校验→产出更优技能）。API...
 - `image` (v1.0.4): Create, inspect, process, and optimize image files and visual
 - `incremental-implementation` (v0.0.0): Delivers changes incrementally. Use when implementing any feature or change that...
+- `kiro-memory-bridge` (v0.0.0): 把 KiroCrew 本地记忆库（SQLite）当作 WorkBuddy 的"第二大脑"：任务完成后将教训/用户偏好写入其语义/情景记忆表，或读取检索其中的记忆...
 - `markdown-converter` (v0.0.0): Convert documents and files to Markdown using markitdown. Use when
 - `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
 - `md-to-pdf-cjk` (v1.0.0): Convert Markdown files to professional PDF documents with full CJK
@@ -719,7 +722,13 @@
 - `visa-doc-translate` (v0.0.0): Translate visa application documents (images) to English and create
 - `workrally` (v2.4.0): WorkRally CLI (workrally) — 面向 AI Agent 的 AIGC 漫剧视频创作全流程工具集。 支持 AI 生图、AI 生视频、项目管...
 
-## 🧠 记忆管理类 (14 个)
+## 🧩 已装库/工具 (3 个)
+
+- `KiroCrew` (python_lib v0.3.0): Personal AI agent that runs locally — chat via CLI, dashboar... — `C:\Users\user\.workbuddy\binaries\KiroCrew`
+- `cognee` (python_lib v1.4.2): Cognee - is a library for enriching LLM context with a seman... — `C:\Users\user\.workbuddy\binaries\cognee`
+- `headroom` (python_lib vunknown): 已装 Python 库/工具（独立 venv） — `C:\Users\user\.workbuddy\binaries\headroom`
+
+## 🧠 记忆管理类 (15 个)
 
 - `agent-memory` (v1.0.0): Agent Memory — 持久化记忆系统，让 AI agent 记住事实、从经验中学习、跨会话跟踪实体。默认存储到 ~/.agent-memory/memo...
 - `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
@@ -727,6 +736,7 @@
 - `elite-longterm-memory` (v1.2.3): Ultimate AI agent memory system for Cursor, Claude, ChatGPT &
 - `everos` (v1.0.0): EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以...
 - `gsd-mempalace-recall` (v0.0.0): Recall decisions, patterns, and surprises from MemPalace before planning
+- `kiro-memory-bridge` (v0.0.0): 把 KiroCrew 本地记忆库（SQLite）当作 WorkBuddy 的"第二大脑"：任务完成后将教训/用户偏好写入其语义/情景记忆表，或读取检索其中的记忆...
 - `memory-hygiene` (v0.0.0): Audit, clean, and optimize Clawdbot's vector memory (LanceDB). Use
 - `memory-manager` (v0.0.0): Local memory management for agents. Compression detection,
 - `memory-setup` (v0.0.0): Enable and configure Moltbot/Clawdbot memory search for persistent

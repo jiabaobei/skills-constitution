@@ -5061,6 +5061,15 @@
         ]
       },
       {
+        "name": "kiro-memory-bridge",
+        "description": "把 KiroCrew 本地记忆库（SQLite）当作 WorkBuddy 的\"第二大脑\"：任务完成后将教训/用户偏好写入其语义/情景记忆表，或读取检索其中的记忆。触发场景：用户提到 KiroCrew 记忆、第二大脑、记忆桥接、沉淀教训/偏好、self-improvement 增强。纯本地文件读写，无需登录 Kiro 账号、无需网关运行。",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "file"
+        ]
+      },
+      {
         "name": "memory-hygiene",
         "description": "Audit, clean, and optimize Clawdbot's vector memory (LanceDB). Use",
         "version": "0.0.0",
@@ -5575,6 +5584,15 @@
         "version": "0.0.0",
         "categories": [
           "code",
+          "file"
+        ]
+      },
+      {
+        "name": "kiro-memory-bridge",
+        "description": "把 KiroCrew 本地记忆库（SQLite）当作 WorkBuddy 的\"第二大脑\"：任务完成后将教训/用户偏好写入其语义/情景记忆表，或读取检索其中的记忆。触发场景：用户提到 KiroCrew 记忆、第二大脑、记忆桥接、沉淀教训/偏好、self-improvement 增强。纯本地文件读写，无需登录 Kiro 账号、无需网关运行。",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
           "file"
         ]
       },
@@ -6423,10 +6441,35 @@
           "meta"
         ]
       }
+    ],
+    "libs": [
+      {
+        "name": "cognee",
+        "type": "python_lib",
+        "description": "Cognee - is a library for enriching LLM context with a semantic layer for better understanding and reasoning.",
+        "version": "1.4.2",
+        "path": "C:\\Users\\user\\.workbuddy\\binaries\\cognee"
+      },
+      {
+        "name": "headroom",
+        "type": "python_lib",
+        "description": "已装 Python 库/工具（独立 venv）",
+        "version": "unknown",
+        "path": "C:\\Users\\user\\.workbuddy\\binaries\\headroom"
+      },
+      {
+        "name": "KiroCrew",
+        "type": "python_lib",
+        "description": "Personal AI agent that runs locally — chat via CLI, dashboard, desktop app, or messaging channels like Slack and Discord",
+        "version": "0.3.0",
+        "path": "C:\\Users\\user\\.workbuddy\\binaries\\KiroCrew"
+      }
     ]
   },
-  "total": 684,
+  "total": 685,
   "version": "2.4.0",
-  "generated_at": "2026-08-11T13:48:06.755202",
-  "skills_dir": "C:\\Users\\user/.workbuddy/skills"
+  "generated_at": "2026-08-12T12:08:11.306233",
+  "skills_dir": "C:\\Users\\user/.workbuddy/skills",
+  "libs_count": 3,
+  "total_entries": 688
 }

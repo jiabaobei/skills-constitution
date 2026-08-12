@@ -71,8 +71,52 @@ def read_constitution_version() -> str:
         return "unknown"
 
 
-def build_skill_tree(skills_dir: str) -> dict:
-    """扫描所有技能，生成树形索引"""
+# binaries 下视为"运行时/辅助"的目录（不算独立库/工具）
+LIB_EXCLUDE = {"python", "node", "envs", "node_modules", "tmp", "temp", "kroki"}
+
+
+def scan_binary_libs(binaries_dir: str) -> list[dict]:
+    """扫描 ~/.workbuddy/binaries 下带独立 venv 的 Python 库/工具，
+    生成"已装库/工具"条目，供技能树查询。binaries 目录不存在时静默跳过（兼容 CI）。"""
+    libs = []
+    root = Path(binaries_dir)
+    if not root.exists():
+        return libs
+    for entry in sorted(root.iterdir()):
+        if not entry.is_dir() or entry.name in LIB_EXCLUDE:
+            continue
+        venv_py = entry / "venv" / "Scripts" / "python.exe"
+        if not venv_py.exists():
+            venv_py = entry / ".venv" / "Scripts" / "python.exe"  # 兼容 .venv 命名
+        if not venv_py.exists():
+            continue
+        description = "已装 Python 库/工具（独立 venv）"
+        version = ""
+        try:
+            import subprocess
+            r = subprocess.run(
+                [str(venv_py), "-m", "pip", "show", entry.name],
+                capture_output=True, text=True, timeout=20,
+            )
+            for line in r.stdout.splitlines():
+                if line.startswith("Summary:"):
+                    description = line.split(":", 1)[1].strip()[:200] or description
+                elif line.startswith("Version:"):
+                    version = line.split(":", 1)[1].strip()
+        except Exception:
+            pass
+        libs.append({
+            "name": entry.name,
+            "type": "python_lib",
+            "description": description,
+            "version": version or "unknown",
+            "path": str(entry),
+        })
+    return libs
+
+
+def build_skill_tree(skills_dir: str, binaries_dir: str = "") -> dict:
+    """扫描所有技能，生成树形索引；可选扫描已装 Python 库/工具"""
     tree = {
         "categories": {},
         "total": 0,
@@ -123,16 +167,27 @@ def build_skill_tree(skills_dir: str) -> dict:
                 tree["categories"][cat] = []
             tree["categories"][cat].append(skill_info)
 
+    # 追加已装 Python 库/工具（binaries 扫描）
+    if binaries_dir:
+        libs = scan_binary_libs(binaries_dir)
+        if libs:
+            tree["categories"]["libs"] = libs
+        tree["libs_count"] = len(libs)
+        tree["total_entries"] = tree["total"] + len(libs)
+
     return tree
 
 
 def generate_markdown(tree: dict) -> str:
     """生成人类可读的 Markdown 索引"""
+    libs_count = tree.get("libs_count", 0)
     lines = [
         "# 技能树索引",
         "",
         f"**生成时间**: {tree['generated_at']}",
         f"**总技能数**: {tree['total']}",
+        f"**已装库/工具数**: {libs_count}",
+        f"**总条目数**: {tree.get('total_entries', tree['total'])}",
         f"**技能目录**: `{tree['skills_dir']}`",
         "",
         "---",
@@ -156,7 +211,8 @@ def generate_markdown(tree: dict) -> str:
         "data": "📊 数据分析类",
         "file": "📁 文件管理类",
         "automation": "⚙️ 自动化工作流",
-        "general": "🔧 通用工具类"
+        "general": "🔧 通用工具类",
+        "libs": "🧩 已装库/工具"
     }
 
     for cat, skills in sorted(tree["categories"].items()):
@@ -164,8 +220,12 @@ def generate_markdown(tree: dict) -> str:
         lines.append(f"## {icon} ({len(skills)} 个)")
         lines.append("")
         for s in sorted(skills, key=lambda x: x["name"]):
-            desc = s["description"][:80] + "..." if len(s["description"]) > 80 else s["description"]
-            lines.append(f"- `{s['name']}` (v{s['version']}): {desc}")
+            if cat == "libs":
+                desc = s["description"][:60] + "..." if len(s["description"]) > 60 else s["description"]
+                lines.append(f"- `{s['name']}` ({s.get('type','python_lib')} v{s.get('version','?')}): {desc} — `{s['path']}`")
+            else:
+                desc = s["description"][:80] + "..." if len(s["description"]) > 80 else s["description"]
+                lines.append(f"- `{s['name']}` (v{s['version']}): {desc}")
         lines.append("")
 
     return "\n".join(lines)
@@ -174,9 +234,11 @@ def generate_markdown(tree: dict) -> str:
 def main():
     # 支持环境变量覆盖
     skills_dir = os.environ.get("SKILLS_DIR", os.path.expanduser("~/.workbuddy/skills"))
+    binaries_dir = os.environ.get("BINARIES_DIR", os.path.expanduser("~/.workbuddy/binaries"))
 
     print(f"扫描技能目录: {skills_dir}")
-    tree = build_skill_tree(skills_dir)
+    print(f"扫描库目录: {binaries_dir}")
+    tree = build_skill_tree(skills_dir, binaries_dir)
 
     # 输出 JSON
     output_dir = Path(__file__).parent.parent
@@ -185,16 +247,16 @@ def main():
         json.dump(tree, f, ensure_ascii=False, indent=2)
     print(f"✓ 生成索引: {json_path}")
 
-    # 自检：每个技能至少归入一个分类，故分类条数和应 >= total
-    # （若 total > 分类条数和，说明索引数据不一致，直接报错退出，防止提交假索引）
-    cat_sum = sum(len(v) for v in tree["categories"].values())
-    if cat_sum < tree["total"]:
+    # 自检：技能分类条数和应 >= 技能 total（libs 分类是库，单独统计）
+    cat_sum_skills = sum(len(v) for k, v in tree["categories"].items() if k != "libs")
+    if cat_sum_skills < tree["total"]:
         print(
-            f"✗ 自检失败: 分类条数和({cat_sum}) < total({tree['total']})，索引数据不一致！",
+            f"✗ 自检失败: 技能分类条数和({cat_sum_skills}) < total({tree['total']})，索引数据不一致！",
             file=sys.stderr,
         )
         sys.exit(1)
-    print(f"✓ 自检通过: 分类条数和 {cat_sum} >= total {tree['total']}")
+    cat_sum = sum(len(v) for v in tree["categories"].values())
+    print(f"✓ 自检通过: 技能分类 {cat_sum_skills} >= total {tree['total']}；含库共 {cat_sum} 条")
 
     # 输出 Markdown
     md_path = output_dir / "SKILL_TREE.md"
@@ -206,9 +268,10 @@ def main():
     # 打印统计
     print(f"\n统计:")
     print(f"  - 总技能数: {tree['total']}")
+    print(f"  - 已装库/工具数: {tree.get('libs_count', 0)}")
     print(f"  - 分类数: {len(tree['categories'])}")
     for cat, skills in sorted(tree["categories"].items()):
-        print(f"    - {cat}: {len(skills)} 个技能")
+        print(f"    - {cat}: {len(skills)} 个")
 
 
 if __name__ == "__main__":
