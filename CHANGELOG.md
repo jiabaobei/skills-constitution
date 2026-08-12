@@ -4,6 +4,19 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [2.7.0] - 2026-08-12
+
+### 修复（设计缺陷：技能树索引 = 作者快照，非使用者清单）
+- **索引定位修正**：`skill_tree.json` / `SKILL_TREE.md` 明确为**作者快照（示例）**，仅展示技能树长什么样；使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成**自己的**技能树，或用平台自身能力清单（Claude Code `~/.claude/skills`、Cursor `.cursor/rules` 等）
+- **移除作者本机路径硬编码**：`SKILL_INDEX_PATH` 示例从 `~/.workbuddy/skills/skill_tree.json` 改为通用占位 `<你的技能目录>/skill_tree.json`（此前别人 clone 后读到的是作者技能清单，甚至路径在本机不存在）
+- **第一条指向修正**：先查「你的平台能力注册表」，不再绑定仓库内索引文件
+- **README 徽章标注**：`skills_indexed-688` → `skills_indexed-688-author_snapshot`，避免误导使用者以为项目自带 688 个技能
+- 教训来源：2026-08-12 用户质疑"宪法是给别人用的，为什么索引以我的 workbuddy 为蓝本？别人没装我一样的技能怎么办"——项目从"作者自用工具链"开源而来，作者/使用者视角未分离
+
+### 变更
+- 版本号从 v2.6.0 升级到 v2.7.0
+- SKILL.md 核心概念表、第一条、技能树章节、README 技能树章节同步修正
+
 ## [2.6.0] - 2026-08-12
 
 ### 新增

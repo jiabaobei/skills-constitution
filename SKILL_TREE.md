@@ -1,16 +1,16 @@
 # 技能树索引
 
-**生成时间**: 2026-08-12T17:38:03.872519
-**总技能数**: 685
+**生成时间**: 2026-08-12T18:57:43.885044
+**总技能数**: 686
 **已装库/工具数**: 3
-**总条目数**: 688
+**总条目数**: 689
 **技能目录**: `C:\Users\user/.workbuddy/skills`
 
 ---
 
 ## 分类概览
 
-## ⚙️ 自动化工作流 (20 个)
+## ⚙️ 自动化工作流 (21 个)
 
 - `agent-browser` (v0.0.0): Browser automation CLI for AI agents. Use when the user needs to
 - `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
@@ -22,6 +22,7 @@
 - `ci-cd-and-automation` (v0.0.0): Automates CI/CD pipeline setup. Use when setting up or modifying build and deplo...
 - `desktop-control` (v0.0.0): Advanced desktop automation with mouse, keyboard, and screen control
 - `email-skill` (v0.1.0): Email management and automation. Send, read, search, and organize
+- `github-gitee-publish` (v0.0.0): 本机双平台(GitHub + Gitee)代码/文档发布工作流:版本号全文件核查 → 同步 repo → commit → push origin main →...
 - `github-ops` (v0.0.0): GitHub repository operations, automation, and management. Issue
 - `gptswarm` (v0.1.0): 图结构 LLM Agent 自改进框架（MIT）。把 Agent 建成可优化图，用 swarm.optimizer 做自组织/自优化。适用于想用「图+优化器」思...
 - `n8n-workflow-automation` (v0.0.0): Designs and outputs n8n workflow JSON with robust triggers,
@@ -65,7 +66,7 @@
 - `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
 - `weread-skills` (v1.0.3): 微信读书助手 — 搜索书籍、管理书架、查看笔记划线、浏览书评、阅读统计、发现推荐好书
 
-## 💻 代码开发类 (109 个)
+## 💻 代码开发类 (110 个)
 
 - `accessibility` (v0.0.0): Design, implement, and audit inclusive digital products using WCAG
 - `agent-eval` (v0.0.0): Head-to-head comparison of coding agents (Claude Code, Aider,
@@ -111,6 +112,7 @@
 - `git-workflow` (v0.0.0): Git workflow patterns including branching strategies, commit
 - `git-workflow-and-versioning` (v0.0.0): Structures git workflow practices. Use when making any code change. Use when com...
 - `github` (v0.0.0): Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`,
+- `github-gitee-publish` (v0.0.0): 本机双平台(GitHub + Gitee)代码/文档发布工作流:版本号全文件核查 → 同步 repo → commit → push origin main →...
 - `github-ops` (v0.0.0): GitHub repository operations, automation, and management. Issue
 - `growth-log` (v1.1.0): Use after a complex task, failure, or when reviewing what was
 - `gsd-audit-fix` (v0.0.0): Autonomous audit-to-fix pipeline — find issues, classify, fix, test, commit
@@ -163,7 +165,7 @@
 - `setup-pre-commit` (v1.0.0): Set up Husky pre-commit hooks with lint-staged (Prettier), type
 - `skill-scout` (v0.0.0): Search existing local, marketplace, GitHub, and web skill sources
 - `skill_2053081574105186304` (v1.51.3): GitHub API token for auto-issue reporting and releases.
-- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.7.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `source-driven-development` (v0.0.0): Grounds every implementation decision in official documentation. Use when you wa...
 - `speckit-baseline` (v0.0.0): Generate feature specifications by analyzing existing source code.
 - `speckit-taskstoissues` (v0.0.0): Convert existing tasks into actionable, dependency-ordered GitHub
@@ -213,12 +215,13 @@
 - `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
 - `tencent-musician-skills` (v1.0.1): 腾讯音乐人智能分析助手（数据分析 +
 
-## 📄 文档处理类 (26 个)
+## 📄 文档处理类 (27 个)
 
 - `1password` (v0.0.0): Set up and use 1Password CLI (op). Use when installing the CLI,
 - `canvas-design` (v1.0.3): Create beautiful visual art in .png and .pdf documents using design
 - `download-web-file` (v0.0.0): 从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。
 - `excel-xlsx` (v1.0.2): Create, inspect, and edit Microsoft Excel workbooks and XLSX files
+- `github-gitee-publish` (v0.0.0): 本机双平台(GitHub + Gitee)代码/文档发布工作流:版本号全文件核查 → 同步 repo → commit → push origin main →...
 - `kdocs` (v2.5.7): 操作金山文档（WPS 云文档 / Kdocs / 365.kdocs.cn / www.kdocs.cn）云文档的官方
 - `markitdown-skill` (v1.0.1): Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). S...
 - `md-to-pdf-cjk` (v1.0.0): Convert Markdown files to professional PDF documents with full CJK
@@ -257,7 +260,7 @@
 - `outbound-engine` (v1.0.0): Design, analyze, and optimize cold outbound email campaigns for
 - `qq-email` (v1.0.0): QQ邮箱 IMAP receive and SMTP send via Node.js scripts; credentials
 
-## 📁 文件管理类 (38 个)
+## 📁 文件管理类 (39 个)
 
 - `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
 - `awesome-design-md` (v1.0.0): Curated collection of 54 DESIGN.md files extracted from real
@@ -271,6 +274,7 @@
 - `download-web-file` (v0.0.0): 从网页下载文件（PDF/Word/标准文档等）到本地。处理登录墙、重定向、动态下载链接等常见障碍。
 - `everos` (v1.0.0): EverOS 本地优先、Markdown 原生的跨对话/跨电脑记忆库（封装自 EverMind-AI/EverOS，Apache-2.0，★11950）。记忆以...
 - `excel-xlsx` (v1.0.2): Create, inspect, and edit Microsoft Excel workbooks and XLSX files
+- `github-gitee-publish` (v0.0.0): 本机双平台(GitHub + Gitee)代码/文档发布工作流:版本号全文件核查 → 同步 repo → commit → push origin main →...
 - `gsd-code-review` (v0.0.0): Review source files changed during a phase for bugs, security
 - `gsd-mempalace-capture` (v0.0.0): File a phase artifact into MemPalace; mirror decision facts into
 - `gsd-profile-user` (v0.0.0): Generate developer behavioral profile and create Claude-discoverable artifacts
@@ -290,7 +294,7 @@
 - `ppt` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
 - `ppt-generator` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
 - `repo-scan` (v0.0.0): Cross-stack source code asset audit — classifies every file,
-- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.7.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `skills-security-check` (v1.0.2): 腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全
 - `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
 - `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
@@ -743,7 +747,7 @@
 - `ontology` (v0.0.0): Typed knowledge graph for structured agent memory and composable
 - `self-improving-agent-cn` (v1.0.0): AI自我改进与记忆系统 - 解决'同类错误反复犯、用户纠正不长记性'的痛点。自动捕获错误、用户纠正、最佳实践，并转化为长期记忆。
 - `self-reflection` (v1.1.1): Continuous self-improvement through structured reflection and memory
-- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.7.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
 
 ## 📜 元规则类 (8 个)
@@ -754,7 +758,7 @@
 - `nuxt4-patterns` (v0.0.0): Nuxt 4 app patterns for hydration safety, performance, route rules,
 - `rules-distill` (v0.0.0): Scan skills to extract cross-cutting principles and distill them
 - `skill-comply` (v0.0.0): Visualize whether skills, rules, and agent definitions are actually
-- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.7.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `speckit-constitution` (v0.0.0): Create or update the project constitution from interactive or
 
 ## 🔍 搜索研究类 (49 个)

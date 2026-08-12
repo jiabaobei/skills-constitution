@@ -3,8 +3,8 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](SKILL.md)
-[![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-green.svg)](SKILL_TREE.md)
+[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](SKILL.md)
+[![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-author_snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
 
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.6.0
+## Skills 宪法（Skills Constitution）v2.7.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -68,7 +68,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.6.0）
+## 📋 宪法条款（v2.7.0）
 
 ### 第零条：查记忆（Pre-Check Memory）
 执行前查阅平台记忆层，确认相关规则和历史上下文。
@@ -105,7 +105,7 @@ cp SKILL.md .clinerules
 | 💰 业务专用类 | 金融、法律、电商、营销 | `配网规划评审器`, `wind-finance` |
 | 🔧 通用工具类 | 文件操作、进程管理、环境配置 | `file-ops`, `process-manager` |
 
-**完整索引**：查看 [SKILL_TREE.md](SKILL_TREE.md) 或 [skill_tree.json](skill_tree.json)
+**完整索引**：仓库内 [SKILL_TREE.md](SKILL_TREE.md) / [skill_tree.json](skill_tree.json) 为**作者快照（示例）**；使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成**自己的**技能树（或用平台自身能力清单）
 
 ---
 

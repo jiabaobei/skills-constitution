@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"。
-version: 2.6.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）。
+version: 2.7.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.6.0** — 新增门禁自检脚本 `constitution-check`：5 个 step 独立校验（三查/技能树/技能调用/交付自检/推荐板块），默认软校验 + `--strict` 可选阻断 + 状态文件链式依赖，把「靠 Agent 自觉」变成「可校验、可拦截」
+> **v2.7.0** — 技能树索引定位修正：索引为**作者快照/示例**，使用者应运行 `scripts/build_skill_tree.py` 生成**自己的**技能树（或使用平台自身能力清单），移除作者本机路径硬编码，修复「索引以作者为蓝本」的设计缺陷
 
 ---
 
@@ -67,7 +67,7 @@ agent_created: true
 |----------|------|----------------|
 | **能力注册表** | Agent 当前可用的全部技能/工具/插件清单 | available_skills / tools / plugins / extensions / Gems / MCP servers |
 | **技能描述** | 每个能力的触发条件说明 | description / trigger / when_to_use / system prompt |
-| **技能索引** | 按功能分类的技能树（预生成，加速匹配） | skill_tree.json / SKILL_TREE.md |
+| **技能索引** | 按功能分类的技能树（预生成，加速匹配）。⚠️ 仓库内 `skill_tree.json` 为**作者快照/示例**，使用者应运行 `scripts/build_skill_tree.py` 生成**自己的**索引 | skill_tree.json（作者快照）/ 你生成的技能树 |
 | **技能发现** | 搜索可安装的新能力 | find-skills / GPT Store / SkillHub / MCP Registry / Extensions |
 | **记忆层** | 跨会话持久化的规则存储 | MEMORY.md / CLAUDE.md / AGENTS.md / Custom Instructions / .cursorrules |
 | **技能文件** | 定义能力的结构化文档 | SKILL.md / GPT Actions / MCP Config / Gem Instructions |
@@ -106,7 +106,7 @@ agent_created: true
 | 条目 | 内容 | 示例 |
 |------|------|------|
 | `INSTALLED_SKILLS` | 已安装技能清单（名称 + 一句话描述） | `file-ops：文件读取/写入工具，用于读取技能索引` |
-| `SKILL_INDEX_PATH` | 技能索引文件路径 | `~/.workbuddy/skills/skill_tree.json` |
+| `SKILL_INDEX_PATH` | 技能索引文件路径（**你**的技能树，非作者快照） | `<你的平台技能目录>/skill_tree.json`（如 `~/.claude/skills/`） |
 
 示例：
 
@@ -116,7 +116,7 @@ INSTALLED_SKILLS:
 - find-skills：技能搜索工具，用于发现新能力
 - agent-memory：记忆管理系统
 
-SKILL_INDEX_PATH: ~/.workbuddy/skills/skill_tree.json
+SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 ```
 
 只要按此格式维护记忆层，Agent 查记忆即可"回忆"出技能清单，无需实时扫描，冷启动问题就此解决。
@@ -127,8 +127,8 @@ SKILL_INDEX_PATH: ~/.workbuddy/skills/skill_tree.json
 
 **每次执行专业任务前，必须先查看能力注册表**，判断有没有能力与当前任务相关。
 
-**优化路径**（v2.2.0 新增）：
-1. 先查技能索引（`skill_tree.json` 或 `SKILL_TREE.md`）
+**优化路径**（v2.2.0 新增；v2.7.0 修正指向）：
+1. 先查**你的平台能力注册表**（可用技能/工具/插件清单，如 Claude Code `~/.claude/skills`、Cursor `.cursor/rules`、WorkBuddy available_skills）；有本地技能树则优先用它（运行 `scripts/build_skill_tree.py` 生成**你自己的**索引）
 2. 按任务类型定位功能分支
 3. 在分支内匹配描述
 4. 未命中则全量扫描（兜底）
@@ -271,7 +271,7 @@ flowchart TD
     └── 环境配置
 ```
 
-**完整索引**：查看 `SKILL_TREE.md` 或 `skill_tree.json`
+**完整索引**：仓库内 `SKILL_TREE.md` / `skill_tree.json` 为**作者快照（示例）**，展示技能树长什么样；**使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成自己的技能树**，或用平台自身的能力清单（见【平台映射表】）
 
 **执行路径优化**：
 1. 判断任务属于哪个功能分支
@@ -336,7 +336,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.6.0
+## Skills 宪法（Skills Constitution）v2.7.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
