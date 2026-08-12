@@ -4,6 +4,17 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [2.8.0] - 2026-08-12
+
+### 新增
+- **精选技能注册表 `registry.json`**（根目录）：技能名 + 来源仓库（owner/repo）+ path（可选）+ 描述 + 分类（framework/documents/development/testing/security/discovery/ai-tools），16 条真实开源条目（anthropics/skills、obra/superpowers、addyosmani/agent-skills、majiayu000/claude-skill-manager 等）
+- 用途：解决"装什么、从哪装"——使用者 git clone 来源仓库后按需安装（或 gh skill / sk 等工具），**不打包全量技能**（作者本机 114MB 技能库含 API key/内部资料，整体打包有泄露与合规风险）
+- 与 v2.7.0「索引=使用者自己生成」思路一致：注册表是"精选清单"，不是"作者快照"
+- README 新增「📦 技能注册表」章节（结构说明 + 安装示例）；SKILL.md 技能树章节指向 registry.json
+
+### 变更
+- 版本号从 v2.7.0 升级到 v2.8.0
+
 ## [2.7.0] - 2026-08-12
 
 ### 修复（设计缺陷：技能树索引 = 作者快照，非使用者清单）

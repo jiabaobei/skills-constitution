@@ -1048,7 +1048,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "categories": [
           "meta",
           "memory",
@@ -5153,7 +5153,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "categories": [
           "meta",
           "memory",
@@ -5708,7 +5708,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "categories": [
           "meta",
           "memory",
@@ -6453,7 +6453,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "categories": [
           "meta",
           "memory",
@@ -6495,8 +6495,8 @@
     ]
   },
   "total": 686,
-  "version": "2.7.0",
-  "generated_at": "2026-08-12T18:57:43.885044",
+  "version": "2.8.0",
+  "generated_at": "2026-08-12T19:03:19.877767",
   "skills_dir": "C:\\Users\\user/.workbuddy/skills",
   "libs_count": 3,
   "total_entries": 689

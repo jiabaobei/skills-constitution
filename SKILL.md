@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）。
-version: 2.7.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）。
+version: 2.8.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.7.0** — 技能树索引定位修正：索引为**作者快照/示例**，使用者应运行 `scripts/build_skill_tree.py` 生成**自己的**技能树（或使用平台自身能力清单），移除作者本机路径硬编码，修复「索引以作者为蓝本」的设计缺陷
+> **v2.8.0** — 新增精选技能注册表 `registry.json`（技能名+来源仓库+描述，按需安装），与「索引=使用者自己生成」思路一致
 
 ---
 
@@ -273,6 +273,8 @@ flowchart TD
 
 **完整索引**：仓库内 `SKILL_TREE.md` / `skill_tree.json` 为**作者快照（示例）**，展示技能树长什么样；**使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成自己的技能树**，或用平台自身的能力清单（见【平台映射表】）
 
+**精选技能清单**：需要"装什么技能"时，查看仓库内 `registry.json`（技能名+来源仓库+描述，精选开源技能，按需安装）
+
 **执行路径优化**：
 1. 判断任务属于哪个功能分支
 2. 直接查对应分支，避免全量扫描
@@ -336,7 +338,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.7.0
+## Skills 宪法（Skills Constitution）v2.8.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
