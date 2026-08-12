@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.4.0 优化技能树分类关键词（image/video 精确匹配）、新增技能安装后的技能树与记忆同步规范。"
-version: 2.4.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化。"
+version: 2.5.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.4.0** — 优化技能树分类关键词（image/video 精确匹配，修复误分类）；新增「技能安装 → 同步技能树 → 更新记忆」闭环规范
+> **v2.5.0** — 技能树纳入已装 Python 库/工具（🧩 分类）；第一条升级为「查技能树无条件第一步 + 宪法三查汇报」执行强化
 
 ---
 
@@ -132,6 +132,20 @@ SKILL_INDEX_PATH: ~/.workbuddy/skills/skill_tree.json
 2. 按任务类型定位功能分支
 3. 在分支内匹配描述
 4. 未命中则全量扫描（兜底）
+
+**执行强化（v2.5.0 新增，无条件第一步）**：
+
+「先查技能索引」必须是**无条件动作**，不是"我觉得需要才查"：
+- **任何专业任务（含"查安装/查库"类，如确认某 Python 库是否安装）第一步必须读技能树索引**，禁止以"这不需要查技能"为由跳过——凭判断跳过正是本宪法要防的行为（教训：实际运行中查 cognee 时跳过技能树被用户抓包）
+- 技能树索引应包含**技能与已装 Python 库/工具**（🧩 分类），一个入口查全
+- 任务开始需**显式汇报「宪法三查」结果**，让流程可见、可被用户监督：
+  ```
+  【宪法三查】
+  ① 记忆 ✅ 已查（用户级/项目/今日流水）
+  ② 技能树 ✅ 已读（是否命中相关技能/已装库）
+  ③ 匹配 ✅ 命中 X → 用它执行；无命中 → 说明"技能树无匹配"再走通用能力/文件系统
+  ```
+- 简单问答豁免（翻译/润色/概念解释）
 
 ---
 
@@ -317,7 +331,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.4.0
+## Skills 宪法（Skills Constitution）v2.5.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

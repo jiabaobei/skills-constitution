@@ -1,6 +1,6 @@
 # 技能树索引
 
-**生成时间**: 2026-08-12T12:08:11.306233
+**生成时间**: 2026-08-12T12:49:14.092191
 **总技能数**: 685
 **已装库/工具数**: 3
 **总条目数**: 688
@@ -163,7 +163,7 @@
 - `setup-pre-commit` (v1.0.0): Set up Husky pre-commit hooks with lint-staged (Prettier), type
 - `skill-scout` (v0.0.0): Search existing local, marketplace, GitHub, and web skill sources
 - `skill_2053081574105186304` (v1.51.3): GitHub API token for auto-issue reporting and releases.
-- `skills-constitution` (v2.4.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `source-driven-development` (v0.0.0): Grounds every implementation decision in official documentation. Use when you wa...
 - `speckit-baseline` (v0.0.0): Generate feature specifications by analyzing existing source code.
 - `speckit-taskstoissues` (v0.0.0): Convert existing tasks into actionable, dependency-ordered GitHub
@@ -704,7 +704,7 @@
 - `小红书助手` (v1.0.0): >
 - `美团生活助手` (v1.0.0): 【美团官方】美团生活助手，支持外卖、餐饮团购、酒店住宿、门票度假、休闲娱乐、闪购、医药等多品类优惠券/红包/神券的一键领取与历史领取记录查询。核心能力：1）一键...
 
-## 🖼️ 图像生成类 (15 个)
+## 🖼️ 图像生成类 (14 个)
 
 - `atxp` (v0.0.0): Access ATXP paid API tools for web search, AI image generation,
 - `deck-generator` (v1.0.0): Generate professional presentations with AI-generated images. Use
@@ -716,7 +716,6 @@
 - `nano-banana-pro` (v1.0.1): Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use
 - `ocr-local` (v0.0.0): Extract text from images using Tesseract.js OCR (100% local, no API
 - `openai-image-gen` (v1.0.1): Batch-generate images via OpenAI Images API. Random prompt sampler
-- `skills-constitution` (v2.4.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
 - `video-generator-seedance` (v0.0.0): 使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。
 - `visa-doc-translate` (v0.0.0): Translate visa application documents (images) to English and create
@@ -743,7 +742,7 @@
 - `ontology` (v0.0.0): Typed knowledge graph for structured agent memory and composable
 - `self-improving-agent-cn` (v1.0.0): AI自我改进与记忆系统 - 解决'同类错误反复犯、用户纠正不长记性'的痛点。自动捕获错误、用户纠正、最佳实践，并转化为长期记忆。
 - `self-reflection` (v1.1.1): Continuous self-improvement through structured reflection and memory
-- `skills-constitution` (v2.4.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
 
 ## 📜 元规则类 (8 个)
@@ -754,7 +753,7 @@
 - `nuxt4-patterns` (v0.0.0): Nuxt 4 app patterns for hydration safety, performance, route rules,
 - `rules-distill` (v0.0.0): Scan skills to extract cross-cutting principles and distill them
 - `skill-comply` (v0.0.0): Visualize whether skills, rules, and agent definitions are actually
-- `skills-constitution` (v2.4.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `speckit-constitution` (v0.0.0): Create or update the project constitution from interactive or
 
 ## 🔍 搜索研究类 (49 个)
@@ -809,7 +808,7 @@
 - `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
 - `xurl` (v1.0.0): A Twitter research and content intelligence skill. Use to analyze
 
-## 🎬 视频生成类 (18 个)
+## 🎬 视频生成类 (17 个)
 
 - `agnes-video-generator` (v1.1.0): 
 - `fal-ai-media` (v0.0.0): Unified media generation via fal.ai MCP — image, video, and audio.
@@ -818,7 +817,6 @@
 - `minimax-multimodal-toolkit` (v0.0.0): Use mmx to generate text, images, video, speech, and music via the
 - `remotion-video-creation` (v0.0.0): Best practices for Remotion - Video creation in React. 29
 - `remotion-video-toolkit` (v0.0.0): Complete toolkit for programmatic video creation with Remotion +
-- `skills-constitution` (v2.4.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `taste` (v0.0.0): A creative-direction (taste) layer for music videos and short-form
 - `tencent-meeting-skill` (v1.0.10): 在用户提及腾讯会议、视频会议、线上会议相关内容与操作时使用此技能。触发关键词包括：预约会议、创建会议、修改会议、取消会议、查询会议、会议详情、会议号、meeti...
 - `ui-demo` (v0.0.0): Record polished UI demo videos using Playwright. Use when the user
