@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""constitution-check —— Skills 宪法门禁校验主入口
+
+用法:
+  constitution-check --input output.txt                 # 全量软校验(默认:FAIL 只警告,不阻断)
+  constitution-check --input output.txt --strict        # 严格模式:FAIL 即阻断(exit 1)
+  constitution-check --step 5 --input output.txt        # 只跑 step5
+  constitution-check --input output.txt --json          # JSON 输出(机器可读)
+  constitution-check --simple                           # 简单任务豁免:按零号条款跳过门禁(exit 0)
+  constitution-check --reset                            # 清空状态文件
+
+原理:
+  - 5 个 step 各自独立校验(scripts/steps/stepN-check.py)
+  - 状态文件 .constitution-state.json 记录每步 PASS/FAIL
+  - 链式依赖:strict 模式下前置 step 未 PASS,后续 step 拒绝执行
+  - 零号条款:简单问答(翻译/润色/概念解释)不适用宪法,调用方应传 --simple 跳过
+"""
+import argparse
+import importlib.util
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from lib import state as S
+from lib import text as T
+
+STEPS = [
+    ("step1", "三查汇报"),
+    ("step2", "技能树已读/无匹配声明"),
+    ("step3", "匹配技能调用"),
+    ("step4", "交付自检"),
+    ("step5", "推荐板块(GitHub 高星)"),
+]
+
+
+def load_check(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "steps", f"{name}-check.py")
+    spec = importlib.util.spec_from_file_location(f"step_mod_{name}", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.check
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Skills 宪法门禁校验")
+    ap.add_argument("--strict", action="store_true", help="严格模式:FAIL 即阻断(exit 1)")
+    ap.add_argument("--step", type=int, choices=range(1, 6), help="只跑指定 step(1-5)")
+    ap.add_argument("--input", help="输入文本文件(缺省读 stdin)")
+    ap.add_argument("--state", help="状态文件路径(默认 .constitution-state.json)")
+    ap.add_argument("--reset", action="store_true", help="清空状态文件")
+    ap.add_argument("--json", action="store_true", help="JSON 输出")
+    ap.add_argument("--simple", action="store_true", help="简单任务豁免:按零号条款跳过门禁(exit 0)")
+    a = ap.parse_args()
+
+    if a.simple:
+        print("[SKIP] 简单任务,按零号条款跳过宪法门禁")
+        return 0
+
+    if a.reset:
+        S.reset(a.state)
+        print("状态文件已重置")
+        return 0
+
+    text = T.read_input(a.input)
+    if not text.strip():
+        print("错误:无输入文本,请用 --input <file> 或管道输入", file=sys.stderr)
+        return 2
+
+    results = []
+    lines = []
+    blocked = False
+
+    for name, desc in STEPS:
+        if a.step is not None and int(a.step) != int(name[-1]):
+            continue
+
+        ok, prev = S.previous_passed(name, a.state)
+        if not ok and prev:
+            if a.strict:
+                msg = f"前置 {prev} 未通过,严格模式阻断 {name}"
+                results.append({"step": name, "desc": desc, "level": "BLOCKED", "message": msg})
+                lines.append(f"[BLOCKED] {name} - {desc}: {msg}")
+                blocked = True
+                break
+            lines.append(f"[WARN] 前置 {prev} 未通过(软模式继续,建议先修复)")
+
+        check_fn = load_check(name)
+        passed, msg, level = check_fn(text)
+        S.set_step(name, passed, msg, level, a.state)
+        results.append({"step": name, "desc": desc, "level": level, "message": msg})
+        lines.append(f"[{level}] {name} - {desc}: {msg}")
+
+        if a.strict and not passed and level == "FAIL":
+            blocked = True
+            break
+
+    if a.json:
+        print(json.dumps({"blocked": blocked, "results": results}, ensure_ascii=False, indent=2))
+    else:
+        for line in lines:
+            print(line)
+    if a.strict and blocked:
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

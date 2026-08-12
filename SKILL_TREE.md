@@ -1,6 +1,6 @@
 # 技能树索引
 
-**生成时间**: 2026-08-12T12:49:14.092191
+**生成时间**: 2026-08-12T17:38:03.872519
 **总技能数**: 685
 **已装库/工具数**: 3
 **总条目数**: 688
@@ -163,7 +163,7 @@
 - `setup-pre-commit` (v1.0.0): Set up Husky pre-commit hooks with lint-staged (Prettier), type
 - `skill-scout` (v0.0.0): Search existing local, marketplace, GitHub, and web skill sources
 - `skill_2053081574105186304` (v1.51.3): GitHub API token for auto-issue reporting and releases.
-- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `source-driven-development` (v0.0.0): Grounds every implementation decision in official documentation. Use when you wa...
 - `speckit-baseline` (v0.0.0): Generate feature specifications by analyzing existing source code.
 - `speckit-taskstoissues` (v0.0.0): Convert existing tasks into actionable, dependency-ordered GitHub
@@ -257,7 +257,7 @@
 - `outbound-engine` (v1.0.0): Design, analyze, and optimize cold outbound email campaigns for
 - `qq-email` (v1.0.0): QQ邮箱 IMAP receive and SMTP send via Node.js scripts; credentials
 
-## 📁 文件管理类 (37 个)
+## 📁 文件管理类 (38 个)
 
 - `aiweko-memory-reports` (v0.0.0): 一键为工作空间搭建本地三层记忆体系（用户级记忆、项目长记忆、每日流水日志），并固化任务完成自动追加流水的习惯。纯本地文件初始化，不联网、不创建自动化、不读凭证。...
 - `awesome-design-md` (v1.0.0): Curated collection of 54 DESIGN.md files extracted from real
@@ -290,6 +290,7 @@
 - `ppt` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
 - `ppt-generator` (v0.0.0): 将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能...
 - `repo-scan` (v0.0.0): Cross-stack source code asset audit — classifies every file,
+- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `skills-security-check` (v1.0.2): 腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全
 - `summarize` (v0.0.0): Summarize URLs or files with the summarize CLI (web, PDFs, images,
 - `wechat-article-search` (v0.1.0): 搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号...
@@ -742,7 +743,7 @@
 - `ontology` (v0.0.0): Typed knowledge graph for structured agent memory and composable
 - `self-improving-agent-cn` (v1.0.0): AI自我改进与记忆系统 - 解决'同类错误反复犯、用户纠正不长记性'的痛点。自动捕获错误、用户纠正、最佳实践，并转化为长期记忆。
 - `self-reflection` (v1.1.1): Continuous self-improvement through structured reflection and memory
-- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `swift-actor-persistence` (v0.0.0): Thread-safe data persistence in Swift using actors — in-memory
 
 ## 📜 元规则类 (8 个)
@@ -753,7 +754,7 @@
 - `nuxt4-patterns` (v0.0.0): Nuxt 4 app patterns for hydration safety, performance, route rules,
 - `rules-distill` (v0.0.0): Scan skills to extract cross-cutting principles and distill them
 - `skill-comply` (v0.0.0): Visualize whether skills, rules, and agent definitions are actually
-- `skills-constitution` (v2.5.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
+- `skills-constitution` (v2.6.0): Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决...
 - `speckit-constitution` (v0.0.0): Create or update the project constitution from interactive or
 
 ## 🔍 搜索研究类 (49 个)

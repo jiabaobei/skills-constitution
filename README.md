@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.6.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.5.0
+## Skills 宪法（Skills Constitution）v2.6.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -68,7 +68,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.5.0）
+## 📋 宪法条款（v2.6.0）
 
 ### 第零条：查记忆（Pre-Check Memory）
 执行前查阅平台记忆层，确认相关规则和历史上下文。
@@ -173,6 +173,38 @@ cp SKILL.md .clinerules
 
 ---
 
+## 🔒 门禁自检（v2.6.0 新增）
+
+把「靠 Agent 自觉」变成「可校验、可拦截」。5 个 step 独立校验，状态文件链式依赖，默认软校验 + `--strict` 可选阻断。
+
+> ⚠️ **仅适用专业任务**：简单问答（翻译/润色/概念解释）按零号条款跳过，用 `--simple` 声明，不跑门禁。
+
+```bash
+# 全量软校验（FAIL 只警告）
+python scripts/constitution-check --input output.txt
+
+# 严格模式（FAIL 即阻断，exit 1）
+python scripts/constitution-check --input output.txt --strict
+
+# 简单任务豁免（零号条款）
+python scripts/constitution-check --simple
+
+# 单步校验（如推荐板块）
+python scripts/constitution-check --step 5 --input output.txt
+```
+
+| Step | 校验内容 | 对应条款 |
+|------|---------|---------|
+| 1 | 宪法三查已汇报 | 第零/一条 |
+| 2 | 技能树已读或无匹配声明 | 第一条 |
+| 3 | 命中技能已调用 | 第二条 |
+| 4 | 交付自检（非版本类自动跳过） | 全文件核查 |
+| 5 | 推荐板块含 GitHub 链接+star 数 | 第五条 |
+
+> ⚠️ 设计边界：脚本是"增强层"，宪法正文永远是行为规则兜底。**禁止**把"必须先跑脚本"写进正文——在跑不了脚本的环境会被 Agent 判为"不可满足"而整体跳过宪法。
+
+---
+
 ## 🏗️ 项目结构
 
 ```
@@ -183,7 +215,15 @@ skills-constitution/
 ├── SKILL_TREE.md               # 技能树索引（人类可读）
 ├── skill_tree.json             # 技能树索引（机器可读）
 ├── scripts/
-│   └── build_skill_tree.py     # 分类脚本
+│   ├── build_skill_tree.py     # 分类脚本
+│   ├── constitution-check      # 门禁校验主入口（v2.6.0）
+│   ├── steps/                  # 5 个 step 独立校验脚本
+│   │   ├── step1-check.py      # 三查汇报
+│   │   ├── step2-check.py      # 技能树已读
+│   │   ├── step3-check.py      # 技能调用
+│   │   ├── step4-check.py      # 交付自检
+│   │   └── step5-check.py      # 推荐板块
+│   └── lib/                    # 状态文件 + 文本工具
 └── .github/
     └── workflows/
         └── build-skill-tree.yml  # 自动更新

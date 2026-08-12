@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化。"
-version: 2.5.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"。
+version: 2.6.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.5.0** — 技能树纳入已装 Python 库/工具（🧩 分类）；第一条升级为「查技能树无条件第一步 + 宪法三查汇报」执行强化
+> **v2.6.0** — 新增门禁自检脚本 `constitution-check`：5 个 step 独立校验（三查/技能树/技能调用/交付自检/推荐板块），默认软校验 + `--strict` 可选阻断 + 状态文件链式依赖，把「靠 Agent 自觉」变成「可校验、可拦截」
 
 ---
 
@@ -197,6 +197,11 @@ SKILL_INDEX_PATH: ~/.workbuddy/skills/skill_tree.json
 （最多 3 个，避免刷屏）
 ```
 
+**执行细则（v2.6.0 强化）**：
+- 推荐内容**必须**是 WebSearch/WebFetch 搜索到的 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式），**不是**本地已装技能清单
+- **禁止**以"本地已装技能"充当第五条输出（本地技能仅可作补充提示，不能替代 GitHub 搜索）
+- 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式）
+
 ---
 
 ## 执行闭环（五步流程图）
@@ -331,7 +336,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.5.0
+## Skills 宪法（Skills Constitution）v2.6.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -446,6 +451,54 @@ cat skill_tree.json | jq '.total'
 
 ### 通用
 执行任意专业任务，观察是否先查记忆、再查技能、后有匹配必用。
+
+---
+
+## 门禁校验机制（v2.6.0 新增）
+
+> 目的：把「靠 Agent 自觉」变成「可校验、可拦截」。校验脚本只负责 PASS/FAIL；真正的强制触发依赖宿主 hook（如 WorkBuddy/Claude Code 的钩子），无 hook 环境退化为软校验。
+>
+> ⚠️ **仅适用专业任务**：简单问答（翻译、润色、解释概念、一般知识问答）按**零号条款**跳过，**不跑门禁**——调用方应传 `--simple` 声明（脚本直接 SKIP 退出），防止简单任务被误拉去校验（如无推荐板块导致误 FAIL）。
+
+### 目录结构
+```
+scripts/
+├── constitution-check          # 主入口
+├── steps/
+│   ├── step1-check.py          # 三查汇报校验
+│   ├── step2-check.py          # 技能树已读/无匹配声明
+│   ├── step3-check.py          # 匹配技能调用
+│   ├── step4-check.py          # 交付自检（非版本类任务自动跳过）
+│   └── step5-check.py          # 推荐板块（GitHub 链接 + star 数）
+└── lib/
+    ├── state.py                # 状态文件（.constitution-state.json，链式依赖）
+    └── text.py                 # 文本/正则工具
+```
+
+### 用法
+```bash
+# 全量软校验（默认：FAIL 只警告，不阻断）
+python scripts/constitution-check --input output.txt
+
+# 严格模式：FAIL 即阻断（exit 1）
+python scripts/constitution-check --input output.txt --strict
+
+# 简单任务豁免（零号条款：翻译/润色/概念解释，跳过门禁）
+python scripts/constitution-check --simple
+
+# 只跑指定 step（如推荐板块校验）
+python scripts/constitution-check --step 5 --input output.txt
+
+# 机器可读输出 / 重置状态
+python scripts/constitution-check --input output.txt --json
+python scripts/constitution-check --reset
+```
+
+### 设计要点
+- **默认软校验、`--strict` 可选**：宪法正文永远是"行为规则"（任何平台可遵守的兜底）；脚本是"增强层"。**禁止**把"必须先跑脚本"写进宪法正文——在跑不了脚本的环境（ChatGPT/Kimi/豆包等建议型平台）会被 Agent 判为"不可满足"而整体跳过宪法
+- **链式依赖**：状态文件记录每步 PASS/FAIL，strict 模式下前置 step 未通过则拒绝执行下一步（逐步验证再往下走）
+- **校验输入 = Agent 输出文本 + 状态痕迹**：设计上要求 Agent 每步显式输出产物并调用 check 写状态，脚本才有内容可查
+- 校验失败在软模式下仅警告，脚本 bug/状态丢失不会卡死任务
 
 ---
 

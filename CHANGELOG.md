@@ -4,6 +4,27 @@
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [2.6.0] - 2026-08-12
+
+### 新增
+- **门禁校验机制（constitution-check）**：把「靠 Agent 自觉」变成「可校验、可拦截」——`scripts/constitution-check` 主入口 + `scripts/steps/step1~5-check.py` 五个独立校验脚本 + `scripts/lib/`（状态文件/文本工具）
+  - step1 三查汇报 / step2 技能树已读 / step3 技能调用 / step4 交付自检（非版本类自动跳过）/ step5 推荐板块（GitHub 链接 + star 数 + 获取方式）
+  - **默认软校验 + `--strict` 可选阻断**：校验失败默认只警告不阻断；`--strict` 时 FAIL 即阻断（exit 1）
+  - **状态文件链式依赖**：`.constitution-state.json` 记录每步 PASS/FAIL，strict 模式下前置 step 未通过则拒绝执行下一步
+  - 支持 `--step` 单步运行、`--input`/stdin 输入、`--json` 机器可读输出、`--reset`
+- **第五条执行细则强化**：明确推荐内容**必须**是 WebSearch 搜索到的 GitHub 高 Star skill/tool/agent 仓库（含 star 数+链接+获取方式），**禁止**以本地已装技能充当第五条输出；可配合 `--step 5` 门禁自动校验
+- **简单任务豁免（零号条款联动）**：门禁新增 `--simple` 参数——简单问答（翻译/润色/概念解释）按零号条款直接 SKIP 退出（exit 0），不跑 5 步校验，防止简单任务被误拉去校验而产生误 FAIL
+
+### 设计边界（防致命风险）
+- **禁止**把"必须先跑脚本"写进宪法正文：在跑不了脚本的环境（ChatGPT/Kimi/豆包等建议型平台）会被 Agent 判为"不可满足"而整体跳过宪法——脚本只是增强层，宪法正文永远是行为规则兜底
+
+### 变更
+- 版本号从 v2.5.0 升级到 v2.6.0
+- SKILL.md 新增「门禁校验机制」章节；README 新增「门禁自检」章节并更新项目结构
+
+### 验证
+- 本地实测通过：PASS 文本 5 步全过 / FAIL 文本软模式 exit 0、strict 模式 exit 1 / 链式阻断（strict 下前置未过 → BLOCKED）/ 单步独立运行 / stdin 输入 / JSON 输出
+
 ## [2.5.0] - 2026-08-12
 
 ### 新增
