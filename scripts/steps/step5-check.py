@@ -62,7 +62,7 @@ def check(text):
         return False, "推荐板块缺获取方式", "FAIL"
 
     # Layer A 通过,检查 Layer B
-    hard_passed, hard_msg = layer_b_hard_check(text)
+    hard_passed, hard_msg, hard_level = layer_b_hard_check(text)
     if hard_passed:
         return True, f"软+硬校验均通过。{hard_msg}", "PASS"
 
