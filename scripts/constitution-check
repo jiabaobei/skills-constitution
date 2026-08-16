@@ -54,6 +54,7 @@ def main():
     ap.add_argument("--reset", action="store_true", help="清空状态文件")
     ap.add_argument("--json", action="store_true", help="JSON 输出")
     ap.add_argument("--simple", action="store_true", help="简单任务豁免:按零号条款跳过门禁(exit 0)")
+    ap.add_argument("--task", help="任务描述(v2.11.0:含代码/git/部署关键词时,输出必须引用对应分类技能)")
     ap.add_argument("--pre-hook", action="store_true",
                     help="先执行 pre-hook 输入拦截(校验开场是否已注入,未注入即阻断)")
     ap.add_argument("--classify", action="store_true",
@@ -111,7 +112,7 @@ def main():
             return 0
         else:
             # 通道B：专业/模糊任务 → 强制 pre-hook 注入检查
-            ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree)
+            ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree, a.task)
             level = "PASS" if ph_ok else "BLOCKED"
             ch_label = "专业" if task_type == "professional" else "模糊(按专业)"
             results.append({"step": "classify", "desc": "双通道分流", "level": level,
@@ -139,7 +140,7 @@ def main():
         spec = _ilu.spec_from_file_location("pre_hook_mod", pre_hook_path)
         ph = _ilu.module_from_spec(spec)
         spec.loader.exec_module(ph)
-        ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree)
+        ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree, a.task)
         level = "PASS" if ph_ok else "BLOCKED"
         results.append({"step": "pre-hook", "desc": "输入拦截", "level": level,
                         "message": f"{ph_msg}" + ("" if ph_ok else " → 任务开始前被拦截")})
@@ -170,11 +171,11 @@ def main():
             lines.append(f"[WARN] 前置 {prev} 未通过(软模式继续,建议先修复)")
 
         check_fn = load_check(name)
-        # 根据 step 名称传递额外参数
+        # 根据 step 名称传递额外参数(v2.11.0: step1/2/3 增加 task 任务相关校验)
         if name == "step1":
-            passed, msg, level = check_fn(text, a.memory, a.tree)
+            passed, msg, level = check_fn(text, a.memory, a.tree, a.task)
         elif name in ("step2", "step3"):
-            passed, msg, level = check_fn(text, a.tree)
+            passed, msg, level = check_fn(text, a.tree, a.task)
         else:
             passed, msg, level = check_fn(text)
         S.set_step(name, passed, msg, level, a.state)

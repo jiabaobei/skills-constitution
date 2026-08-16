@@ -5,6 +5,56 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.11.0] - 2026-08-16
+
+### 重大改版：任务相关硬校验（Layer C）+ 命中清单强制 + 推荐定位修正
+
+**核心问题**：v2.10.0 的硬校验只验证"是否引用了 MEMORY.md/skill_tree.json 的任何内容"，
+导致 Agent 可以用"查了 skills-constitution 就算查了技能"糊弄——任务要编代码/推 GitHub，
+输出却只写"已读技能树"，没有任何代码类技能名被引用，门禁照样过。
+
+**解决方案**：把"查技能树"从"读文件"升级为"命中任务对应分类的实际技能"：
+
+#### 新增 Layer C：任务相关硬校验（step1/2/3 + pre-hook）
+- `pre-hook.py` 新增 `REQUIRED_CATEGORY_KEYWORDS` 确定性映射（40+ 关键词 → 必需分类）：
+  - `git/github/push/commit/deploy/部署/代码/编码/编程/写一个/实现/开发` → `code` 分类
+  - `爬虫/抓取` → `browser` + `data`；`网页/网站/前端/浏览器` → `browser`
+  - `文档/word/excel/ppt/pdf/表格` → `doc`；`数据/分析/报表/图表/可视化` → `data`
+  - `邮件` → `email`；`图片/图像/设计` → `image`；`视频` → `video`
+  - `金融/股票/基金` → `finance`；`记忆/知识库` → `memory`；`文件` → `file`
+- `required_skills_for_task()` 从 skill_tree.json 提取必需分类下的实际技能名
+- **校验规则**：任务命中关键词 → 输出必须引用对应分类的**实际技能名**（如 `git-workflow-and-versioning`）
+  - 只写"已查 skills-constitution"或"已读技能树"而无具体技能名 → FAIL
+  - 引用了错误分类技能（任务要代码，却只列 doc 分类）→ FAIL
+- `constitution-check` 新增 `--task` 参数，透传给 step1/2/3 和 pre-hook 检查
+
+#### 三查汇报强制命中清单
+- 【宪法三查】②技能树必须**列出命中的技能名清单**（名称+依据）：
+  `命中技能清单：git-workflow-and-versioning（代码/部署）、web-deploy-github（GitHub 推送）…`
+- 禁止只写"已读技能树"——这属于 v2.11.0 新增违规项「空头查技能」
+
+#### 第五条推荐定位修正（用户设计初衷确认）
+- **初衷**：既然查了本地技能，还是没有完美解决工作 → 就应该去 GitHub 搜索相关技能，推荐给用户，用户自己决定是否下载安装
+- **修正**：推荐触发场景 = 本地技能不足/效果不理想/超出范围；推荐内容 = GitHub 高 Star 技能（含链接+star+获取方式）；本地不足却不去搜索 → 违规
+
+#### 验证测试
+| 场景 | 结果 |
+|------|------|
+| 简单任务（翻译） | 通道A SKIP，零号条款豁免 |
+| 专业任务（推送github）未注入三查 | 通道B BLOCKED |
+| 专业任务写了三查但只写"已查宪法"无技能名 | Layer C FAIL ✅（本次修复目标） |
+| 专业任务引用 `git-workflow-and-versioning` | Layer C PASS |
+| 任务要代码却只引用 doc 分类技能 | Layer C FAIL（查错分支） |
+
+### 修改文件
+- `scripts/pre-hook.py` - 新增 REQUIRED_CATEGORY_KEYWORDS / required_categories_for_task / required_skills_for_task；注入块增加任务必需技能清单
+- `scripts/steps/step1-check.py` - 新增 Layer C 任务相关硬校验
+- `scripts/steps/step2-check.py` - 新增 Layer C 任务相关硬校验
+- `scripts/steps/step3-check.py` - 新增 Layer C 任务相关硬校验
+- `scripts/constitution-check` - 新增 --task 参数传递
+- `SKILL.md` - 更新至 v2.11.0（三查模板/第五条/违规判定/门禁章节）
+- `README.md` - 同步 v2.11.0
+
 ## [2.10.0] - 2026-08-16
 
 ### 重大改版：输入拦截 + 双通道执行
@@ -135,7 +185,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.9.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.10.0...HEAD
+[2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
+[2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0
 [2.9.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.9.0
 [2.8.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.8.0
 [2.7.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.7.0

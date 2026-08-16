@@ -45,6 +45,81 @@ TASK_CATEGORY_MAP = {
     "通用": ["general", "通用"],
 }
 
+# v2.11.0 新增:任务关键词 → 必需技能分类(确定性映射,用于硬校验)
+# 当任务命中以下任一关键词时,Agent 输出必须引用对应分类下的实际技能名,
+# 否则视为"查了技能树但没找到任务相关技能"——硬校验 FAIL。
+# 关键词按优先级排列(越靠前越强),命中即映射到必需分类。
+REQUIRED_CATEGORY_KEYWORDS = [
+    # (任务关键词, 必需分类列表)
+    ("git", ["code"]), ("github", ["code"]), ("push", ["code"]),
+    ("commit", ["code"]), ("deploy", ["code"]), ("部署", ["code"]),
+    ("代码", ["code"]), ("编码", ["code"]), ("编程", ["code"]),
+    ("写一个", ["code"]), ("实现", ["code"]), ("开发", ["code"]),
+    ("爬虫", ["browser", "data"]), ("抓取", ["browser", "data"]),
+    ("网页", ["browser"]), ("网站", ["browser"]), ("前端", ["browser"]),
+    ("浏览器", ["browser"]), ("自动化", ["browser", "automation"]),
+    ("文档", ["doc"]), ("word", ["doc"]), ("excel", ["doc"]),
+    ("ppt", ["doc"]), ("pdf", ["doc"]), ("表格", ["doc", "data"]),
+    ("邮件", ["email"]), ("发送邮件", ["email"]),
+    ("数据", ["data"]), ("分析", ["data"]), ("报表", ["data"]),
+    ("图表", ["data"]), ("可视化", ["data"]),
+    ("图片", ["image"]), ("图像", ["image"]), ("设计", ["image"]),
+    ("视频", ["video"]), ("剪辑", ["video"]),
+    ("搜索", ["search"]), ("查询", ["search"]),
+    ("记忆", ["memory"]), ("知识库", ["memory"]),
+    ("金融", ["finance"]), ("股票", ["finance"]), ("基金", ["finance"]),
+    ("文件", ["file"]),
+]
+
+
+def required_categories_for_task(task):
+    """v2.11.0:按任务关键词返回必需技能分类(确定性,非 Agent 自觉)
+
+    返回 list[str],如 ["code"] / ["browser","data"] / [] (无强相关)
+    这是硬校验的依据:任务含"代码/git/部署"关键词 → 输出必须命中 code 分类技能。
+    """
+    if not task:
+        return []
+    task_lower = task.lower()
+    matched = []
+    for kw, cats in REQUIRED_CATEGORY_KEYWORDS:
+        if kw.lower() in task_lower:
+            for c in cats:
+                if c not in matched:
+                    matched.append(c)
+    return matched
+
+
+def required_skills_for_task(tree, task):
+    """v2.11.0:从技能树中提取任务必需分类下的实际技能名
+
+    返回 (required_cats, skill_names):
+      required_cats: 必需分类列表
+      skill_names:   这些分类下所有技能名(去重)
+    注意:排除 skills-constitution 自身——它是元规则,不是任务技能,
+    写"已查 skills-constitution"不算命中 code 分类(用户反馈的真实漏洞)。
+    """
+    EXCLUDED_SKILLS = {"skills-constitution", "constitution-check"}
+    required_cats = required_categories_for_task(task)
+    if not required_cats or not tree:
+        return required_cats, []
+    skill_names = []
+    for cat in required_cats:
+        for item in tree.get(cat, []):
+            if isinstance(item, dict):
+                if item.get("name") and item["name"] not in EXCLUDED_SKILLS:
+                    skill_names.append(item["name"])
+            elif isinstance(item, str) and item not in EXCLUDED_SKILLS:
+                skill_names.append(item)
+    # 去重
+    seen = set()
+    result = []
+    for s in skill_names:
+        if s not in seen:
+            seen.add(s)
+            result.append(s)
+    return required_cats, result
+
 # 零号条款：简单任务关键词（命中任一 → 判定简单，走通道A，不拦截）
 SIMPLE_TASK_MARKERS = [
     "翻译", "润色", "改写", "解释", "解释一下", "概念", "是什么意思",
@@ -180,16 +255,32 @@ def build_injection(memory_text, tree, matched_cats, task):
         if skills:
             lines.append(f"- **{cat}** ({len(skills)}): {', '.join(skills[:12])}{'...' if len(skills) > 12 else ''}")
     lines.append("")
+
+    # v2.11.0 必需技能清单注入（硬校验依据）
+    required_cats, required_skills = required_skills_for_task(tree, task)
+    if required_skills:
+        lines.append("### 🎯 任务必需技能（v2.11.0 硬校验：输出必须引用其一，否则判定 FAIL）")
+        for cat in required_cats:
+            cat_skills = [s for s in required_skills if s in tree.get(cat, [])]
+            if cat_skills:
+                lines.append(f"- **{cat}** 分类命中候选: {', '.join(cat_skills[:10])}")
+        lines.append("")
+
     lines.append("**执行要求：**")
-    lines.append("1. 第一句话必须输出【宪法三查】汇报（记忆✅ / 技能树✅ / 匹配✅或无匹配）")
+    lines.append("1. 第一句话必须输出【宪法三查】汇报，且 ②技能树 必须**列出命中的技能名清单**（如：命中 `git-workflow-and-versioning`、`web-deploy-github`），禁止只写'已读技能树'")
     lines.append("2. 命中技能 → 必须调用；无命中 → 声明'技能树无匹配'再走通用能力")
-    lines.append("3. 任务完成后输出【本次相关技能推荐】")
+    lines.append("3. 任务完成后输出【本次相关技能推荐】：若本地技能未能完美解决任务，必须去 GitHub 搜索高 Star 相关技能推荐给用户（含链接+star+获取方式），由用户自行决定是否安装")
     lines.append("")
     return "\n".join(lines)
 
 
-def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE):
-    """校验文本是否包含注入块元素（宿主 hook 用）"""
+def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE, task=None):
+    """校验文本是否包含注入块元素（宿主 hook 用）
+
+    v2.11.0 增强:传入 task 后,若任务含"代码/git/部署"等关键词,
+    输出文本必须引用对应分类下的实际技能名(从 skill_tree.json 读取),
+    否则视为"查了技能树但未命中任务相关技能" → FAIL。
+    """
     if not text:
         return False, "无输入文本"
     # 必须包含三查汇报
@@ -209,12 +300,25 @@ def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE):
         found_cat = [c for c in all_cats[:10] if c.lower() in text.lower()]
         if not found_cat:
             return False, "缺技能树分类引用"
+
+    # v2.11.0:任务必需技能硬校验 — 任务含代码/git/部署关键词时,必须命中对应分类技能名
+    if task:
+        required_cats, required_skills = required_skills_for_task(tree, task)
+        if required_skills:
+            # 输出中必须出现至少一个必需技能名(或对应分类名)
+            found_skills = [s for s in required_skills if s.lower() in (text or "").lower()]
+            found_cats = [c for c in required_cats if c.lower() in (text or "").lower()]
+            if not found_skills and not found_cats:
+                return False, (
+                    f"任务含必需关键词但输出未引用任务相关技能"
+                    f"(必需分类:{required_cats}, 候选技能示例:{required_skills[:5]})"
+                )
     return True, "注入合规(三查+记忆+技能树均已覆盖)"
 
 
 def main():
     ap = argparse.ArgumentParser(description="宪法 Pre-hook: 任务前强制注入记忆+技能树")
-    ap.add_argument("--task", help="任务描述(用于过滤技能树分类)")
+    ap.add_argument("--task", help="任务描述(用于过滤技能树分类;check模式用于任务必需技能硬校验)")
     ap.add_argument("--memory", default=DEFAULT_MEMORY, help=f"MEMORY.md路径(默认:{DEFAULT_MEMORY})")
     ap.add_argument("--tree", default=DEFAULT_TREE, help=f"skill_tree.json路径(默认:{DEFAULT_TREE})")
     ap.add_argument("--output", help="注入块输出到文件(缺省打印到 stdout)")
@@ -258,7 +362,7 @@ def main():
         if a.input:
             with open(a.input, encoding="utf-8") as f:
                 text = f.read()
-        ok, msg = check_injection(text, a.memory, a.tree)
+        ok, msg = check_injection(text, a.memory, a.tree, a.task)
         if a.json:
             print(json.dumps({"ok": ok, "message": msg}, ensure_ascii=False, indent=2))
         else:

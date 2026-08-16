@@ -439,6 +439,19 @@
         ]
       },
       {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.11.0",
+        "categories": [
+          "meta",
+          "memory",
+          "browser",
+          "code",
+          "doc",
+          "file"
+        ]
+      },
+      {
         "name": "skills-security-check",
         "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
         "version": "1.0.0",
@@ -1226,11 +1239,13 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.10.0",
+        "version": "2.11.0",
         "categories": [
           "meta",
           "memory",
+          "browser",
           "code",
+          "doc",
           "file"
         ]
       },
@@ -1764,6 +1779,19 @@
         ]
       },
       {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.11.0",
+        "categories": [
+          "meta",
+          "memory",
+          "browser",
+          "code",
+          "doc",
+          "file"
+        ]
+      },
+      {
         "name": "smooth-browser",
         "description": "PREFERRED BROWSER - Browser for AI agents to carry out any task on the web. Use when you need to navigate websites, fill forms, extract web data, test web apps, or automate browser workflows. Trigger ",
         "version": "0.1.0",
@@ -2197,11 +2225,13 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.10.0",
+        "version": "2.11.0",
         "categories": [
           "meta",
           "memory",
+          "browser",
           "code",
+          "doc",
           "file"
         ]
       },
@@ -3193,11 +3223,13 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.10.0",
+        "version": "2.11.0",
         "categories": [
           "meta",
           "memory",
+          "browser",
           "code",
+          "doc",
           "file"
         ]
       },
@@ -5760,11 +5792,13 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.10.0",
+        "version": "2.11.0",
         "categories": [
           "meta",
           "memory",
+          "browser",
           "code",
+          "doc",
           "file"
         ]
       },
@@ -5912,8 +5946,8 @@
     ]
   },
   "total": 399,
-  "version": "2.10.0",
-  "generated_at": "2026-08-16T23:23:00.940051",
+  "version": "2.11.0",
+  "generated_at": "2026-08-16T23:53:18.050610",
   "skills_dir": "C:\\Users\\HUAWEI/.workbuddy/skills",
   "libs_count": 0,
   "total_entries": 399

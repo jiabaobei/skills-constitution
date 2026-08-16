@@ -1,14 +1,14 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验。
-version: 2.10.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"。
+version: 2.11.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
 display_name_en: "Skills Constitution"
-description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.10.0输入拦截+双通道分流。"
-description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.10.0 adds pre-hook input interception and dual-channel routing."
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.11.0任务相关硬校验+命中清单强制输出。"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.11.0 adds task-relevant hard validation (must cite actual skill names for code/git/deploy tasks) and mandatory hit-list reporting."
 visibility: "public"
 agent_created: true
 ---
@@ -133,18 +133,19 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 3. 在分支内匹配描述
 4. 未命中则全量扫描（兜底）
 
-**执行强化（v2.5.0 新增，无条件第一步）**：
+**执行强化（v2.5.0 新增，无条件第一步；v2.11.0 强制命中清单）**：
 
 「先查技能索引」必须是**无条件动作**，不是"我觉得需要才查"：
 - **任何专业任务（含"查安装/查库"类，如确认某 Python 库是否安装）第一步必须读技能树索引**，禁止以"这不需要查技能"为由跳过——凭判断跳过正是本宪法要防的行为（教训：实际运行中查 cognee 时跳过技能树被用户抓包）
 - 技能树索引应包含**技能与已装 Python 库/工具**（🧩 分类），一个入口查全
-- 任务开始需**显式汇报「宪法三查」结果**，让流程可见、可被用户监督：
+- 任务开始需**显式汇报「宪法三查」结果**，让流程可见、可被用户监督。**v2.11.0 强制：②技能树必须列出命中的技能名清单（名称+依据），禁止只写"已读技能树"**：
   ```
   【宪法三查】
   ① 记忆 ✅ 已查（用户级/项目/今日流水）
-  ② 技能树 ✅ 已读（是否命中相关技能/已装库）
+  ② 技能树 ✅ 已读（命中技能清单：`git-workflow-and-versioning`（代码/部署）、`web-deploy-github`（GitHub 推送）…）
   ③ 匹配 ✅ 命中 X → 用它执行；无命中 → 说明"技能树无匹配"再走通用能力/文件系统
   ```
+- **v2.11.0 任务相关硬校验（Layer C）**：任务含「代码/编码/编程/开发/写一个/实现/git/github/push/commit/deploy/部署/爬虫/抓取/网页/前端/文档/数据/邮件/图片/视频」等关键词时，**输出必须引用 skill_tree.json 对应分类下的实际技能名**（如 `git-workflow-and-versioning`），仅写"已查 skills-constitution"或"已读技能树"而无具体技能名 → 门禁 FAIL
 - 简单问答豁免（翻译/润色/概念解释）
 
 ---
@@ -184,22 +185,28 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 
 ### 第五条：答复时自动推荐（Auto-Discovery）
 
-任务完成后（答复阶段）→ 自动搜索全网能力库，找出与该任务高度匹配的现成能力推荐给**用户**。
+任务完成后（答复阶段）→ **若本地已装技能未能完美解决任务，必须去 GitHub / 全网能力库搜索更优能力推荐给用户**，由用户自行决定是否安装。本地技能不足时"不搜索、不推荐"是违规。
+
+**触发场景**（满足其一即必须执行）：
+- 本地技能树查了，但没有完全匹配的技能
+- 本地有匹配技能但执行效果不理想（如推送 GitHub 受阻、脚本报错）
+- 任务明显超出本地技能范围（如需要专用工具/agent/插件）
 
 **搜索范围**：
-- GitHub（`github.com` 上的 skill/tool/agent 仓库）
+- GitHub（`github.com` 上的 skill/tool/agent 仓库，高 Star 优先）
 - 各平台官方市场（GPT Store / SkillHub / MCP Registry / Extensions Gallery）
 
 **推荐格式**：
 ```
-🔍 顺手搜了一圈，发现这几个能力可能更适合下次用：
-- 名称：xxx — 一句话亮点 + 获取方式
+🔍 本地技能未能完美解决此任务，从 GitHub 搜到这几个更优能力：
+- 名称：xxx — 一句话亮点 + GitHub 链接 + Star 数 + 获取方式（是否要安装由你决定）
 （最多 3 个，避免刷屏）
 ```
 
-**执行细则（v2.6.0 强化）**：
-- 推荐内容**必须**是 WebSearch/WebFetch 搜索到的 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式），**不是**本地已装技能清单
-- **禁止**以"本地已装技能"充当第五条输出（本地技能仅可作补充提示，不能替代 GitHub 搜索）
+**执行细则（v2.6.0 强化；v2.11.0 修正定位）**：
+- **推荐核心**：必须是 WebSearch/WebFetch 搜索到的 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式）——这是用户决定是否安装的依据
+- **允许**在推荐前简要说明"本地已查过哪些技能、为何不足"（如"本地已装 `git-workflow-and-versioning` 但网络受阻"），帮助用户理解为什么需要新技能
+- **禁止**以"本地已装技能清单"替代 GitHub 搜索推荐（本地技能仅作背景说明）
 - 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式）
 
 ---
@@ -338,19 +345,19 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.10.0
+## Skills 宪法（Skills Constitution）v2.11.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
 执行路径：
 1. 先查记忆：查阅平台记忆层（MEMORY.md/CLAUDE.md 等）确认相关规则
-2. 先查技能：查看技能索引，按任务类型定位功能分支
+2. 先查技能：查看技能索引，按任务类型定位功能分支，**输出必须列出命中的技能名清单**
 3. 匹配必用：有匹配则无条件优先使用该能力
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
-6. 答复推荐：任务完成后自动搜索全网能力库，推荐更优能力给用户
+6. 答复推荐：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 能力推荐给用户（含链接+star+获取方式），由用户决定是否安装
 
-违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 无复盘推荐
+违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树但未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐
 ```
 
 ---
@@ -393,8 +400,10 @@ flowchart TD
 | 跳过查记忆直接干 | 任务完成但未查阅平台记忆层 |
 | 跳过查技能清单直接干 | 任务完成但未加载任何相关能力 |
 | 有匹配但不用 | 能力注册表中有匹配能力但未加载 |
+| **空头查技能（v2.11.0）** | 只写"已读技能树/已查宪法"但未列出命中的具体技能名，且任务含代码/git/部署等关键词 |
+| **查错分支（v2.11.0）** | 任务要求编码/推送，却引用无关分类技能（如文档类） |
 | 未搜索就拒绝 | 说"做不到"但未通过技能发现机制确认 |
-| 无复盘 | 答复时未搜索全网能力库（当任务与能力库明显相关时） |
+| **无复盘推荐（v2.11.0）** | 本地技能未能完美解决任务，却未去 GitHub 搜索更优能力推荐给用户 |
 
 ---
 
@@ -456,7 +465,7 @@ cat skill_tree.json | jq '.total'
 
 ---
 
-## 门禁校验机制（v2.6.0 新增；v2.10.0 升级为输入拦截 + 双通道）
+## 门禁校验机制（v2.6.0 新增；v2.10.0 升级为输入拦截 + 双通道；v2.11.0 升级为任务相关硬校验）
 
 > 目的：把「靠 Agent 自觉」变成「可校验、可拦截」。校验脚本只负责 PASS/FAIL；真正的强制触发依赖宿主 hook（如 WorkBuddy/Claude Code 的钩子），无 hook 环境退化为软校验。
 >
@@ -472,24 +481,25 @@ cat skill_tree.json | jq '.total'
   ├─ pre-hook.py --classify（零号条款分类器）
   │    ├─ 命中简单关键词（翻译/润色/解释/概念/闲聊…）→ 【通道A】跳过门禁，直接通用能力 ✅
   │    └─ 命中专业关键词（编码/爬虫/API/文件/部署…）→ 【通道B】强制注入校验
-  │         └─ 未输出【宪法三查】→ BLOCKED（任务开始前被拦截，exit 1）
-  │         └─ 已输出【宪法三查】→ 继续 step1-5 全量校验
+  │         ├─ v2.11.0: pre-hook.py --task 提取任务必需分类（代码/git/部署→code 分类）
+  │         └─ 未输出【宪法三查】或未引用任务对应分类技能名 → BLOCKED（exit 1）
+  │         └─ 已输出【宪法三查】且命中任务分类技能 → 继续 step1-5 全量校验
   └─ 模糊任务 → 宁可不放过，按通道B处理（宪法零号条款：模糊任务 ✅ 查一下）
 ```
 
 - **通道A（简单）**：零号条款豁免，直接通用能力，不查记忆/技能树，不拦截
-- **通道B（专业/模糊）**：pre-hook 强制注入记忆+技能树，未汇报三查即阻断
+- **通道B（专业/模糊）**：pre-hook 强制注入记忆+技能树，未汇报三查即阻断；**v2.11.0 任务关键词硬校验**——任务含"代码/git/部署"等关键词时，输出必须引用 skill_tree.json 对应分类的实际技能名（如 `git-workflow-and-versioning`），否则 BLOCKED
 
 ### 目录结构
 ```
 scripts/
-├── pre-hook.py                 # v2.10.0 输入拦截 + 任务分类器（双通道分流）
-├── constitution-check          # 主入口（--pre-hook / --classify / --simple）
+├── pre-hook.py                 # v2.10.0 输入拦截 + 任务分类器；v2.11.0 任务必需技能映射
+├── constitution-check          # 主入口（--pre-hook / --classify / --simple / --task）
 ├── retry-wrapper.py            # v2.9.0 Post-hook 重试循环
 ├── steps/
-│   ├── step1-check.py          # 三查汇报校验（软+硬两层）
-│   ├── step2-check.py          # 技能树已读/无匹配声明（软+硬两层）
-│   ├── step3-check.py          # 匹配技能调用（软+硬两层）
+│   ├── step1-check.py          # 三查汇报校验（软+硬两层 + v2.11.0 Layer C 任务相关校验）
+│   ├── step2-check.py          # 技能树已读/无匹配声明（软+硬两层 + Layer C）
+│   ├── step3-check.py          # 匹配技能调用（软+硬两层 + Layer C）
 │   ├── step4-check.py          # 交付自检（非版本类任务自动跳过）
 │   └── step5-check.py          # 推荐板块（GitHub 链接 + star 数，软+硬两层）
 └── lib/
@@ -501,6 +511,9 @@ scripts/
 ```bash
 # 双通道分流（推荐入口）：自动判定任务类型，简单跳过/专业强制
 python scripts/constitution-check --classify --input task.txt
+
+# 双通道 + 任务相关硬校验（v2.11.0）：专业任务必须引用对应分类技能名
+python scripts/constitution-check --classify --task "推送github代码" --input output.txt --strict
 
 # 输入拦截：先校验开场是否已注入三查，未注入即阻断
 python scripts/constitution-check --pre-hook --input output.txt --strict
@@ -521,7 +534,7 @@ python scripts/constitution-check --step 5 --input output.txt
 python scripts/constitution-check --input output.txt --json
 python scripts/constitution-check --reset
 
-# 直接生成注入块（任务开始前喂给 Agent）
+# 直接生成注入块（任务开始前喂给 Agent；v2.11.0 含任务必需技能清单）
 python scripts/pre-hook.py --task "推送github代码"
 ```
 

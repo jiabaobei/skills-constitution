@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.10.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.11.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-author_snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,22 +13,25 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.10.0
+## Skills 宪法（Skills Constitution）v2.11.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
 执行路径：
 1. 先查记忆：查阅平台记忆层（MEMORY.md/CLAUDE.md 等）确认相关规则
-2. 先查技能：查看技能索引，按任务类型定位功能分支
+2. 先查技能：查看技能索引，按任务类型定位功能分支，**输出必须列出命中的技能名清单**
 3. 匹配必用：有匹配则无条件优先使用该能力
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
-6. 答复推荐：任务完成后自动搜索全网能力库，推荐更优能力给用户
+6. 答复推荐：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 能力推荐给用户（含链接+star+获取方式），由用户决定是否安装
 
 双通道（v2.10.0）：简单任务（翻译/润色/解释）→ 零号条款豁免直接通用能力；
 专业任务（编码/爬虫/API）→ pre-hook 强制注入记忆+技能树，未汇报【宪法三查】即被拦截。
 
-违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 无复盘推荐
+任务相关硬校验（v2.11.0）：任务含"代码/git/部署"等关键词时，输出必须引用 skill_tree.json
+对应分类的实际技能名（如 `git-workflow-and-versioning`），只写"已查宪法/已读技能树"而无技能名 → FAIL。
+
+违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐
 ````
 
 ### WorkBuddy / CodeBuddy
@@ -71,16 +74,16 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.10.0）
+## 📋 宪法条款（v2.11.0）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
 
 ### 第一条：先查（Pre-Check）
-每次执行专业任务前，查看能力注册表，判断有没有匹配的能力。v2.10.0 由 `pre-hook.py` 任务开始前强制注入记忆+技能树。
+每次执行专业任务前，查看能力注册表，判断有没有匹配的能力。v2.10.0 由 `pre-hook.py` 任务开始前强制注入记忆+技能树；v2.11.0 强制输出**命中技能名清单**（名称+依据），且任务含代码/git/部署等关键词时硬校验必须命中对应分类技能（Layer C）。
 
 ### 第二条：匹配必用（Mandatory Use）
-有匹配则无条件优先加载该能力，禁止绕开直接用通用能力。
+有匹配则无条件优先加载该能力，禁止绕开直接用通用能力。v2.11.0：匹配判定必须引用实际技能名（step3 Layer C 校验）。
 
 ### 第三条：无匹配必搜（Search First）
 无匹配时先通过技能发现机制搜索，再考虑通用能力。
@@ -89,7 +92,7 @@ cp SKILL.md .clinerules
 说"做不到"前必须通过技能发现机制确认无能力可用。
 
 ### 第五条：答复推荐（Auto-Discovery）
-任务完成后自动搜索全网能力库，推荐更优能力给用户。
+本地技能未能完美解决任务时，必须去 GitHub / 全网搜索高 Star 相关能力推荐给用户（含链接+star+获取方式），由用户自行决定是否安装。本地不足却不去搜索 → 违规（v2.11.0 修正定位）。
 
 ---
 
@@ -201,21 +204,23 @@ gh skill install anthropics/skills docx
 
 ---
 
-## 🔒 门禁自检（v2.6.0 新增；v2.9.0 两层校验；v2.10.0 输入拦截+双通道）
+## 🔒 门禁自检（v2.6.0 新增；v2.9.0 两层校验；v2.10.0 输入拦截+双通道；v2.11.0 任务相关硬校验）
 
 把「靠 Agent 自觉」变成「可校验、可拦截」。5 个 step 独立校验，状态文件链式依赖，默认软校验 + `--strict` 可选阻断。
 
 > ⚠️ **仅适用专业任务**：简单问答（翻译/润色/解释概念）按零号条款跳过，用 `--simple` 声明，不跑门禁。
 
-### 双通道分流（v2.10.0）
+### 双通道分流（v2.10.0）+ 任务相关硬校验（v2.11.0）
 
 ```
 任务进入
   ├─ pre-hook.py --classify（零号条款确定性分类器）
   │    ├─ 简单关键词（翻译/润色/解释/概念）→ 【通道A】跳过门禁，直接通用能力
   │    └─ 专业关键词（编码/爬虫/API/文件/部署）→ 【通道B】强制注入校验
-  │         └─ 未输出【宪法三查】→ BLOCKED（任务开始前被拦截，exit 1）
-  │         └─ 已输出【宪法三查】→ 继续 step1-5 全量校验
+  │         ├─ v2.11.0: --task 提取任务必需分类（代码/git/部署→code 分类）
+  │         ├─ 未输出【宪法三查】→ BLOCKED（任务开始前被拦截，exit 1）
+  │         ├─ 未引用任务对应分类技能名（如 git-workflow-and-versioning）→ BLOCKED
+  │         └─ 已输出三查 + 已命中任务分类技能 → 继续 step1-5 全量校验
   └─ 模糊任务 → 宁可不放过，按通道B处理（零号条款：模糊任务查一下）
 ```
 
@@ -225,10 +230,13 @@ gh skill install anthropics/skills docx
 # 双通道分流（推荐入口）：自动判定任务类型
 python scripts/constitution-check --classify --input task.txt
 
+# 双通道 + 任务相关硬校验（v2.11.0：专业任务必须引用对应分类技能名）
+python scripts/constitution-check --classify --task "推送github代码" --input output.txt --strict
+
 # 输入拦截：先校验开场是否已注入三查，未注入即阻断
 python scripts/constitution-check --pre-hook --input output.txt --strict
 
-# 生成注入块（任务开始前喂给 Agent）
+# 生成注入块（任务开始前喂给 Agent；v2.11.0 含任务必需技能清单）
 python scripts/pre-hook.py --task "推送github代码"
 
 # 全量软校验（FAIL 只警告）
@@ -250,10 +258,10 @@ python scripts/constitution-check --step 5 --input output.txt
 | Step | 校验内容 | 对应条款 | 版本 |
 |------|---------|---------|------|
 | classify | 双通道分流：简单/专业/模糊 | 零号条款 | v2.10.0 |
-| pre-hook | 输入拦截：开场已注入三查？ | 第零/一条 | v2.10.0 |
-| 1 | 宪法三查已汇报（软+硬两层） | 第零/一条 | v2.9.0 |
-| 2 | 技能树已读或无匹配声明（软+硬两层） | 第一条 | v2.9.0 |
-| 3 | 命中技能已调用（软+硬两层） | 第二条 | v2.9.0 |
+| pre-hook | 输入拦截：开场已注入三查？任务必需技能命中？ | 第零/一条 | v2.10.0 / v2.11.0 |
+| 1 | 宪法三查已汇报（软+硬+Layer C 任务相关） | 第零/一条 | v2.9.0 / v2.11.0 |
+| 2 | 技能树已读或无匹配声明（软+硬+Layer C） | 第一条 | v2.9.0 / v2.11.0 |
+| 3 | 命中技能已调用（软+硬+Layer C） | 第二条 | v2.9.0 / v2.11.0 |
 | 4 | 交付自检（非版本类自动跳过） | 全文件核查 | v2.6.0 |
 | 5 | 推荐板块含 GitHub 链接+star 数（软+硬两层） | 第五条 | v2.9.0 |
 
@@ -262,6 +270,14 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.11.0（2026-08-16）— 任务相关硬校验（Layer C）+ 命中清单强制 + 推荐定位修正
+- **新增 Layer C 任务相关硬校验**：任务含"代码/编码/编程/开发/写一个/实现/git/github/push/commit/deploy/部署/爬虫/抓取/网页/前端/文档/数据/邮件/图片/视频"等关键词时，输出必须引用 skill_tree.json 对应分类下的**实际技能名**（如 `git-workflow-and-versioning`）——彻底杜绝"查了 skills-constitution 就算查了技能"的空头汇报
+- **三查汇报强制命中清单**：②技能树必须列出命中的技能名（名称+依据），禁止只写"已读技能树"
+- **pre-hook.py 增强**：新增 `required_categories_for_task()` / `required_skills_for_task()` 确定性映射（任务关键词→必需分类→候选技能），注入块自动附加「任务必需技能」清单
+- **step1/2/3 增加 Layer C**：未引用任务对应分类技能名 → FAIL；constitution-check 新增 `--task` 参数
+- **第五条推荐定位修正**：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 技能推荐给用户（含链接+star+获取方式），由用户自行决定是否安装；本地不足却不去搜索 → 违规
+- 完整细节见 [CHANGELOG.md](CHANGELOG.md)
 
 ### v2.10.0（2026-08-16）— 输入拦截 + 双通道执行
 - **新增 `pre-hook.py`**：任务开始前强制读取 MEMORY.md + skill_tree.json 生成注入块，Agent 上下文"被迫"已有记忆规则和技能树分类
@@ -288,13 +304,13 @@ skills-constitution/
 ├── skill_tree.json             # 技能树索引（机器可读）
 ├── scripts/
 │   ├── build_skill_tree.py     # 分类脚本
-│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）
-│   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook）
+│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）
+│   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook；v2.11.0 支持 --task）
 │   ├── retry-wrapper.py        # Post-hook 重试循环（v2.9.0）
 │   ├── steps/                  # 5 个 step 独立校验脚本
-│   │   ├── step1-check.py      # 三查汇报（软+硬两层）
-│   │   ├── step2-check.py      # 技能树已读（软+硬两层）
-│   │   ├── step3-check.py      # 技能调用（软+硬两层）
+│   │   ├── step1-check.py      # 三查汇报（软+硬+Layer C 任务相关，v2.11.0）
+│   │   ├── step2-check.py      # 技能树已读（软+硬+Layer C，v2.11.0）
+│   │   ├── step3-check.py      # 技能调用（软+硬+Layer C，v2.11.0）
 │   │   ├── step4-check.py      # 交付自检
 │   │   └── step5-check.py      # 推荐板块（软+硬两层）
 │   └── lib/                    # 状态文件 + 文本工具
