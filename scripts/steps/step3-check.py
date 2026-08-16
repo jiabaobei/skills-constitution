@@ -73,7 +73,8 @@ def check(text, tree_path=None):
         has_call = T.has_any(text, *call_keywords)
         if has_call:
             # 软校验通过,再检查硬校验
-            hard_passed, hard_msg = layer_b_hard_check(text, tree_path)
+            hard_result, hard_msg, hard_level = layer_b_hard_check(text, tree_path)
+            hard_passed = (hard_level == "PASS")
             if hard_passed:
                 return True, f"软+硬校验均通过:{hard_msg}", "PASS"
             return False, f"软校验通过但硬校验未通过。{hard_msg}", "FAIL"
