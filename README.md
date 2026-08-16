@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.8.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.10.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-author_snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.8.0
+## Skills 宪法（Skills Constitution）v2.10.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -24,6 +24,9 @@
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
 6. 答复推荐：任务完成后自动搜索全网能力库，推荐更优能力给用户
+
+双通道（v2.10.0）：简单任务（翻译/润色/解释）→ 零号条款豁免直接通用能力；
+专业任务（编码/爬虫/API）→ pre-hook 强制注入记忆+技能树，未汇报【宪法三查】即被拦截。
 
 违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 无复盘推荐
 ````
@@ -68,13 +71,13 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.8.0）
+## 📋 宪法条款（v2.10.0）
 
-### 第零条：查记忆（Pre-Check Memory）
-执行前查阅平台记忆层，确认相关规则和历史上下文。
+### 第零条：任务分类（零号条款）
+前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
 
 ### 第一条：先查（Pre-Check）
-每次执行专业任务前，查看能力注册表，判断有没有匹配的能力。
+每次执行专业任务前，查看能力注册表，判断有没有匹配的能力。v2.10.0 由 `pre-hook.py` 任务开始前强制注入记忆+技能树。
 
 ### 第二条：匹配必用（Mandatory Use）
 有匹配则无条件优先加载该能力，禁止绕开直接用通用能力。
@@ -198,13 +201,36 @@ gh skill install anthropics/skills docx
 
 ---
 
-## 🔒 门禁自检（v2.6.0 新增）
+## 🔒 门禁自检（v2.6.0 新增；v2.9.0 两层校验；v2.10.0 输入拦截+双通道）
 
 把「靠 Agent 自觉」变成「可校验、可拦截」。5 个 step 独立校验，状态文件链式依赖，默认软校验 + `--strict` 可选阻断。
 
-> ⚠️ **仅适用专业任务**：简单问答（翻译/润色/概念解释）按零号条款跳过，用 `--simple` 声明，不跑门禁。
+> ⚠️ **仅适用专业任务**：简单问答（翻译/润色/解释概念）按零号条款跳过，用 `--simple` 声明，不跑门禁。
+
+### 双通道分流（v2.10.0）
+
+```
+任务进入
+  ├─ pre-hook.py --classify（零号条款确定性分类器）
+  │    ├─ 简单关键词（翻译/润色/解释/概念）→ 【通道A】跳过门禁，直接通用能力
+  │    └─ 专业关键词（编码/爬虫/API/文件/部署）→ 【通道B】强制注入校验
+  │         └─ 未输出【宪法三查】→ BLOCKED（任务开始前被拦截，exit 1）
+  │         └─ 已输出【宪法三查】→ 继续 step1-5 全量校验
+  └─ 模糊任务 → 宁可不放过，按通道B处理（零号条款：模糊任务查一下）
+```
+
+### 用法
 
 ```bash
+# 双通道分流（推荐入口）：自动判定任务类型
+python scripts/constitution-check --classify --input task.txt
+
+# 输入拦截：先校验开场是否已注入三查，未注入即阻断
+python scripts/constitution-check --pre-hook --input output.txt --strict
+
+# 生成注入块（任务开始前喂给 Agent）
+python scripts/pre-hook.py --task "推送github代码"
+
 # 全量软校验（FAIL 只警告）
 python scripts/constitution-check --input output.txt
 
@@ -214,19 +240,40 @@ python scripts/constitution-check --input output.txt --strict
 # 简单任务豁免（零号条款）
 python scripts/constitution-check --simple
 
+# Post-hook 重试循环（v2.9.0：失败自动注入提示重试，最多3次）
+python scripts/retry-wrapper.py --input output.txt --max-retries 3
+
 # 单步校验（如推荐板块）
 python scripts/constitution-check --step 5 --input output.txt
 ```
 
-| Step | 校验内容 | 对应条款 |
-|------|---------|---------|
-| 1 | 宪法三查已汇报 | 第零/一条 |
-| 2 | 技能树已读或无匹配声明 | 第一条 |
-| 3 | 命中技能已调用 | 第二条 |
-| 4 | 交付自检（非版本类自动跳过） | 全文件核查 |
-| 5 | 推荐板块含 GitHub 链接+star 数 | 第五条 |
+| Step | 校验内容 | 对应条款 | 版本 |
+|------|---------|---------|------|
+| classify | 双通道分流：简单/专业/模糊 | 零号条款 | v2.10.0 |
+| pre-hook | 输入拦截：开场已注入三查？ | 第零/一条 | v2.10.0 |
+| 1 | 宪法三查已汇报（软+硬两层） | 第零/一条 | v2.9.0 |
+| 2 | 技能树已读或无匹配声明（软+硬两层） | 第一条 | v2.9.0 |
+| 3 | 命中技能已调用（软+硬两层） | 第二条 | v2.9.0 |
+| 4 | 交付自检（非版本类自动跳过） | 全文件核查 | v2.6.0 |
+| 5 | 推荐板块含 GitHub 链接+star 数（软+硬两层） | 第五条 | v2.9.0 |
 
 > ⚠️ 设计边界：脚本是"增强层"，宪法正文永远是行为规则兜底。**禁止**把"必须先跑脚本"写进正文——在跑不了脚本的环境会被 Agent 判为"不可满足"而整体跳过宪法。
+
+---
+
+## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.10.0（2026-08-16）— 输入拦截 + 双通道执行
+- **新增 `pre-hook.py`**：任务开始前强制读取 MEMORY.md + skill_tree.json 生成注入块，Agent 上下文"被迫"已有记忆规则和技能树分类
+- **双通道分流**：`--classify` 确定性分类器（零号条款协调）——简单任务（翻译/润色/解释）→ 通道A 零号条款豁免直接通用能力；专业任务（编码/爬虫/API）→ 通道B 强制注入校验 + step1-5 全量校验；模糊任务 → 宁可不放过按通道B
+- **关键设计**：分类器是确定性代码，不依赖 Agent 自觉判断任务类型，杜绝"把专业任务误判为简单任务"逃逸
+- 完整细节见 [CHANGELOG.md](CHANGELOG.md)
+
+### v2.9.0（2026-08-16）— 三明治架构两层校验
+- **Pre-hook 层**：Step1/2 硬校验，验证回复是否真实引用 MEMORY.md / skill_tree.json 内容（杜绝空头汇报）
+- **Post-hook 层**：`retry-wrapper.py` 重试循环，失败自动注入错误提示并重试（最多3次），超限转人工
+- **两层校验**：软校验（文本关键词）+ 硬校验（验证实际文件内容引用）
+
 
 ---
 
@@ -241,13 +288,15 @@ skills-constitution/
 ├── skill_tree.json             # 技能树索引（机器可读）
 ├── scripts/
 │   ├── build_skill_tree.py     # 分类脚本
-│   ├── constitution-check      # 门禁校验主入口（v2.6.0）
+│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）
+│   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook）
+│   ├── retry-wrapper.py        # Post-hook 重试循环（v2.9.0）
 │   ├── steps/                  # 5 个 step 独立校验脚本
-│   │   ├── step1-check.py      # 三查汇报
-│   │   ├── step2-check.py      # 技能树已读
-│   │   ├── step3-check.py      # 技能调用
+│   │   ├── step1-check.py      # 三查汇报（软+硬两层）
+│   │   ├── step2-check.py      # 技能树已读（软+硬两层）
+│   │   ├── step3-check.py      # 技能调用（软+硬两层）
 │   │   ├── step4-check.py      # 交付自检
-│   │   └── step5-check.py      # 推荐板块
+│   │   └── step5-check.py      # 推荐板块（软+硬两层）
 │   └── lib/                    # 状态文件 + 文本工具
 └── .github/
     └── workflows/

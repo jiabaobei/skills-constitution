@@ -56,7 +56,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -325,7 +325,7 @@
       {
         "name": "patent-disclosure-skill__skillhub",
         "description": "中国专利技能：专利点挖掘与交底书（发明/实用/外观）编写，通俗解读专利，嗅探政策动向，辅助审查答复。| China patents skill: mine patent points and draft disclosures (invention / utility model / design), plain-language reading, policy sniffing, assiste",
-        "version": "3.4.0",
+        "version": "3.5.0",
         "categories": [
           "doc"
         ]
@@ -450,7 +450,7 @@
       {
         "name": "smart-charts__skillhub",
         "description": "Intelligent chart generation and data analysis skill. Reads user-supplied data files (CSV/Excel/JSON), analyzes data characteristics with LLM assistance, auto-recommends and generates interactive ECha",
-        "version": "“5.0.0”",
+        "version": "6.0.0",
         "categories": [
           "doc",
           "data",
@@ -560,7 +560,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -709,7 +709,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -1226,7 +1226,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.8.0",
+        "version": "2.10.0",
         "categories": [
           "meta",
           "memory",
@@ -1354,7 +1354,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -1928,7 +1928,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -2197,7 +2197,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.8.0",
+        "version": "2.10.0",
         "categories": [
           "meta",
           "memory",
@@ -2488,7 +2488,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -2706,7 +2706,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -3193,7 +3193,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.8.0",
+        "version": "2.10.0",
         "categories": [
           "meta",
           "memory",
@@ -3213,7 +3213,7 @@
       {
         "name": "smart-charts__skillhub",
         "description": "Intelligent chart generation and data analysis skill. Reads user-supplied data files (CSV/Excel/JSON), analyzes data characteristics with LLM assistance, auto-recommends and generates interactive ECha",
-        "version": "“5.0.0”",
+        "version": "6.0.0",
         "categories": [
           "doc",
           "data",
@@ -3355,7 +3355,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -4301,7 +4301,7 @@
       {
         "name": "ui-design-guide__skillhub",
         "description": "Use when users need visual direction, interface hierarchy, layout decisions, design specifications, or prototypes before implementing a Web or mini program UI.",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "general"
         ]
@@ -5044,7 +5044,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -5100,7 +5100,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -5504,7 +5504,7 @@
       {
         "name": "smart-charts__skillhub",
         "description": "Intelligent chart generation and data analysis skill. Reads user-supplied data files (CSV/Excel/JSON), analyzes data characteristics with LLM assistance, auto-recommends and generates interactive ECha",
-        "version": "“5.0.0”",
+        "version": "6.0.0",
         "categories": [
           "doc",
           "data",
@@ -5616,7 +5616,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.5.0",
+        "version": "4.6.1",
         "categories": [
           "browser",
           "code",
@@ -5681,7 +5681,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.26.0",
+        "version": "2.27.0",
         "categories": [
           "meta",
           "code",
@@ -5760,7 +5760,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.8.0",
+        "version": "2.10.0",
         "categories": [
           "meta",
           "memory",
@@ -5912,8 +5912,8 @@
     ]
   },
   "total": 399,
-  "version": "2.8.0",
-  "generated_at": "2026-08-14T17:51:42.805393",
+  "version": "2.10.0",
+  "generated_at": "2026-08-16T23:23:00.940051",
   "skills_dir": "C:\\Users\\HUAWEI/.workbuddy/skills",
   "libs_count": 0,
   "total_entries": 399
