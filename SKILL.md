@@ -1,14 +1,14 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）。
-version: 2.8.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题。
+version: 2.9.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
 display_name_en: "Skills Constitution"
-description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用"
-description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks."
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.9.0引入三明治架构两层校验，杜绝空头汇报。"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.9.0 introduces sandwich architecture with two-layer validation."
 visibility: "public"
 agent_created: true
 ---
