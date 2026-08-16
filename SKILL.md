@@ -1,14 +1,14 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题。
-version: 2.9.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验。
+version: 2.10.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
 display_name_en: "Skills Constitution"
-description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.9.0引入三明治架构两层校验，杜绝空头汇报。"
-description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.9.0 introduces sandwich architecture with two-layer validation."
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.10.0输入拦截+双通道分流。"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.10.0 adds pre-hook input interception and dual-channel routing."
 visibility: "public"
 agent_created: true
 ---
@@ -456,22 +456,42 @@ cat skill_tree.json | jq '.total'
 
 ---
 
-## 门禁校验机制（v2.6.0 新增）
+## 门禁校验机制（v2.6.0 新增；v2.10.0 升级为输入拦截 + 双通道）
 
 > 目的：把「靠 Agent 自觉」变成「可校验、可拦截」。校验脚本只负责 PASS/FAIL；真正的强制触发依赖宿主 hook（如 WorkBuddy/Claude Code 的钩子），无 hook 环境退化为软校验。
 >
 > ⚠️ **仅适用专业任务**：简单问答（翻译、润色、解释概念、一般知识问答）按**零号条款**跳过，**不跑门禁**——调用方应传 `--simple` 声明（脚本直接 SKIP 退出），防止简单任务被误拉去校验（如无推荐板块导致误 FAIL）。
 
+### 双通道执行（v2.10.0）
+
+零号条款与强制拦截的协调：**用确定性代码分类，而不是靠 Agent 自觉判断任务简不简单**。
+
+```
+任务进入
+  │
+  ├─ pre-hook.py --classify（零号条款分类器）
+  │    ├─ 命中简单关键词（翻译/润色/解释/概念/闲聊…）→ 【通道A】跳过门禁，直接通用能力 ✅
+  │    └─ 命中专业关键词（编码/爬虫/API/文件/部署…）→ 【通道B】强制注入校验
+  │         └─ 未输出【宪法三查】→ BLOCKED（任务开始前被拦截，exit 1）
+  │         └─ 已输出【宪法三查】→ 继续 step1-5 全量校验
+  └─ 模糊任务 → 宁可不放过，按通道B处理（宪法零号条款：模糊任务 ✅ 查一下）
+```
+
+- **通道A（简单）**：零号条款豁免，直接通用能力，不查记忆/技能树，不拦截
+- **通道B（专业/模糊）**：pre-hook 强制注入记忆+技能树，未汇报三查即阻断
+
 ### 目录结构
 ```
 scripts/
-├── constitution-check          # 主入口
+├── pre-hook.py                 # v2.10.0 输入拦截 + 任务分类器（双通道分流）
+├── constitution-check          # 主入口（--pre-hook / --classify / --simple）
+├── retry-wrapper.py            # v2.9.0 Post-hook 重试循环
 ├── steps/
-│   ├── step1-check.py          # 三查汇报校验
-│   ├── step2-check.py          # 技能树已读/无匹配声明
-│   ├── step3-check.py          # 匹配技能调用
+│   ├── step1-check.py          # 三查汇报校验（软+硬两层）
+│   ├── step2-check.py          # 技能树已读/无匹配声明（软+硬两层）
+│   ├── step3-check.py          # 匹配技能调用（软+硬两层）
 │   ├── step4-check.py          # 交付自检（非版本类任务自动跳过）
-│   └── step5-check.py          # 推荐板块（GitHub 链接 + star 数）
+│   └── step5-check.py          # 推荐板块（GitHub 链接 + star 数，软+硬两层）
 └── lib/
     ├── state.py                # 状态文件（.constitution-state.json，链式依赖）
     └── text.py                 # 文本/正则工具
@@ -479,6 +499,12 @@ scripts/
 
 ### 用法
 ```bash
+# 双通道分流（推荐入口）：自动判定任务类型，简单跳过/专业强制
+python scripts/constitution-check --classify --input task.txt
+
+# 输入拦截：先校验开场是否已注入三查，未注入即阻断
+python scripts/constitution-check --pre-hook --input output.txt --strict
+
 # 全量软校验（默认：FAIL 只警告，不阻断）
 python scripts/constitution-check --input output.txt
 
@@ -494,13 +520,17 @@ python scripts/constitution-check --step 5 --input output.txt
 # 机器可读输出 / 重置状态
 python scripts/constitution-check --input output.txt --json
 python scripts/constitution-check --reset
+
+# 直接生成注入块（任务开始前喂给 Agent）
+python scripts/pre-hook.py --task "推送github代码"
 ```
 
 ### 设计要点
 - **默认软校验、`--strict` 可选**：宪法正文永远是"行为规则"（任何平台可遵守的兜底）；脚本是"增强层"。**禁止**把"必须先跑脚本"写进宪法正文——在跑不了脚本的环境（ChatGPT/Kimi/豆包等建议型平台）会被 Agent 判为"不可满足"而整体跳过宪法
 - **链式依赖**：状态文件记录每步 PASS/FAIL，strict 模式下前置 step 未通过则拒绝执行下一步（逐步验证再往下走）
 - **校验输入 = Agent 输出文本 + 状态痕迹**：设计上要求 Agent 每步显式输出产物并调用 check 写状态，脚本才有内容可查
-- 校验失败在软模式下仅警告，脚本 bug/状态丢失不会卡死任务
+- **校验失败在软模式下仅警告**，脚本 bug/状态丢失不会卡死任务
+- **分类器是确定性代码**：简单/专业关键词硬编码，不依赖 Agent 自觉判断任务类型，杜绝"把专业任务误判为简单任务"的逃逸
 
 ---
 

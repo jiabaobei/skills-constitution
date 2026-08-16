@@ -54,6 +54,10 @@ def main():
     ap.add_argument("--reset", action="store_true", help="清空状态文件")
     ap.add_argument("--json", action="store_true", help="JSON 输出")
     ap.add_argument("--simple", action="store_true", help="简单任务豁免:按零号条款跳过门禁(exit 0)")
+    ap.add_argument("--pre-hook", action="store_true",
+                    help="先执行 pre-hook 输入拦截(校验开场是否已注入,未注入即阻断)")
+    ap.add_argument("--classify", action="store_true",
+                    help="双通道分流:按零号条款自动判定任务类型(简单→通道A跳过;专业→通道B强制)")
     a = ap.parse_args()
 
     # 设置默认路径
@@ -81,6 +85,75 @@ def main():
     results = []
     lines = []
     blocked = False
+
+    # ---- 双通道分流（零号条款） ----
+    if a.classify:
+        import importlib.util as _ilu
+        pre_hook_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pre-hook.py")
+        spec = _ilu.spec_from_file_location("pre_hook_mod", pre_hook_path)
+        ph = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+
+        task_type = ph.classify_task(text)
+        if task_type == "simple":
+            # 通道A：简单任务 → 零号条款豁免，完全跳过门禁（不再跑 step1-5）
+            results.append({"step": "classify", "desc": "双通道分流", "level": "SKIP",
+                            "message": "通道A:简单任务,零号条款豁免,直接通用能力"})
+            lines.append("[SKIP] classify - 双通道分流: 通道A(简单) → 跳过门禁")
+            S.set_step("classify", True, "简单任务豁免", "SKIP", a.state)
+            if a.json:
+                print(json.dumps({"blocked": False, "results": results},
+                                 ensure_ascii=False, indent=2))
+            else:
+                for line in lines:
+                    print(line)
+                print("[SKIP] 简单任务已豁免，无需三查汇报（零号条款）")
+            return 0
+        else:
+            # 通道B：专业/模糊任务 → 强制 pre-hook 注入检查
+            ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree)
+            level = "PASS" if ph_ok else "BLOCKED"
+            ch_label = "专业" if task_type == "professional" else "模糊(按专业)"
+            results.append({"step": "classify", "desc": "双通道分流", "level": level,
+                            "message": f"通道B:{ch_label}任务,pre-hook注入检查: {ph_msg}"})
+            lines.append(f"[{level}] classify - 双通道分流: 通道B({ch_label}) → {ph_msg}")
+            S.set_step("classify", ph_ok, ph_msg, level, a.state)
+            if not ph_ok:
+                blocked = True
+                # 未注入 → 阻断，不执行后续步骤
+                if a.json:
+                    print(json.dumps({"blocked": blocked, "results": results},
+                                     ensure_ascii=False, indent=2))
+                else:
+                    for line in lines:
+                        print(line)
+                return 1 if a.strict else 0
+
+        # 分类已分流，不再走普通 pre-hook 分支
+        a.pre_hook = False
+
+    # ---- Pre-hook 输入拦截（任务开始前） ----
+    if a.pre_hook:
+        import importlib.util as _ilu
+        pre_hook_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pre-hook.py")
+        spec = _ilu.spec_from_file_location("pre_hook_mod", pre_hook_path)
+        ph = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+        ph_ok, ph_msg = ph.check_injection(text, a.memory, a.tree)
+        level = "PASS" if ph_ok else "BLOCKED"
+        results.append({"step": "pre-hook", "desc": "输入拦截", "level": level,
+                        "message": f"{ph_msg}" + ("" if ph_ok else " → 任务开始前被拦截")})
+        lines.append(f"[{level}] pre-hook - 输入拦截: {ph_msg}")
+        S.set_step("pre-hook", ph_ok, ph_msg, level, a.state)
+        if not ph_ok:
+            blocked = True
+            if a.json:
+                print(json.dumps({"blocked": blocked, "results": results},
+                                 ensure_ascii=False, indent=2))
+            else:
+                for line in lines:
+                    print(line)
+            return 1 if a.strict else 0
 
     for name, desc in STEPS:
         if a.step is not None and int(a.step) != int(name[-1]):
