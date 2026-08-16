@@ -29,11 +29,20 @@ def layer_b_hard_check(text, tree_path):
             tree = json.load(f)
         # 提取技能名和技能描述
         skills = []
-        for item in tree.get("items", []):
-            name = item.get("name", "")
-            desc = item.get("description", "")
-            if name:
-                skills.append((name, desc))
+        if "categories" in tree:
+            for cat, items in tree["categories"].items():
+                if isinstance(items, list):
+                    for item in items:
+                        if isinstance(item, dict) and item.get("name"):
+                            skills.append((item["name"], item.get("description", "")))
+                        elif isinstance(item, str):
+                            skills.append((item, ""))
+        elif "items" in tree:
+            for item in tree.get("items", []):
+                name = item.get("name", "")
+                desc = item.get("description", "")
+                if name:
+                    skills.append((name, desc))
 
         # 检查回复中是否出现了技能名
         found_skills = [s for s, _ in skills if T.has_any(text, s)]
@@ -82,8 +91,10 @@ if __name__ == "__main__":
     a = ap.parse_args()
 
     if not a.tree:
-        a.tree = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                              "..", "skill_tree.json")
+        # skill_tree.json 在 skills-constitution/ 目录（scripts 的父目录）
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        constitution_dir = os.path.dirname(script_dir)
+        a.tree = os.path.join(constitution_dir, "skill_tree.json")
 
     text = T.read_input(a.input)
     passed, msg, level = check(text, a.tree)

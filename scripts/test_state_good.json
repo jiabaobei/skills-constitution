@@ -1,0 +1,11 @@
+{
+  "steps": {
+    "step1": {
+      "passed": true,
+      "level": "PASS",
+      "message": "硬校验通过(memory=True,tree=True),三查已真实执行",
+      "ts": "2026-08-16 22:22:17"
+    }
+  },
+  "updated": "2026-08-16 22:22:17"
+}

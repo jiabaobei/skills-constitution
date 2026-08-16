@@ -1,0 +1,35 @@
+{
+  "steps": {
+    "step1": {
+      "passed": false,
+      "level": "FAIL",
+      "message": "仅有文本汇报,硬校验未通过(memory=False,tree=False)。文章原则:确定性代码不信任自觉。",
+      "ts": "2026-08-16 22:22:24"
+    },
+    "step2": {
+      "passed": false,
+      "level": "FAIL",
+      "message": "仅有文本声明,硬校验未通过。硬校验未通过:未引用技能树实际内容",
+      "ts": "2026-08-16 22:22:24"
+    },
+    "step3": {
+      "passed": false,
+      "level": "FAIL",
+      "message": "声明命中但未见调用痕迹(软校验失败)",
+      "ts": "2026-08-16 22:22:24"
+    },
+    "step4": {
+      "passed": true,
+      "level": "SKIP",
+      "message": "非版本交付类任务,跳过自检",
+      "ts": "2026-08-16 22:22:24"
+    },
+    "step5": {
+      "passed": false,
+      "level": "FAIL",
+      "message": "未输出「本次相关技能推荐」板块",
+      "ts": "2026-08-16 22:22:24"
+    }
+  },
+  "updated": "2026-08-16 22:22:24"
+}

@@ -49,10 +49,20 @@ def main():
     ap.add_argument("--step", type=int, choices=range(1, 6), help="只跑指定 step(1-5)")
     ap.add_argument("--input", help="输入文本文件(缺省读 stdin)")
     ap.add_argument("--state", help="状态文件路径(默认 .constitution-state.json)")
+    ap.add_argument("--memory", help="MEMORY.md 路径(默认 ~/.workbuddy/MEMORY.md)")
+    ap.add_argument("--tree", help="skill_tree.json 路径(默认 scripts/../skill_tree.json)")
     ap.add_argument("--reset", action="store_true", help="清空状态文件")
     ap.add_argument("--json", action="store_true", help="JSON 输出")
     ap.add_argument("--simple", action="store_true", help="简单任务豁免:按零号条款跳过门禁(exit 0)")
     a = ap.parse_args()
+
+    # 设置默认路径
+    if not a.memory:
+        a.memory = os.path.expanduser("~/.workbuddy/MEMORY.md")
+    if not a.tree:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        constitution_dir = os.path.dirname(script_dir)
+        a.tree = os.path.join(constitution_dir, "skill_tree.json")
 
     if a.simple:
         print("[SKIP] 简单任务,按零号条款跳过宪法门禁")
@@ -87,7 +97,13 @@ def main():
             lines.append(f"[WARN] 前置 {prev} 未通过(软模式继续,建议先修复)")
 
         check_fn = load_check(name)
-        passed, msg, level = check_fn(text)
+        # 根据 step 名称传递额外参数
+        if name == "step1":
+            passed, msg, level = check_fn(text, a.memory, a.tree)
+        elif name in ("step2", "step3"):
+            passed, msg, level = check_fn(text, a.tree)
+        else:
+            passed, msg, level = check_fn(text)
         S.set_step(name, passed, msg, level, a.state)
         results.append({"step": name, "desc": desc, "level": level, "message": msg})
         lines.append(f"[{level}] {name} - {desc}: {msg}")

@@ -58,17 +58,33 @@ def layer_b_hard_check(text, memory_path, tree_path):
             import json
             with open(tree_path, encoding="utf-8") as f:
                 tree = json.load(f)
-            # 提取分类名
+            # 提取分类名和技能名
             categories = set()
-            for item in tree.get("items", []):
-                cat = item.get("category", "")
-                if cat:
+            skill_names = set()
+            if "categories" in tree:
+                for cat, items in tree["categories"].items():
                     categories.add(cat)
-            # 检查回复中是否出现了这些分类名
-            if categories:
-                cat_list = list(categories)[:5]  # 最多检查5个
-                if T.has_any(text, *cat_list):
-                    has_tree_evidence = True
+                    if isinstance(items, list):
+                        for item in items:
+                            if isinstance(item, dict) and item.get("name"):
+                                skill_names.add(item["name"])
+                            elif isinstance(item, str):
+                                skill_names.add(item)
+            elif "items" in tree:
+                for item in tree.get("items", []):
+                    cat = item.get("category", "")
+                    name = item.get("name", "")
+                    if cat:
+                        categories.add(cat)
+                    if name:
+                        skill_names.add(name)
+
+            # 检查回复中是否出现了分类名或技能名
+            has_cat_match = any(T.has_any(text, c) for c in list(categories)[:5])
+            has_skill_match = any(T.has_any(text, s) for s in list(skill_names)[:10])
+
+            if has_cat_match or has_skill_match:
+                has_tree_evidence = True
         except Exception:
             pass
 
@@ -114,8 +130,11 @@ if __name__ == "__main__":
     if not a.memory:
         a.memory = os.path.expanduser("~/.workbuddy/MEMORY.md")
     if not a.tree:
-        a.tree = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                              "..", "skill_tree.json")
+        # skill_tree.json 在 skills-constitution/ 目录（scripts 的父目录）
+        # 使用绝对路径确保跨平台兼容
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        constitution_dir = os.path.dirname(script_dir)
+        a.tree = os.path.join(constitution_dir, "skill_tree.json")
 
     text = T.read_input(a.input)
     passed, msg, level = check(text, a.memory, a.tree)

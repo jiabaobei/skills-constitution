@@ -27,16 +27,26 @@ def layer_b_hard_check(text, tree_path):
     try:
         with open(tree_path, encoding="utf-8") as f:
             tree = json.load(f)
-        # 提取所有分类名和技能名
+        # 提取分类名和技能名
         categories = set()
         skill_names = set()
-        for item in tree.get("items", []):
-            cat = item.get("category", "")
-            name = item.get("name", "")
-            if cat:
+        if "categories" in tree:
+            for cat, items in tree["categories"].items():
                 categories.add(cat)
-            if name:
-                skill_names.add(name)
+                if isinstance(items, list):
+                    for item in items:
+                        if isinstance(item, dict) and item.get("name"):
+                            skill_names.add(item["name"])
+                        elif isinstance(item, str):
+                            skill_names.add(item)
+        elif "items" in tree:
+            for item in tree.get("items", []):
+                cat = item.get("category", "")
+                name = item.get("name", "")
+                if cat:
+                    categories.add(cat)
+                if name:
+                    skill_names.add(name)
 
         # 检查回复中是否出现了分类名或技能名
         cat_match = any(T.has_any(text, c) for c in list(categories)[:5])
@@ -66,7 +76,8 @@ def check(text, tree_path=None):
     has_no_match = T.has_any(text, *no_match_keywords)
 
     # Layer B:硬校验
-    hard_passed, hard_msg = layer_b_hard_check(text, tree_path)
+    hard_result, hard_msg, hard_level = layer_b_hard_check(text, tree_path)
+    hard_passed = (hard_level == "PASS")
 
     # 决策逻辑
     if hard_passed:
@@ -86,8 +97,10 @@ if __name__ == "__main__":
     a = ap.parse_args()
 
     if not a.tree:
-        a.tree = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                              "..", "skill_tree.json")
+        # skill_tree.json 在 skills-constitution/ 目录（scripts 的父目录）
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        constitution_dir = os.path.dirname(script_dir)
+        a.tree = os.path.join(constitution_dir, "skill_tree.json")
 
     text = T.read_input(a.input)
     passed, msg, level = check(text, a.tree)
