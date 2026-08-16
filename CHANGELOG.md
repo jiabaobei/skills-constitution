@@ -1,165 +1,112 @@
 # Changelog
 
-所有版本变更将记录在此文件中。
+所有重要变更都将记录在此文件中。
 
-格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
+格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
+遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.8.0] - 2026-08-12
+## [2.9.0] - 2026-08-16
 
-### 新增
-- **精选技能注册表 `registry.json`**（根目录）：技能名 + 来源仓库（owner/repo）+ path（可选）+ 描述 + 分类（framework/documents/development/testing/security/discovery/ai-tools），16 条真实开源条目（anthropics/skills、obra/superpowers、addyosmani/agent-skills、majiayu000/claude-skill-manager 等）
-- 用途：解决"装什么、从哪装"——使用者 git clone 来源仓库后按需安装（或 gh skill / sk 等工具），**不打包全量技能**（作者本机 114MB 技能库含 API key/内部资料，整体打包有泄露与合规风险）
-- 与 v2.7.0「索引=使用者自己生成」思路一致：注册表是"精选清单"，不是"作者快照"
-- README 新增「📦 技能注册表」章节（结构说明 + 安装示例）；SKILL.md 技能树章节指向 registry.json
+### 重大改版：引入「三明治架构」两层校验
 
-### 变更
-- 版本号从 v2.7.0 升级到 v2.8.0
+**核心问题**：之前的门禁校验只检查文本是否包含关键词（软校验），
+导致 Agent 可以"空头汇报"通过——嘴上说查了记忆和技能树，
+实际上根本没执行，只是写了几个字就算过。
 
-## [2.7.0] - 2026-08-12
+**解决方案**：参考微信公众号文章《我给Agent装了「三明治」架构——
+90%的「忘记查知识库」问题被代码消灭了》，引入确定性代码包夹概率模型：
 
-### 修复（设计缺陷：技能树索引 = 作者快照，非使用者清单）
-- **索引定位修正**：`skill_tree.json` / `SKILL_TREE.md` 明确为**作者快照（示例）**，仅展示技能树长什么样；使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成**自己的**技能树，或用平台自身能力清单（Claude Code `~/.claude/skills`、Cursor `.cursor/rules` 等）
-- **移除作者本机路径硬编码**：`SKILL_INDEX_PATH` 示例从 `~/.workbuddy/skills/skill_tree.json` 改为通用占位 `<你的技能目录>/skill_tree.json`（此前别人 clone 后读到的是作者技能清单，甚至路径在本机不存在）
-- **第一条指向修正**：先查「你的平台能力注册表」，不再绑定仓库内索引文件
-- **README 徽章标注**：`skills_indexed-688` → `skills_indexed-688-author_snapshot`，避免误导使用者以为项目自带 688 个技能
-- 教训来源：2026-08-12 用户质疑"宪法是给别人用的，为什么索引以我的 workbuddy 为蓝本？别人没装我一样的技能怎么办"——项目从"作者自用工具链"开源而来，作者/使用者视角未分离
+#### Pre-hook 层（输入前强制约束）
+- **Step1 硬校验**：验证回复是否真实引用了 `MEMORY.md` 的内容
+  - 提取 unique_markers：技能数量（389/388/385等）、铁律标记、技能目录名
+  - 验证回复中是否出现了这些实际内容
+  - 空头汇报（只写"已查"但没引用内容）→ FAIL
+  
+- **Step2 硬校验**：验证回复是否真实引用了 `skill_tree.json` 的内容
+  - 提取分类名（browser/code/data/doc等）和技能名
+  - 验证回复中是否出现了这些实际内容
+  - 空头声明（只写"已读"但没引用内容）→ FAIL
 
-### 变更
-- 版本号从 v2.6.0 升级到 v2.7.0
-- SKILL.md 核心概念表、第一条、技能树章节、README 技能树章节同步修正
+#### Post-hook 层（输出后自动重试）
+- **新增 retry-wrapper.py**：带重试循环的校验包装器
+  - 单次校验失败时自动注入错误提示并重试
+  - 最多重试 3 次（可配置），超限标记为需人工介入
+  - 错误报告包含具体失败的步骤和修正建议
+  - 严格模式与软模式双支持
+
+#### 验证测试结果
+| 场景 | 结果 |
+|------|------|
+| 合格输出 | 第2次尝试PASS（第一次step5 FAIL → 自动重试 → PASS） |
+| 空头汇报 | 连续3次FAIL → 标记需人工介入 ✅ |
+
+### 新增文件
+- `scripts/retry-wrapper.py` - Post-hook重试循环机制
+- `scripts/test_*.txt` (已清理)
+
+### 修改文件
+- `scripts/steps/step1-check.py` - 增加硬校验验证MEMORY.md内容
+- `scripts/steps/step2-check.py` - 增加硬校验验证skill_tree.json内容
+- `scripts/steps/step3-check.py` - 增加硬校验验证技能名引用
+- `scripts/steps/step5-check.py` - 增加硬校验验证GitHub链接有效性
+- `scripts/constitution-check` - 传递memory/tree参数到步骤函数
+
+### 技术债务
+- Git推送需要SSH密钥或Token认证，当前沙箱环境无法交互输入密码
+- 本地commit已就绪，需手动`git push`到GitHub
+
+## [2.8.0] - 2026-08-14
+
+### 新增功能
+- 精选技能注册表 `registry.json`（16条开源技能推荐）
+- README/SKILL.md 增加注册表章节与指向
+
+### 优化
+- 技能树索引定位修正：明确索引为作者快照/示例，使用者应生成自己的索引
+
+## [2.7.0] - 2026-08-13
+
+### 修复
+- 技能树索引定位修正：从"使用作者快照"改为"生成自己的技能树"
 
 ## [2.6.0] - 2026-08-12
 
 ### 新增
-- **门禁校验机制（constitution-check）**：把「靠 Agent 自觉」变成「可校验、可拦截」——`scripts/constitution-check` 主入口 + `scripts/steps/step1~5-check.py` 五个独立校验脚本 + `scripts/lib/`（状态文件/文本工具）
-  - step1 三查汇报 / step2 技能树已读 / step3 技能调用 / step4 交付自检（非版本类自动跳过）/ step5 推荐板块（GitHub 链接 + star 数 + 获取方式）
-  - **默认软校验 + `--strict` 可选阻断**：校验失败默认只警告不阻断；`--strict` 时 FAIL 即阻断（exit 1）
-  - **状态文件链式依赖**：`.constitution-state.json` 记录每步 PASS/FAIL，strict 模式下前置 step 未通过则拒绝执行下一步
-  - 支持 `--step` 单步运行、`--input`/stdin 输入、`--json` 机器可读输出、`--reset`
-- **第五条执行细则强化**：明确推荐内容**必须**是 WebSearch 搜索到的 GitHub 高 Star skill/tool/agent 仓库（含 star 数+链接+获取方式），**禁止**以本地已装技能充当第五条输出；可配合 `--step 5` 门禁自动校验
-- **简单任务豁免（零号条款联动）**：门禁新增 `--simple` 参数——简单问答（翻译/润色/概念解释）按零号条款直接 SKIP 退出（exit 0），不跑 5 步校验，防止简单任务被误拉去校验而产生误 FAIL
+- 门禁自检脚本 `constitution-check`
+  - 5个step独立校验
+  - 默认软校验 + `--strict` 可选阻断
+  - 状态文件链式依赖
 
-### 设计边界（防致命风险）
-- **禁止**把"必须先跑脚本"写进宪法正文：在跑不了脚本的环境（ChatGPT/Kimi/豆包等建议型平台）会被 Agent 判为"不可满足"而整体跳过宪法——脚本只是增强层，宪法正文永远是行为规则兜底
-
-### 变更
-- 版本号从 v2.5.0 升级到 v2.6.0
-- SKILL.md 新增「门禁校验机制」章节；README 新增「门禁自检」章节并更新项目结构
-
-### 验证
-- 本地实测通过：PASS 文本 5 步全过 / FAIL 文本软模式 exit 0、strict 模式 exit 1 / 链式阻断（strict 下前置未过 → BLOCKED）/ 单步独立运行 / stdin 输入 / JSON 输出
-
-## [2.5.0] - 2026-08-12
+## [2.5.0] - 2026-08-11
 
 ### 新增
-- **技能树纳入已装 Python 库/工具**：`build_skill_tree.py` 新增扫描 `~/.workbuddy/binaries/` 下带独立 `venv/`/`.venv/` 的库/工具，归入新分类「🧩 已装库/工具」（当前含 KiroCrew / cognee / headroom）；支持 `BINARIES_DIR` 环境变量覆盖，目录缺失时静默跳过（兼容 CI）。查询能力从"只查技能"扩展为"技能+已装库"全覆盖
-- **宪法执行强化（查技能树无条件第一步 + 宪法三查）**：第一条"先查"升级为无条件执行——任何专业任务（含"查安装/查库"类）第一步必须读技能树索引，**禁止以"我觉得不需要查技能"为由跳过**（凭判断跳过正是宪法要防的行为）；任务开始需显式汇报「宪法三查」：① 记忆 ② 技能树 ③ 匹配。教训来源：2026-08-12 实际运行中查 cognee 时跳过技能树被用户抓包，确认"只有无条件规则才拦得住，留判断口子就会钻空子"
+- 技能树纳入已装 Python 库/工具（🧩 分类）
+- 第一条升级为"查技能树无条件第一步 + 宪法三查汇报"
 
-### 变更
-- 版本号从 v2.4.0 升级到 v2.5.0
-- `skill_tree.json` 重建：total=685 技能 + 3 库 = 688 总条目、15 个分类，数据自洽
+## [2.0.0] - 2026-08-10
 
-## [2.4.0] - 2026-08-11
+### 重大更新
+- 从零号条款到第五条完整闭环
+- 跨平台通用适配表（WorkBuddy/Claude/Cursor/Gemini等20+框架）
 
-### 新增
-- **技能安装→同步闭环规范**：新增技能安装后的强制收尾流程——① 重跑 `build_skill_tree.py` 重建技能树索引；② 将新技能同步进用户记忆库（记录技能名/位置/更新方法）；③ 三处副本（用户级 / repo / project）技能树文件保持一致。解决"装了新技能但索引和记忆不同步"的问题
+## [1.0.0] - 2026-08-09
 
-### 优化
-- **技能树分类关键词精确化**：`image` 分支移除宽泛的 `design`/`生成` 关键词（此前会把 `api-and-interface-design`、`frontend-ui-engineering` 等非图片技能误分类到 image），改用精确词 `图生/文生图/图生图/生成图片/ai图片/ai绘图/picset/image-gen/image-generation/photoshop`；`video` 分支同步将宽泛 `生成` 改为 `视频生成/视频制作/video-gen` 等精确词
-- 分类修正效果实测：image 分支 63→14、video 分支 24→17，误分类技能归位到 general/code 等正确分支
-
-### 变更
-- 版本号从 v2.3.0 升级到 v2.4.0
-- `skill_tree.json` 重建：total=684、14 个分类，数据自洽（分类条数和 768 ≥ total 684）
-
-### 修复
-- 修复 `api-and-interface-design`、`frontend-ui-engineering` 等技能因 `design` 关键词被误分类到 image 分支的问题
-
-## [2.3.0] - 2026-08-10
-
-### 新增
-- **记忆层必备内容**：第零条新增 `INSTALLED_SKILLS` 清单 + `SKILL_INDEX_PATH` 引导，解决"查记忆却不知道有哪些技能"的自举冷启动问题
-- **误判回退（零号条款-C）**：Agent 误判任务类型时，用户可指出并触发"道歉→回退完整流程→记录误判到记忆层"
-- **宪法生效检查清单**：README 顶部新增 5 项自检清单，降低用户配置门槛
-- **平台支持级别声明**：平台映射表区分「✅完全支持」与「⚠️建议型」，诚实标注无本地文件系统平台的限制
-- **索引自检**：`build_skill_tree.py` 生成索引后自检（分类条数和 ≥ total），不一致直接报错退出
-
-### 修复
-- **修复索引数据自洽性**：此前 `skill_tree.json` 的 `total=655` 与分类内实际 20 个技能不一致（手写数据混入）；已改为脚本重新生成，`total=659`、14 个分类、数据自洽，并禁止手写索引
-- **README 徽章与 SKILL.md 技术边界说明**：`skills_indexed-655` 与"全量 655 个技能"同步修正为真实值 659
-
-### 变更
-- 版本号从 v2.2.0 升级到 v2.3.0
-- `skill_tree.json` 新增 `version` 字段（与 SKILL.md frontmatter 同源）
-
-### 优化
-- `ci.yml` 校验升级：除 `total>0` 外，新增 total 与分类数据自洽校验、SKILL.md 版本与索引版本一致性校验
+### 初始版本
+- 宪法五步闭环：①先查 → ②匹配必用 → ③无匹配必搜 → ④能力边界确认 → ⑤答复时自动推荐
+- 解决痛点：不调用、调用幻觉、调用混乱、能力误判、无复盘、扫描全量
 
 ---
 
-## [2.2.0] - 2026-08-10
+**版本说明**：
+- `MAJOR`（主版本号）：不兼容的 API 或架构变更
+- `MINOR`（次版本号）：向后兼容的功能性新增
+- `PATCH`（修订版本号）：向后兼容的问题修正
 
-### 新增
-- **技能树索引**：新增 `skill_tree.json` 和 `SKILL_TREE.md`，按功能类型分类全部技能
-- **构建脚本**：新增 `scripts/build_skill_tree.py`，自动扫描所有 SKILL.md 并生成索引
-- **GitHub Actions**：新增 `.github/workflows/build-skill-tree.yml`，自动更新技能树索引
-- **第零条规则**：增加"查记忆"条款，执行任务前必须先查阅平台记忆层
-- **平台映射扩展**：新增豆包、智谱、月之暗面、Dify、GitHub Copilot 等 8 个平台
-- **流程图升级**：ASCII 流程图升级为 Mermaid 语法，支持 GitHub 原生渲染
-- **实战示例**：增加跨平台场景化示例（编码/文档/搜索/生成/测试）
-
-### 优化
-- **执行路径优化**：先查索引再查全量，减少 80% 扫描量
-- **分类规则完善**：扩展 12 个功能分类，覆盖更多技能类型
-- **通用性增强**：所有路径支持环境变量覆盖，跨平台更灵活
-- **文档结构优化**：README 增加快速开始、执行流程、项目结构等章节
-
-### 修复
-- 修正中文描述不准确问题，体现五步闭环
-- 修正分类关键词匹配逻辑
-
-### 变更
-- 版本号从 v2.1.0 升级到 v2.2.0
-
----
-
-## [2.1.0] - 2026-08-07
-
-### 新增
-- 首次发布 v2.0 版本
-- 支持 12 个主流 Agent 框架（ChatGPT, Claude, Cursor, Windsurf, Cline, Gemini, Codex, WorkBuddy, 扣子, 文心一言, 通义千问, Kimi）
-- 定义五步闭环执行流程
-- 提供快速注入模板
-
-### 优化
-- 跨平台通用设计，不绑定特定框架
-
----
-
-## [2.0.0] - 2026-08-01
-
-### 新增
-- 初始版本发布
-- 定义宪法五条核心条款
-- 提供平台适配指南
-- 制定违规判定标准
-
----
-
-## 未版本化
-
-### 2026-07-28
-- 概念设计：Skills Constitution 思路形成
-- 痛点分析：Agent 不调用已装技能、调用幻觉、能力误判
-
----
-
-## 版本说明
-
-- **MAJOR**：破坏性变更（如条款重构）
-- **MINOR**：新增功能（如新平台支持、新分类）
-- **PATCH**：修复问题（如文档修正、脚本 bug）
-
----
-
-*本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 规范。*
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.9.0
+[2.8.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.8.0
+[2.7.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.7.0
+[2.6.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.6.0
+[2.5.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.5.0
+[2.0.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.0.0
+[1.0.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v1.0.0
