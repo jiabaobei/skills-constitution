@@ -4,6 +4,8 @@
 文章"三明治架构"核心:确定性代码必须验证实际执行,而非信任声明。
 本 Step 增加硬校验:检查回复中是否引用了实际调用的技能名。
 v2.11.0 增加 Layer C:任务含代码/git/部署关键词时,必须引用对应分类技能名。
+v2.12.0 增加 Layer D:引用的技能必须与任务语义相关(零依赖 token 重叠),
+防"引用真实存在但与任务无关的技能"蒙混过关。
 """
 import argparse
 import json
@@ -90,6 +92,63 @@ def layer_c_task_hard_check(text, tree_path, task):
         return False, f"任务相关校验异常:{e}", "SKIP"
 
 
+def layer_d_relevance_check(text, tree_path, task):
+    """Layer D(v2.12.0):轻量语义相关性校验(零依赖,token 重叠打分)
+
+    防的漏洞:Agent 引用一个**真实存在但与任务无关**的技能名蒙混过关
+    (Layer B 只验证"技能名在树中",不验证"技能与任务相关")。
+    规则:输出引用的技能中,至少一个与任务文本 overlap_score >= 0.10(保守阈值防误杀)。
+    无任务描述/无技能树/未引用技能 → 不适用,放行。
+    """
+    if not task or not str(task).strip():
+        return True, "无任务描述,跳过语义相关性校验", "PASS"
+    if not tree_path or not os.path.exists(tree_path):
+        return True, "无技能树,跳过语义相关性校验", "SKIP"
+    try:
+        with open(tree_path, encoding="utf-8") as f:
+            tree = json.load(f)
+        skills = {}
+        for cat, items in tree.get("categories", {}).items():
+            if isinstance(items, list):
+                for item in items:
+                    if isinstance(item, dict) and item.get("name"):
+                        skills.setdefault(item["name"], item.get("description", ""))
+                    elif isinstance(item, str):
+                        skills.setdefault(item, "")
+        # 任务文本先经同义词扩展(与 pre-hook 同源,防"口语任务"误判零相关)
+        expanded_task = task
+        try:
+            pre_hook_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pre-hook.py")
+            spec = importlib.util.spec_from_file_location("pre_hook_mod_step3_d", pre_hook_path)
+            ph = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(ph)
+            expanded_task = ph.expand_task_text(task)
+        except Exception:
+            pass
+        # Agent 输出中引用的真实技能
+        claimed = [(n, d) for n, d in skills.items() if T.has_any(text, n)]
+        if not claimed:
+            return True, "未引用具体技能名,相关性校验不适用", "SKIP"
+        # 相关判定(满足其一即相关):
+        #  ① 任务与技能名有较强重叠(≥0.10) —— 技能名是最强标识,
+        #     口语长任务(如"我要把代码传上去")也不会因 token 分母膨胀而误杀
+        #  ② 任务与技能名+描述整体重叠 ≥0.10
+        relevant = [
+            n for n, d in claimed
+            if T.overlap_score(expanded_task, n) >= 0.10
+            or T.overlap_score(expanded_task, f"{n} {d}") >= 0.10
+        ]
+        if relevant:
+            return True, f"语义相关性通过:相关技能={relevant[:3]}", "PASS"
+        return False, (
+            f"引用了 {len(claimed)} 个技能但均与任务'{task}'语义无关"
+            f"(如:{[n for n, _ in claimed][:3]}),疑似乱引用/空头汇报"
+        ), "FAIL"
+    except Exception as e:
+        return True, f"相关性校验异常(放行):{e}", "SKIP"
+
+
 def check(text, tree_path=None, task=None):
     """主校验函数:两层校验 + v2.11.0 任务相关校验"""
     if not text or not text.strip():
@@ -120,7 +179,11 @@ def check(text, tree_path=None, task=None):
             hard_result, hard_msg, hard_level = layer_b_hard_check(text, tree_path)
             hard_passed = (hard_level == "PASS")
             if hard_passed:
-                return True, f"软+硬校验均通过:{hard_msg}; {task_msg}", "PASS"
+                # Layer D(v2.12.0):引用技能必须与任务语义相关
+                d_ok, d_msg, d_level = layer_d_relevance_check(text, tree_path, task)
+                if d_level == "FAIL":
+                    return False, f"LayerD FAIL: {d_msg}", "FAIL"
+                return True, f"软+硬校验均通过:{hard_msg}; {task_msg}; {d_msg}", "PASS"
             return False, f"软校验通过但硬校验未通过。{hard_msg}", "FAIL"
         return False, "声明命中但未见调用痕迹(软校验失败)", "FAIL"
 

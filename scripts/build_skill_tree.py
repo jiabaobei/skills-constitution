@@ -11,6 +11,18 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from lib.text import keyword_in
+except ImportError:
+    def keyword_in(text, kw):  # 兜底:与 lib.text 同逻辑
+        t, k = (text or "").lower(), (kw or "").lower()
+        if not k:
+            return False
+        if all(ord(c) < 128 for c in k):
+            return re.search(r"(?<![a-z0-9])" + re.escape(k) + r"(?![a-z0-9])", t) is not None
+        return k in t
+
 
 # 分类规则（关键词 → 分支）
 CATEGORY_RULES = {
@@ -31,11 +43,15 @@ CATEGORY_RULES = {
 
 
 def classify_skill(skill_name: str, description: str) -> list[str]:
-    """根据名称和描述匹配分类"""
+    """根据名称和描述匹配分类
+
+    v2.12.0:英文关键词改用词边界匹配(lib.text.keyword_in),
+    修复子串误杀 — "code" 不再命中 "encode"、"search" 不再命中 "research"。
+    """
     text = f"{skill_name} {description}".lower()
     matches = []
     for category, keywords in CATEGORY_RULES.items():
-        if any(kw in text for kw in keywords):
+        if any(keyword_in(text, kw) for kw in keywords):
             matches.append(category)
     return matches if matches else ["general"]
 

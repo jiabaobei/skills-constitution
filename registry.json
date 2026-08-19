@@ -1,7 +1,7 @@
 {
   "registry": "skills-constitution-registry-v1",
-  "updated": "2026-08-12",
-  "note": "精选开源技能/工具索引（作者整理，非作者本机清单）。使用者按需安装：git clone 对应仓库 → 将技能目录复制到你的平台技能目录（如 ~/.claude/skills/、.cursor/rules/），或用 gh skill / sk 等工具安装。各条目以对应仓库 README 为准。",
+  "updated": "2026-08-19",
+  "note": "精选开源技能/工具索引（作者整理，非作者本机清单）。使用者按需安装：git clone 对应仓库 → 将技能目录复制到你的平台技能目录（如 ~/.claude/skills/、.cursor/rules/），或用 gh skill / sk 等工具安装。各条目以对应仓库 README 为准。 v2.12.0 起每条含 input_schema/output_schema（多技能编排兼容性检查依据）。",
   "categories": {
     "framework": "技能框架（含多个技能的整套方法论）",
     "documents": "文档处理（Word/Excel/PDF/PPT）",
@@ -17,100 +17,220 @@
       "repo": "anthropics/skills",
       "path": "skills/docx",
       "description": "Word 文档创建、编辑、格式保留与文本提取（官方文档技能）",
-      "category": "documents"
+      "category": "documents",
+      "input_schema": [
+        "text",
+        "markdown",
+        "docx"
+      ],
+      "output_schema": [
+        "docx"
+      ]
     },
     {
       "name": "pdf",
       "repo": "anthropics/skills",
       "path": "skills/pdf",
       "description": "PDF 解析、编辑与生成（官方文档技能）",
-      "category": "documents"
+      "category": "documents",
+      "input_schema": [
+        "pdf",
+        "text"
+      ],
+      "output_schema": [
+        "pdf",
+        "text"
+      ]
     },
     {
       "name": "xlsx",
       "repo": "anthropics/skills",
       "path": "skills/xlsx",
       "description": "Excel 工作簿创建、检查与编辑（官方文档技能）",
-      "category": "documents"
+      "category": "documents",
+      "input_schema": [
+        "csv",
+        "data",
+        "xlsx"
+      ],
+      "output_schema": [
+        "xlsx"
+      ]
     },
     {
       "name": "pptx",
       "repo": "anthropics/skills",
       "path": "skills/pptx",
       "description": "PowerPoint 演示文稿创建与编辑（官方文档技能）",
-      "category": "documents"
+      "category": "documents",
+      "input_schema": [
+        "markdown",
+        "outline",
+        "text"
+      ],
+      "output_schema": [
+        "pptx"
+      ]
     },
     {
       "name": "superpowers",
       "repo": "obra/superpowers",
       "description": "完整技能框架：Plan→Test→Code 方法论，含 TDD、系统化调试、头脑风暴等 20+ 实战技能",
-      "category": "framework"
+      "category": "framework",
+      "input_schema": [
+        "task"
+      ],
+      "output_schema": [
+        "plan",
+        "code",
+        "tests"
+      ]
     },
     {
       "name": "test-driven-development",
       "repo": "addyosmani/agent-skills",
       "description": "测试驱动开发工作流：先写失败测试再实现，保障代码可验证",
-      "category": "testing"
+      "category": "testing",
+      "input_schema": [
+        "code",
+        "spec"
+      ],
+      "output_schema": [
+        "tests",
+        "code"
+      ]
     },
     {
       "name": "code-review-and-quality",
       "repo": "addyosmani/agent-skills",
       "description": "多维度代码审查：合并前检查 bug、安全、质量",
-      "category": "development"
+      "category": "development",
+      "input_schema": [
+        "code",
+        "diff"
+      ],
+      "output_schema": [
+        "report",
+        "feedback"
+      ]
     },
     {
       "name": "security-and-hardening",
       "repo": "addyosmani/agent-skills",
       "description": "安全加固：OWASP 检查、依赖审计、输入校验等",
-      "category": "security"
+      "category": "security",
+      "input_schema": [
+        "code",
+        "dependencies"
+      ],
+      "output_schema": [
+        "report",
+        "patch"
+      ]
     },
     {
       "name": "spec-driven-development",
       "repo": "addyosmani/agent-skills",
       "description": "规格驱动开发：先写规格文档再实现，减少返工",
-      "category": "development"
+      "category": "development",
+      "input_schema": [
+        "requirements",
+        "idea"
+      ],
+      "output_schema": [
+        "spec",
+        "code"
+      ]
     },
     {
       "name": "git-workflow-and-versioning",
       "repo": "addyosmani/agent-skills",
       "description": "Git 工作流与版本管理规范",
-      "category": "development"
+      "category": "development",
+      "input_schema": [
+        "code",
+        "repo"
+      ],
+      "output_schema": [
+        "commits",
+        "branches",
+        "tags"
+      ]
     },
     {
       "name": "mattpocock-skills",
       "repo": "mattpocock/skills",
       "description": "个人技能集：修复常见 coding agent 失败模式，零仪式感好习惯",
-      "category": "framework"
+      "category": "framework",
+      "input_schema": [
+        "code"
+      ],
+      "output_schema": [
+        "code"
+      ]
     },
     {
       "name": "wshobson-agents",
       "repo": "wshobson/agents",
       "description": "192 个现成 agent + 156 个技能，一次性安装即得专业分工团队",
-      "category": "framework"
+      "category": "framework",
+      "input_schema": [
+        "task"
+      ],
+      "output_schema": [
+        "code",
+        "report"
+      ]
     },
     {
       "name": "awesome-claude-code",
       "repo": "hesreallyhim/awesome-claude-code",
       "description": "Claude Code 生态目录（skills/hooks/agents 索引），发现用",
-      "category": "discovery"
+      "category": "discovery",
+      "input_schema": [
+        "query"
+      ],
+      "output_schema": [
+        "links",
+        "references"
+      ]
     },
     {
       "name": "awesome-claude-skills",
       "repo": "ComposioHQ/awesome-claude-skills",
       "description": "Claude skills 精选合集（70+ 技能、9 大分类、1000+ 应用集成）",
-      "category": "discovery"
+      "category": "discovery",
+      "input_schema": [
+        "query"
+      ],
+      "output_schema": [
+        "links",
+        "references"
+      ]
     },
     {
       "name": "claude-skill-manager",
       "repo": "majiayu000/claude-skill-manager",
       "description": "sk CLI 技能包管理器：search/install/popular，registry 模式参考实现",
-      "category": "discovery"
+      "category": "discovery",
+      "input_schema": [
+        "query"
+      ],
+      "output_schema": [
+        "installed-skills"
+      ]
     },
     {
       "name": "OmniRoute",
       "repo": "diegosouzapw/OmniRoute",
       "description": "MIT 开源 AI 网关：单一端点接入 290+ 提供商 / 500+ 模型，配额感知回退 + Token 压缩",
-      "category": "ai-tools"
+      "category": "ai-tools",
+      "input_schema": [
+        "api-requests"
+      ],
+      "output_schema": [
+        "model-responses"
+      ]
     }
   ]
 }

@@ -1,1 +1,15 @@
+# 门禁运行时状态
 .constitution-state.json
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# 语义索引（生成产物，不入库）
+skill_index.faiss
+skill_index.pkl
+
+# 测试临时文件
+tests/tmp/

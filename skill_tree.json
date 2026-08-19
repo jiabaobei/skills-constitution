@@ -33,8 +33,7 @@
         "description": "从真实帖文、文章、发布稿、文档或官网文案中提炼可复用的\"文风画像\"(VOICE PROFILE)，并跨内容/外联/社媒复用，避免千篇一律的 AI 腔。当用户强调文风一致、要模仿某个作者或品牌语气时使用此 skill（例如\"帮我定个品牌调性\"\"按我之前的风格写\"\"以后都用这个语气\"）。",
         "version": "1.0.0",
         "categories": [
-          "doc",
-          "file"
+          "doc"
         ]
       },
       {
@@ -56,14 +55,10 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
+        "version": "2.28.1",
         "categories": [
-          "meta",
           "code",
-          "doc",
-          "image",
-          "data",
-          "file"
+          "doc"
         ]
       },
       {
@@ -78,7 +73,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "categories": [
           "meta",
           "browser",
@@ -102,7 +97,6 @@
         "version": "0.0.0",
         "categories": [
           "doc",
-          "image",
           "file"
         ]
       },
@@ -130,7 +124,6 @@
         "description": "Safely import Excel/CSV data into a new or existing Feishu Base, or export a Base table to Excel/CSV. Use when a user needs Excel/CSV and Feishu Base synchronization, especially keyed upserts with a p",
         "version": "0.0.0",
         "categories": [
-          "code",
           "doc",
           "data"
         ]
@@ -149,7 +142,6 @@
         "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
         "version": "1.0.0",
         "categories": [
-          "code",
           "doc",
           "finance",
           "search",
@@ -216,7 +208,6 @@
         "version": "1.0.1",
         "categories": [
           "doc",
-          "image",
           "video",
           "file"
         ]
@@ -226,8 +217,7 @@
         "description": "Convert Markdown files to professional PDF documents with full CJK (Chinese/Japanese/Korean) support. Uses reportlab for reliable rendering without external dependencies like wkhtmltopdf or LaTeX.",
         "version": "1.0.0",
         "categories": [
-          "doc",
-          "file"
+          "doc"
         ]
       },
       {
@@ -294,15 +284,6 @@
         ]
       },
       {
-        "name": "moways-doc__skillhub",
-        "description": "一键规范 Word 报告排版：页面设置、字体字号、标题层级、行距段距、页码页眉、",
-        "version": "2.7.2",
-        "categories": [
-          "meta",
-          "doc"
-        ]
-      },
-      {
         "name": "nano-pdf",
         "description": "Edit PDFs with natural-language instructions using the nano-pdf CLI.",
         "version": "1.0.0",
@@ -325,7 +306,7 @@
       {
         "name": "patent-disclosure-skill__skillhub",
         "description": "中国专利技能：专利点挖掘与交底书（发明/实用/外观）编写，通俗解读专利，嗅探政策动向，辅助审查答复。| China patents skill: mine patent points and draft disclosures (invention / utility model / design), plain-language reading, policy sniffing, assiste",
-        "version": "3.5.0",
+        "version": "3.6.0",
         "categories": [
           "doc"
         ]
@@ -336,8 +317,6 @@
         "version": "0.0.0",
         "categories": [
           "doc",
-          "image",
-          "search",
           "file"
         ]
       },
@@ -374,27 +353,6 @@
         "categories": [
           "doc",
           "file"
-        ]
-      },
-      {
-        "name": "pi-package-authoring",
-        "description": "Pi packages — npm/git distribution of extensions, skills, prompts, themes via keywords pi-package and package.json pi manifest; pi install paths and security expectations. Use when shipping or consumi",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "doc"
-        ]
-      },
-      {
-        "name": "playwright-browser-automation",
-        "description": "Direct Playwright API for browser automation without MCP complexity. Navigate websites, interact with elements, extract data, take screenshots, generate PDFs, record videos. More reliable than MCP-bas",
-        "version": "2.0.0",
-        "categories": [
-          "browser",
-          "doc",
-          "video",
-          "data",
-          "automation"
         ]
       },
       {
@@ -441,7 +399,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
+        "version": "2.12.0",
         "categories": [
           "meta",
           "memory",
@@ -466,8 +424,7 @@
         "version": "6.0.0",
         "categories": [
           "doc",
-          "data",
-          "file"
+          "data"
         ]
       },
       {
@@ -504,16 +461,6 @@
         ]
       },
       {
-        "name": "tencentcloud-lighthouse-skill",
-        "description": "Load when: user mentions Lighthouse, 轻量应用服务器, 轻量服务器, or asks to check/create/manage/deploy Lighthouse instances, deploy applications to Lighthouse, manage Lighthouse firewall rules, reset Lighthouse p",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "doc",
-          "image"
-        ]
-      },
-      {
         "name": "tencentcloud-ocr",
         "description": "腾讯云通用文字识别（高精度版）(GeneralAccurateOCR) 技能包。当用户发送/粘贴图片、提供图片URL、或要求识别图片中的文字时，应自动调用此技能。支持图像整体文字的检测和识别，支持中文、英文、中英文、数字和特殊字符号的识别，并返回文字框位置和文字内容。适用于文字较多、版式复杂、对识别准召率要求较高的场景，如网络图片、街景店招牌、法律卷宗、多语种简历等场景。支持图片Base64和UR",
         "version": "1.0.4",
@@ -528,27 +475,6 @@
         "version": "1.0.3",
         "categories": [
           "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "tutor-skills",
-        "description": "Turn PDFs, docs, and codebases into Obsidian StudyVaults with structured notes, then quiz yourself with concept-level progress tracking. Use when users want to study documents, create study materials ",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "web-search-exa",
-        "description": "Neural web search, content extraction, company and people research, code search, and deep research via the Exa MCP server. Use when you need to: (1) search the web with semantic understanding — not ju",
-        "version": "2.0.1",
-        "categories": [
-          "code",
-          "doc",
-          "search",
           "file"
         ]
       },
@@ -650,31 +576,11 @@
         ]
       },
       {
-        "name": "ai-shifu-course-creator",
-        "description": "Use when the user works with AI-Shifu (AI师傅) courses in any capacity of creating, writing, editing, rewriting, optimizing, reordering, deploying, publishing, previewing, or managing Teaching Prompts (",
-        "version": "1.2.0",
-        "categories": [
-          "code",
-          "image",
-          "file"
-        ]
-      },
-      {
         "name": "algorithmic-art",
         "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or",
         "version": "0.0.0",
         "categories": [
           "code"
-        ]
-      },
-      {
-        "name": "ardot__skillhub",
-        "description": "用于在 Ardot 中把多个已有画板自动编排成可交付的衍生展示区。适合多状态对照、设计评审看板、流程演示、角色/设备矩阵。也可作为 CodeBuddy + Ardot AI 设计工作流的收尾节点，将 AI 生成的零散画板自动整理成结构化展示区并输出可分享链接。",
-        "version": "1.0.12",
-        "categories": [
-          "code",
-          "file",
-          "automation"
         ]
       },
       {
@@ -685,17 +591,6 @@
           "browser",
           "code",
           "automation"
-        ]
-      },
-      {
-        "name": "browser-testing-with-devtools",
-        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code",
-          "data",
-          "file"
         ]
       },
       {
@@ -710,26 +605,12 @@
         ]
       },
       {
-        "name": "clawbrowser",
-        "description": "Use when the agent needs to drive a browser through the Microsoft Playwright CLI (`playwright-cli`) for navigation, form interactions, screenshots, recordings, data extraction, session management, or ",
-        "version": "0.1.1",
-        "categories": [
-          "browser",
-          "code",
-          "data"
-        ]
-      },
-      {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
+        "version": "2.28.1",
         "categories": [
-          "meta",
           "code",
-          "doc",
-          "image",
-          "data",
-          "file"
+          "doc"
         ]
       },
       {
@@ -783,14 +664,6 @@
         ]
       },
       {
-        "name": "debugging-and-error-recovery",
-        "description": "Guides systematic root-cause debugging. Use when tests fail, builds break, behavior doesn't match expectations, or you encounter any unexpected error. Use when you need a systematic approach to findin",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "deprecation-and-migration",
         "description": "Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when deciding whether to maintain or sunset existi",
         "version": "0.0.0",
@@ -815,25 +688,9 @@
         ]
       },
       {
-        "name": "documentation-and-adrs",
-        "description": "Records decisions and documentation. Use when making architectural decisions, changing public APIs, shipping features, or when you need to record context that future engineers and agents will need to ",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "doubt-driven-development",
         "description": "Subjects every non-trivial decision to a fresh-context adversarial review before it stands. Use when correctness matters more than speed, when working in unfamiliar code, when stakes are high (product",
         "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "edgeone-pages-deploy",
-        "description": "Deploy frontend and full-stack projects to Tencent EdgeOne Pages using the EdgeOne CLI. Use when the user wants to publish, launch, redeploy, create a preview deployment, or ship a site to production.",
-        "version": "1.0.5",
         "categories": [
           "code"
         ]
@@ -847,17 +704,6 @@
         ]
       },
       {
-        "name": "excalidraw-diagram",
-        "description": "Create Excalidraw diagrams for workflows, architectures, protocols, concepts, and system explanations. Use when a user wants a flowchart, architecture sketch, visual explanation, or diagram as a .exca",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code",
-          "data",
-          "file"
-        ]
-      },
-      {
         "name": "excel-formula-generator__skillhub",
         "description": "根据自然语言描述生成 Excel/WPS/Google Sheets 公式，附逐层解释、使用示例、防错版本与版本兼容对照。当用户提到 Excel公式、表格公式、VLOOKUP、XLOOKUP、SUMIFS、INDEX MATCH、数据透视、条件格式公式、数组公式、excel formula、spreadsheet function，或要求创建/调试/优化表格公式时触发。不适用于数据分析报告、Pyt",
         "version": "0.0.0",
@@ -865,28 +711,6 @@
           "code",
           "doc",
           "data",
-          "file"
-        ]
-      },
-      {
-        "name": "excel-sync-bitable__skillhub",
-        "description": "Safely import Excel/CSV data into a new or existing Feishu Base, or export a Base table to Excel/CSV. Use when a user needs Excel/CSV and Feishu Base synchronization, especially keyed upserts with a p",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "data"
-        ]
-      },
-      {
-        "name": "feasibility-reviewer__skillhub",
-        "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "finance",
-          "search",
           "file"
         ]
       },
@@ -917,38 +741,6 @@
         ]
       },
       {
-        "name": "github",
-        "description": "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries.",
-        "version": "1.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "html-deploy",
-        "description": "Publish a single self-contained HTML page to htmlcode.fun and return live URLs. Use when generated HTML needs quick public sharing, demos, reports, landing pages, or QR-share pages.",
-        "version": "1.3.1",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "idea-refine",
-        "description": "Refines raw ideas into sharp, actionable concepts through structured divergent and convergent thinking. Use when an idea is still vague, when you need to stress-test assumptions before committing to a",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "improve-codebase-architecture",
-        "description": "Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "incremental-implementation",
         "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big",
         "version": "0.0.0",
@@ -963,16 +755,6 @@
         "version": "0.0.0",
         "categories": [
           "code"
-        ]
-      },
-      {
-        "name": "lingyi-content-quality-check__skillhub",
-        "description": "【零一数科·出品】：爆款内容预检。发前先测会不会违规、能不能爆、人群买不买——把发布从赌运气变成心里有底。视频号/公众号文案一键过三关：① 敏感词+广告法违禁词合规检测，命中词直接给替换建议；② 模拟目标人群真实观看反应与评论区原声；③ 爆款概率预测，逐维度打分说清依据。合规要准、爆款看依据，发出去前帮你把最后一道关。触发词：内容质检、敏感词检测、广告法检测、违禁词扫描、发布前审核、爆款预测、人群",
-        "version": "v0.3.0",
-        "categories": [
-          "code",
-          "video",
-          "file"
         ]
       },
       {
@@ -1022,14 +804,6 @@
         ]
       },
       {
-        "name": "netlify-deploy",
-        "description": "Deploy and manage Netlify sites with npx netlify. Use for first deploys, preview deploys, production releases, site linking, authentication checks, and netlify.toml fixes.",
-        "version": "1.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "observability-and-instrumentation",
         "description": "Instruments code so production behavior is visible and diagnosable. Use when adding logging, metrics, tracing, or alerting. Use when shipping any feature that runs in production and you need evidence ",
         "version": "0.0.0",
@@ -1044,42 +818,7 @@
         "version": "1.0.1",
         "categories": [
           "browser",
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "pi-agent-embedding",
-        "description": "@mariozechner/pi-agent-core Agent runtime — message flow, tool execution modes, event sequence for prompt() and continue(), embedding in apps. Use when building on Agent class, wiring subscribers, or ",
-        "version": "0.0.0",
-        "categories": [
           "code"
-        ]
-      },
-      {
-        "name": "pi-ai-library",
-        "description": "@mariozechner/pi-ai — unified LLM streaming API, tools, providers, thinking events, and cross-provider handoffs as implemented in pi-mono. Use when integrating or debugging pi-ai, adding providers, us",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "pi-extension-authoring",
-        "description": "Authoring Pi TypeScript extensions — ExtensionAPI, custom tools, commands, UI hooks, resources_discover, `registerProvider()`, and how extendResources merges skill paths after base reload. Use when th",
-        "version": "0.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "pi-mom",
-        "description": "@mariozechner/pi-mom — Slack bot Master Of Mischief (Mom), self-managing agent, Docker sandbox, and events system. Use when setting up Mom in Slack, debugging data/ workspace issues, managing context.",
-        "version": "0.0.0",
-        "categories": [
-          "memory",
-          "code",
-          "data"
         ]
       },
       {
@@ -1087,34 +826,7 @@
         "description": "Pi packages — npm/git distribution of extensions, skills, prompts, themes via keywords pi-package and package.json pi manifest; pi install paths and security expectations. Use when shipping or consumi",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "doc"
-        ]
-      },
-      {
-        "name": "pi-tui",
-        "description": "@mariozechner/pi-tui — Minimal terminal UI framework with differential rendering, CSI 2026 synchronized output, and Component interfaces. Use when building or debugging terminal interfaces, TUI compon",
-        "version": "0.0.0",
-        "categories": [
           "code"
-        ]
-      },
-      {
-        "name": "pi-web-ui",
-        "description": "@mariozechner/pi-web-ui — Lit web components for chat UIs, ChatPanel, IndexedDB storage stores, artifacts, tools shipped with web-ui. Use when embedding Pi AI/agent in a browser app or debugging web-u",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code"
-        ]
-      },
-      {
-        "name": "qa",
-        "description": "Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wan",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
         ]
       },
       {
@@ -1124,15 +836,6 @@
         "categories": [
           "code",
           "email"
-        ]
-      },
-      {
-        "name": "request-refactor-plan",
-        "description": "Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe in",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
         ]
       },
       {
@@ -1176,28 +879,12 @@
         ]
       },
       {
-        "name": "shippage",
-        "description": "Publish HTML or Markdown to a public URL instantly with ShipPage. Use when a user wants to share, preview, host, or deploy generated pages, reports, dashboards, prototypes, docs, or product listings.",
-        "version": "1.2.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "skill-scanner",
         "description": "Scan any agent skill for security risks before you install or use it. Powered by Tencent Zhuque Lab A.I.G (AI-Infra-Guard). 100% local static analysis — no file contents or credentials leave your devi",
         "version": "1.0.0",
         "categories": [
           "code",
           "file"
-        ]
-      },
-      {
-        "name": "skill-vetter",
-        "description": "Security-first skill vetting for AI agents. Use before installing any skill from community, GitHub, or other sources. Checks for red flags, permission scope, and suspicious patterns.",
-        "version": "1.0.0",
-        "categories": [
-          "code"
         ]
       },
       {
@@ -1214,16 +901,6 @@
         "description": "Darwin Skill (达尔文.skill): autonomous skill optimizer inspired by Karpathy's autoresearch. Evaluates SKILL.md files using an 8-dimension rubric (structure + effectiveness), runs hill-climbing with git ",
         "version": "0.0.0",
         "categories": [
-          "code",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053082035544330240",
-        "description": "Generate GitHub AI trending project reports as formatted text leaderboards. Fetches top-starred AI/ML/LLM repos by daily, weekly, or monthly period and renders a styled leaderboard. Use when the user ",
-        "version": "1.1.0",
-        "categories": [
           "code"
         ]
       },
@@ -1239,7 +916,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
+        "version": "2.12.0",
         "categories": [
           "meta",
           "memory",
@@ -1294,16 +971,6 @@
         ]
       },
       {
-        "name": "tutor-skills",
-        "description": "Turn PDFs, docs, and codebases into Obsidian StudyVaults with structured notes, then quiz yourself with concept-level progress tracking. Use when users want to study documents, create study materials ",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
         "name": "uniapp-expert__skillhub",
         "description": "uni-app 跨平台开发专家技能，涵盖 Vue2/Vue3 开发、Vue2→Vue3 迁移实战、微信小程序自动化测试。融合真实项目踩坑经验，提供从开发到测试的完整解决方案。",
         "version": "0.0.0",
@@ -1314,39 +981,13 @@
         ]
       },
       {
-        "name": "web-deploy",
-        "description": "Build, preview, and deploy websites, web apps, and APIs using Vercel, Railway, GitHub Pages, or local Canvas environments. Use when a user needs general web deployment guidance across common hosting t",
-        "version": "1.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
-        "name": "web-deploy-github",
-        "description": "Create and deploy single-page static websites to GitHub Pages with an autonomous workflow. Use for portfolios, CV pages, landing pages, or static web projects that need GitHub Pages hosting.",
-        "version": "1.0.0",
-        "categories": [
-          "code"
-        ]
-      },
-      {
         "name": "web-search-exa",
         "description": "Neural web search, content extraction, company and people research, code search, and deep research via the Exa MCP server. Use when you need to: (1) search the web with semantic understanding — not ju",
         "version": "2.0.1",
         "categories": [
           "code",
-          "doc",
           "search",
           "file"
-        ]
-      },
-      {
-        "name": "webapp-testing",
-        "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser l",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code"
         ]
       },
       {
@@ -1355,15 +996,6 @@
         "version": "1.0.0",
         "categories": [
           "code"
-        ]
-      },
-      {
-        "name": "wizard",
-        "description": "Generate an interactive bash wizard that walks a human through a manual procedure — third-party setup, a one-off migration, an A→B state transition — opening URLs, capturing values, confirming each st",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
         ]
       },
       {
@@ -1411,15 +1043,6 @@
         ]
       },
       {
-        "name": "yourself-skill",
-        "description": "Distill yourself into an AI Skill. Deconstruct chat history, diaries, social media, and photos into a runnable digital self with persona and memory models. Use when user wants to create a digital twin",
-        "version": "1.0.0",
-        "categories": [
-          "memory",
-          "code"
-        ]
-      },
-      {
         "name": "zoom-out",
         "description": "Tell the agent to zoom out and give broader context or a higher-level perspective on unfamiliar code. Use when you're unfamiliar with a section of code, need to understand how it fits into the bigger ",
         "version": "1.0.0",
@@ -1432,7 +1055,7 @@
       {
         "name": "agently-mail",
         "description": "通过 agently-cli 命令行工具操作邮件：发送、回复、转发、搜索、读取、下载附件、管理收件箱。当用户需要进行任何邮件相关操作时使用此 skill。",
-        "version": "1.0.12",
+        "version": "1.0.13",
         "categories": [
           "browser",
           "email"
@@ -1453,8 +1076,7 @@
         "description": "Cloud browser sessions via Browser.cash API that bypass anti-bot protections (Cloudflare, DataDome). Spin up unblocked browser instances for scraping, form filling, testing. Sessions appear as real br",
         "version": "1.0.0",
         "categories": [
-          "browser",
-          "data"
+          "browser"
         ]
       },
       {
@@ -1463,9 +1085,7 @@
         "version": "0.0.0",
         "categories": [
           "browser",
-          "code",
-          "data",
-          "file"
+          "data"
         ]
       },
       {
@@ -1485,19 +1105,7 @@
         "version": "0.1.1",
         "categories": [
           "browser",
-          "code",
           "data"
-        ]
-      },
-      {
-        "name": "contextweave-interactive-architecture__skillhub",
-        "description": "强大的AI自动化绘图与复杂信息可视化工具（基于 ContextWeave）。不仅支持代码与系统架构的可视化，更广泛适用于复杂逻辑梳理、知识库转换、业务流程图、思维导图及长文本的结构化信息图生成。通过深度的语义分析与请求编排，一键将晦涩文本与复杂知识转化为清晰直观的图形表达。",
-        "version": "1.2.0",
-        "categories": [
-          "browser",
-          "image",
-          "data",
-          "automation"
         ]
       },
       {
@@ -1523,7 +1131,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "categories": [
           "meta",
           "browser",
@@ -1539,8 +1147,6 @@
         "version": "0.0.0",
         "categories": [
           "browser",
-          "code",
-          "data",
           "file"
         ]
       },
@@ -1663,8 +1269,7 @@
         "version": "1.0.1",
         "categories": [
           "browser",
-          "code",
-          "file"
+          "code"
         ]
       },
       {
@@ -1672,8 +1277,7 @@
         "description": "@mariozechner/pi-web-ui — Lit web components for chat UIs, ChatPanel, IndexedDB storage stores, artifacts, tools shipped with web-ui. Use when embedding Pi AI/agent in a browser app or debugging web-u",
         "version": "0.0.0",
         "categories": [
-          "browser",
-          "code"
+          "browser"
         ]
       },
       {
@@ -1682,8 +1286,6 @@
         "version": "2.0.0",
         "categories": [
           "browser",
-          "doc",
-          "video",
           "data",
           "automation"
         ]
@@ -1713,7 +1315,6 @@
         "categories": [
           "browser",
           "finance",
-          "search",
           "data"
         ]
       },
@@ -1781,7 +1382,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
+        "version": "2.12.0",
         "categories": [
           "meta",
           "memory",
@@ -1915,8 +1516,7 @@
         "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser l",
         "version": "0.0.0",
         "categories": [
-          "browser",
-          "code"
+          "browser"
         ]
       },
       {
@@ -1979,7 +1579,7 @@
       {
         "name": "agently-mail",
         "description": "通过 agently-cli 命令行工具操作邮件：发送、回复、转发、搜索、读取、下载附件、管理收件箱。当用户需要进行任何邮件相关操作时使用此 skill。",
-        "version": "1.0.12",
+        "version": "1.0.13",
         "categories": [
           "browser",
           "email"
@@ -2000,8 +1600,7 @@
         "description": "Run Karpathy-style autoresearch optimization on any content. Generates 50+ variants, scores with a 5-expert simulated panel, evolves winners through multiple rounds, outputs optimized version + full e",
         "version": "1.0.1",
         "categories": [
-          "email",
-          "search"
+          "email"
         ]
       },
       {
@@ -2020,22 +1619,6 @@
           "email",
           "search",
           "automation"
-        ]
-      },
-      {
-        "name": "gmail",
-        "description": "Gmail API integration with managed OAuth. Read, send, and manage emails, threads, labels, and drafts. Use this skill when users want to interact with Gmail. For other third party apps, use the api-gat",
-        "version": "1.0",
-        "categories": [
-          "email"
-        ]
-      },
-      {
-        "name": "gog",
-        "description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
-        "version": "1.0.0",
-        "categories": [
-          "email"
         ]
       },
       {
@@ -2087,15 +1670,6 @@
         ]
       },
       {
-        "name": "skill_2053082087495782400",
-        "description": "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIM",
-        "version": "1.0.0",
-        "categories": [
-          "email",
-          "search"
-        ]
-      },
-      {
         "name": "skill_2053082149365157888",
         "description": "Read and send email via IMAP/SMTP. Check for new/unread messages, fetch content, search mailboxes, mark as read/unread, and send emails with attachments. Supports multiple accounts. Works with any IMA",
         "version": "0.0.0",
@@ -2110,9 +1684,7 @@
         "version": "1.0.0",
         "categories": [
           "video",
-          "email",
-          "search",
-          "file"
+          "email"
         ]
       }
     ],
@@ -2209,7 +1781,6 @@
         "version": "0.0.0",
         "categories": [
           "memory",
-          "code",
           "data"
         ]
       },
@@ -2218,14 +1789,13 @@
         "description": "@mariozechner/pi — Deploy and manage vLLM LLM GPU pods, DataCrunch/RunPod setup, and CLI agent interface. Use when spinning up GPU instances, configuring vLLM, managing tensor parallelism, or interact",
         "version": "0.0.0",
         "categories": [
-          "memory",
-          "data"
+          "memory"
         ]
       },
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
+        "version": "2.12.0",
         "categories": [
           "meta",
           "memory",
@@ -2282,8 +1852,7 @@
         "description": "Distill yourself into an AI Skill. Deconstruct chat history, diaries, social media, and photos into a runnable digital self with persona and memory models. Use when user wants to create a digital twin",
         "version": "1.0.0",
         "categories": [
-          "memory",
-          "code"
+          "memory"
         ]
       }
     ],
@@ -2345,7 +1914,6 @@
         "description": "【零一数科·出品】：爆款内容预检。发前先测会不会违规、能不能爆、人群买不买——把发布从赌运气变成心里有底。视频号/公众号文案一键过三关：① 敏感词+广告法违禁词合规检测，命中词直接给替换建议；② 模拟目标人群真实观看反应与评论区原声；③ 爆款概率预测，逐维度打分说清依据。合规要准、爆款看依据，发出去前帮你把最后一道关。触发词：内容质检、敏感词检测、广告法检测、违禁词扫描、发布前审核、爆款预测、人群",
         "version": "v0.3.0",
         "categories": [
-          "code",
           "video",
           "file"
         ]
@@ -2382,7 +1950,6 @@
         "version": "1.0.1",
         "categories": [
           "doc",
-          "image",
           "video",
           "file"
         ]
@@ -2405,34 +1972,12 @@
         ]
       },
       {
-        "name": "notebooklm-studio",
-        "description": "Import sources (URLs, YouTube, files, text) into Google NotebookLM and generate artifacts: podcasts, videos, reports, quizzes, flashcards, mind maps, slide decks, infographics, data tables. Use when u",
-        "version": "2.1.3",
-        "categories": [
-          "video",
-          "data",
-          "file"
-        ]
-      },
-      {
         "name": "openclaw-v3",
         "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
         "version": "0.0.0",
         "categories": [
           "image",
           "video"
-        ]
-      },
-      {
-        "name": "playwright-browser-automation",
-        "description": "Direct Playwright API for browser automation without MCP complexity. Navigate websites, interact with elements, extract data, take screenshots, generate PDFs, record videos. More reliable than MCP-bas",
-        "version": "2.0.0",
-        "categories": [
-          "browser",
-          "doc",
-          "video",
-          "data",
-          "automation"
         ]
       },
       {
@@ -2449,9 +1994,7 @@
         "version": "1.0.0",
         "categories": [
           "video",
-          "email",
-          "search",
-          "file"
+          "email"
         ]
       },
       {
@@ -2496,976 +2039,15 @@
         ]
       }
     ],
-    "image": [
-      {
-        "name": "ai-shifu-course-creator",
-        "description": "Use when the user works with AI-Shifu (AI师傅) courses in any capacity of creating, writing, editing, rewriting, optimizing, reordering, deploying, publishing, previewing, or managing Teaching Prompts (",
-        "version": "1.2.0",
-        "categories": [
-          "code",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "ch12893719743826428329324__skillhub",
-        "description": "Generate or edit images through user-supplied API relays using Gemini-native or OpenAI-compatible image protocols. API relays are third-party gateways that often aggregate multiple models behind one B",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "cloudbase",
-        "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
-        "categories": [
-          "meta",
-          "code",
-          "doc",
-          "image",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "contextweave-interactive-architecture__skillhub",
-        "description": "强大的AI自动化绘图与复杂信息可视化工具（基于 ContextWeave）。不仅支持代码与系统架构的可视化，更广泛适用于复杂逻辑梳理、知识库转换、业务流程图、思维导图及长文本的结构化信息图生成。通过深度的语义分析与请求编排，一键将晦涩文本与复杂知识转化为清晰直观的图形表达。",
-        "version": "1.2.0",
-        "categories": [
-          "browser",
-          "image",
-          "data",
-          "automation"
-        ]
-      },
-      {
-        "name": "docx",
-        "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', ",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "gpt-image2-pro__skillhub",
-        "description": "AI 图片生成器 — 基于 gpt-image-2 模型，支持文生图与图生图，开箱即用。",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "image-pro__skillhub",
-        "description": ">",
-        "version": "0.0.0",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "image-prompt-skill__skillhub",
-        "description": "统一提示词生成器，支持图片与视频双模态。文/图生图、文/图生视频、图片/视频反编译、上下文微调，自动适配画风与平台语法，内置RAG增强风格预设与安全校验，高效精准。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "image-well",
-        "description": "Search and download images from 12 APIs in parallel (Openverse, Pexels, Pixabay, Met Museum, NASA, Rijksmuseum, Wikimedia Commons, Unsplash, Smithsonian, Europeana, Iconify, Pollinations AI). Supports",
-        "version": "1.0.2",
-        "categories": [
-          "image",
-          "search",
-          "data"
-        ]
-      },
-      {
-        "name": "markitdown-skill",
-        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
-        "version": "1.0.1",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "openclaw-v3",
-        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "video"
-        ]
-      },
-      {
-        "name": "pdf",
-        "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rota",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "pdf-image-text-extractor",
-        "description": "从图片或 PDF 文档中识别并提取文字内容，支持多种图片格式和 PDF 文件，自动判断是否包含文字并保留原始格式输出结构化结果；当用户需要从图片或 PDF 提取文字、进行 OCR 识别、处理含文字的文档或转换为可编辑文本时使用。该skill能力来自RedFoxHub，官网：https://redfox.hk/skills。",
-        "version": "1.0.9",
-        "categories": [
-          "doc",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "pi-cli-workspace",
-        "description": "Pi terminal agent workspace — install, /commands, sessions, compaction, settings.json, AGENTS.md, skill discovery, precedence, session JSONL, /tree, providers/auth, models.json, credential resolution,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053082421296758784",
-        "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use for image create/modify requests incl. edits. Supports text-to-image + image-to-image; 1K/2K/4K; use --input-image.",
-        "version": "1.0.1",
-        "categories": [
-          "image"
-        ]
-      },
-      {
-        "name": "tencent-mps__skillhub",
-        "description": "腾讯云 MPS 音视频与图片处理、AI 生成、内容理解。涉及以下场景必须触发：【转码】转码/压缩/格式转换/转封装/H.264/H.265/AV1/码率/分辨率。【画质增强】画质增强/画质修复/老片修复/超分/真人增强/漫剧增强/防抖/人脸保真/1080P/2K/4K。【音频】音频分离/人声提取/伴奏提取/去人声/降噪/音量均衡。【字幕】字幕提取/字幕翻译/语音识别/语音转文字/ASR/OCR字幕",
-        "version": "1.3.1",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "tencentcloud-lighthouse-skill",
-        "description": "Load when: user mentions Lighthouse, 轻量应用服务器, 轻量服务器, or asks to check/create/manage/deploy Lighthouse instances, deploy applications to Lighthouse, manage Lighthouse firewall rules, reset Lighthouse p",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "doc",
-          "image"
-        ]
-      }
-    ],
-    "file": [
-      {
-        "name": "ai-shifu-course-creator",
-        "description": "Use when the user works with AI-Shifu (AI师傅) courses in any capacity of creating, writing, editing, rewriting, optimizing, reordering, deploying, publishing, previewing, or managing Teaching Prompts (",
-        "version": "1.2.0",
-        "categories": [
-          "code",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "anthropic-pptx",
-        "description": "Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting te",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "email",
-          "file"
-        ]
-      },
-      {
-        "name": "ardot__skillhub",
-        "description": "用于在 Ardot 中把多个已有画板自动编排成可交付的衍生展示区。适合多状态对照、设计评审看板、流程演示、角色/设备矩阵。也可作为 CodeBuddy + Ardot AI 设计工作流的收尾节点，将 AI 生成的零散画板自动整理成结构化展示区并输出可分享链接。",
-        "version": "1.0.12",
-        "categories": [
-          "code",
-          "file",
-          "automation"
-        ]
-      },
-      {
-        "name": "article-writing",
-        "description": "撰写博客、技术指南、教程、公众号文章、小红书长文、newsletter 等成体系的长文内容，基于示例或品牌调性形成独特文风。当用户需要写超过一段的正式/推广文案，且看重文风一致性、结构与可信度时使用此 skill（例如\"帮我写一篇介绍 XXX 项目的公众号文章\"\"把这篇笔记整理成教程\"）。",
-        "version": "1.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "biaoshu-writer-pro__skillhub",
-        "description": "标书撰写器 v5.4.0 - 投标技术标文档自动生成工具。支持解析 txt/pdf/docx/xlsx 招标文件，生成符合评分标准的技术标 Word 文档。适用：技术标编写、交通工程（高速/航道）投标。",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "brand-voice",
-        "description": "从真实帖文、文章、发布稿、文档或官网文案中提炼可复用的\"文风画像\"(VOICE PROFILE)，并跨内容/外联/社媒复用，避免千篇一律的 AI 腔。当用户强调文风一致、要模仿某个作者或品牌语气时使用此 skill（例如\"帮我定个品牌调性\"\"按我之前的风格写\"\"以后都用这个语气\"）。",
-        "version": "1.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "browser-testing-with-devtools",
-        "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "cloudbase",
-        "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
-        "categories": [
-          "meta",
-          "code",
-          "doc",
-          "image",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "cloudq",
-        "description": "用户咨询腾讯云产品资源、AWS、阿里云等多云资源时，查看智能顾问架构图、架构目录、架构详情、架构评估结果、绘制架构图、开通智能顾问时、AI智能巡检、AI容量监测、AI混沌演练、AI云诊断、主动预警、架构健康度、云运维问答、云资源查询、云成本优化、安全合规、云资源盘点、闲置资源检查、云产品最佳实践等AIOps、ChatOps、CloudOps操作时使用。",
-        "version": "1.8.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "code-reviewer__skillhub",
-        "description": "对指定文件夹内的代码进行全面审查，包含规范性检查、Bug检测、性能优化建议、可读性评估和基于华为Java编程规范的质量评分；当用户需要审查代码质量、发现潜在问题、评估代码规范符合度或生成代码审查报告时使用",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "context-engineering",
-        "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "file"
-        ]
-      },
-      {
-        "name": "dknowc-official-doc-writer-skillhub__skillhub",
-        "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
-        "categories": [
-          "meta",
-          "browser",
-          "doc",
-          "finance",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "docx",
-        "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', ",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "excalidraw-diagram",
-        "description": "Create Excalidraw diagrams for workflows, architectures, protocols, concepts, and system explanations. Use when a user wants a flowchart, architecture sketch, visual explanation, or diagram as a .exca",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "excel-formula-generator__skillhub",
-        "description": "根据自然语言描述生成 Excel/WPS/Google Sheets 公式，附逐层解释、使用示例、防错版本与版本兼容对照。当用户提到 Excel公式、表格公式、VLOOKUP、XLOOKUP、SUMIFS、INDEX MATCH、数据透视、条件格式公式、数组公式、excel formula、spreadsheet function，或要求创建/调试/优化表格公式时触发。不适用于数据分析报告、Pyt",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "fbs-bookwriter",
-        "description": "福帮手出品 | 高质量长文档手稿工具链：书籍、手册、白皮书、行业指南、长篇报道、深度专题；支持联网查证（宿主允许时启用，离线自动降级）、S/P/C/B 分层审校、中文排版与 MD/HTML 交付。触发词：福帮手、福帮手写书skill、福帮手写书、写书、出书、写长篇、写手册、写白皮书、写行业指南、协作写书、定大纲、写章节、封面、插图、排版构建、导出、去AI味、质量自检、图文书、写报道、写深度稿、写特",
-        "version": "3.0.1",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "feasibility-reviewer__skillhub",
-        "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "finance",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "file-organizer__skillhub",
-        "description": "整理指定文件夹中的文件，按类型、日期或规则自动分类归档到不同子文件夹中。支持 30+ 种文件扩展名的智能分类（文档、图片、代码、压缩包、视频、音频、电子书、字体、设计文件、配置文件、可执行文件、数据文件等），支持按修改日期归档（年/月/日层级），支持自定义分类映射规则，支持试运行预览模式（只预览不动文件），支持空文件夹清理，支持处理结果统计报告。触发场景：用户说文件夹太乱需要整理、按类型归类文件、",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "firecrawl",
-        "description": "在助手自己的会话里直接用 Firecrawl 做网页搜索/抓取/抽取。CLI 已装在受管 node 工作区；API Key 在本技能目录的 .env 中（用户已授权绑定）。",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "frontend-spec__skillhub",
-        "description": "企业级前端开发规范 Skill，包含命名、目录、CSS/JS/TS、Vue/React、Git、构建、性能、安全完整规范",
-        "version": "1.0.0",
-        "categories": [
-          "meta",
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "gongwenformat-pro",
-        "description": "党政机关公文标准排版Pro版(GB/T 9704-2012)。将Markdown/TXT/DOCX文本转换为符合国标排版的Word文档。当用户提到以下任何关键词或场景时必须使用此技能:公文排版、标准格式、Word文件、排版、写成Word、生成docx、发文格式、材料排版、红头文件、正式文件、排版成Word、帮我排个版、公文格式、公文、政府文件、机关公文、通知格式、请示格式、报告格式、函的格式、会议",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "guizang-ppt-skill",
-        "description": "生成横向翻页网页 PPT（单 HTML 文件），含 WebGL 背景、章节幕封、数据大字报、图片网格等模板。提供两种风格：① \"电子杂志 × 电子墨水\"（衬线 + 流体背景 + 暖色） ② \"瑞士国际主义\"（无衬线 + 网格点阵 + IKB/柠檬黄/柠檬绿/安全橙高亮）。当用户需要制作分享 / 演讲 / 发布会风格的网页 PPT，或提到\"杂志风 PPT\"、\"瑞士风 PPT\"、\"Swiss Styl",
-        "version": "1.0.0",
-        "categories": [
-          "browser",
-          "file"
-        ]
-      },
-      {
-        "name": "incremental-implementation",
-        "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "kdocs-skill",
-        "description": "操作金山文档（WPS 云文档 / Kdocs / 365.kdocs.cn / www.kdocs.cn）云文档的官方 Skill。核心能力覆盖云端新建、读取、编辑、搜索、分享、整理在线文档（智能文档、Word、Excel、PDF、PPT、演示文稿、智能表格、多维表格）及个人知识库。当用户的任务涉及云文档操作时使用，包括但不限于：写周报/日报/工作汇报、处理合同/发票、创建报名表/登记表、网页剪藏",
-        "version": "2.5.29",
-        "categories": [
-          "browser",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "lingyi-content-quality-check__skillhub",
-        "description": "【零一数科·出品】：爆款内容预检。发前先测会不会违规、能不能爆、人群买不买——把发布从赌运气变成心里有底。视频号/公众号文案一键过三关：① 敏感词+广告法违禁词合规检测，命中词直接给替换建议；② 模拟目标人群真实观看反应与评论区原声；③ 爆款概率预测，逐维度打分说清依据。合规要准、爆款看依据，发出去前帮你把最后一道关。触发词：内容质检、敏感词检测、广告法检测、违禁词扫描、发布前审核、爆款预测、人群",
-        "version": "v0.3.0",
-        "categories": [
-          "code",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "markitdown-skill",
-        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
-        "version": "1.0.1",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "md-to-pdf-cjk",
-        "description": "Convert Markdown files to professional PDF documents with full CJK (Chinese/Japanese/Korean) support. Uses reportlab for reliable rendering without external dependencies like wkhtmltopdf or LaTeX.",
-        "version": "1.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "meeting-notes-assistant__skillhub",
-        "description": "会议纪要智能助手。使用本地 Whisper 音频转写（离线、隐私安全），生成结构化会议纪要（时间、议题、结论、待办、关键词），提取 Action Items。支持 Word / PDF / 邮件输出，适合录音转写、会议归档与待办分发。触发关键词：「整理会议纪要」、「生成会议纪要」、「录音转纪要」。",
-        "version": "1.0.0",
-        "categories": [
-          "doc",
-          "email",
-          "file"
-        ]
-      },
-      {
-        "name": "memory-v1__skillhub",
-        "description": "解决AI记忆混乱问题——\"今天讲明天忘\"。通过文件系统和规则流程实现持久记忆，确保新任务开始时自动回顾上下文，而不是靠\"想\"。核心机制：任务开始判断→读取记忆→执行→保存。适用于频繁切换话题或任务的AI协作场景。",
-        "version": "0.0.0",
-        "categories": [
-          "memory",
-          "file"
-        ]
-      },
-      {
-        "name": "mh-codebase-memory-mcp",
-        "description": "当用户希望让 AI 编码助手长期\"记住\"代码库结构、调用关系、历史修改与架构决策，突破上下文窗口限制、减少 token 消耗时使用本技能，例如\"给我的项目建代码知识图谱让 AI 记住它\"、\"索引这个仓库以便 AI 少读文件就能回答架构问题\"、\"配置一个代码库记忆 MCP 服务器\"。触发词：代码库记忆/codebase memory/代码知识图谱/code graph/索引仓库/index repo",
-        "version": "0.0.0",
-        "categories": [
-          "memory",
-          "code",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "mh-voicebox",
-        "description": "当用户需要本地离线的 AI 语音能力——声音克隆、文字转语音配音、语音听写输入、音频转文字、给 AI Agent 配语音播报时使用本技能，例如\"用几秒样本克隆我的声音并朗读这段文案\"、\"把这篇文章生成多语种旁白音频\"、\"按住快捷键说话直接把语音转成文字填进任意输入框\"、\"把录音文件转成文字稿\"、\"让 Claude Code 任务完成时用我的声音播报\"。触发词：Voicebox/声音克隆/语音克隆/",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "migrate-to-shoehorn",
-        "description": "Migrate test files from `as` type assertions to @total-typescript/shoehorn. Use when user mentions shoehorn, wants to replace `as` in tests, or needs partial test data.",
-        "version": "0.0.0",
-        "categories": [
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "minimax-xlsx",
-        "description": "Open, create, read, analyze, edit, or validate Excel/spreadsheet files (.xlsx, .xlsm, .csv, .tsv). Use when the user asks to create, build, modify, analyze, read, validate, or format any Excel spreads",
-        "version": "1.0",
-        "categories": [
-          "doc",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "note-organizer",
-        "description": "自动整理零散笔记，归类去重、生成结构，让你的知识井井有条、随手可查。 (Auto-organize scattered notes—classify, dedupe, and structure them so your knowledge stays tidy and findable.)",
-        "version": "1.0.5",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "notebooklm-studio",
-        "description": "Import sources (URLs, YouTube, files, text) into Google NotebookLM and generate artifacts: podcasts, videos, reports, quizzes, flashcards, mind maps, slide decks, infographics, data tables. Use when u",
-        "version": "2.1.3",
-        "categories": [
-          "video",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "novel-writer",
-        "description": "章节正文生成器 - 根据章节大纲、Voice Profile 和角色档案构建 LLM 提示词，用于生成章节正文。当需要根据大纲创作具体章节时使用。",
-        "version": "1.0.3",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "office-automation-pro",
-        "description": "常见办公流程自动化处理 - 智能办公助手，支持文档处理、数据整理、邮件管理、日程安排、报表生成等",
-        "version": "1.0.0",
-        "categories": [
-          "browser",
-          "doc",
-          "email",
-          "file",
-          "automation"
-        ]
-      },
-      {
-        "name": "oracle",
-        "description": "Use the @steipete/oracle CLI to bundle a prompt plus the right files and get a second-model review (API or browser) for debugging, refactors, design checks, or cross-validation.",
-        "version": "1.0.1",
-        "categories": [
-          "browser",
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "pdf",
-        "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rota",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "pdf-image-text-extractor",
-        "description": "从图片或 PDF 文档中识别并提取文字内容，支持多种图片格式和 PDF 文件，自动判断是否包含文字并保留原始格式输出结构化结果；当用户需要从图片或 PDF 提取文字、进行 OCR 识别、处理含文字的文档或转换为可编辑文本时使用。该skill能力来自RedFoxHub，官网：https://redfox.hk/skills。",
-        "version": "1.0.9",
-        "categories": [
-          "doc",
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "pdfkit-py",
-        "description": "仅用于对已存在的 .pdf 文件进行处理（读取/提取/编辑/合并/拆分/转换/水印/加密/OCR/表单/签名）。当且仅当用户输入或工作区中存在 .pdf 文件，且操作对象是该 PDF 时使用。不处理 docx/xlsx/pptx/html/md/txt/图片等非 PDF 文件，不承担论文写作、文本润色、内容创作、项目管理、文档排版咨询等任务。",
-        "version": "1.0.1",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "pi-cli-workspace",
-        "description": "Pi terminal agent workspace — install, /commands, sessions, compaction, settings.json, AGENTS.md, skill discovery, precedence, session JSONL, /tree, providers/auth, models.json, credential resolution,",
-        "version": "0.0.0",
-        "categories": [
-          "image",
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-crate",
-        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-generator-skill",
-        "description": "智能 PPT 生成助手。根据用户描述的主题、行业、风格，自动生成漂亮的 PPT 文件。支持所有行业（商务、教育、科技、医疗、金融、创意等），支持中英文双语，支持用户提供的模板或 AI 自动配色。触发词：做PPT、生成PPT、制作幻灯片、make ppt、create presentation、帮我做个PPT。",
-        "version": "0.0.0",
-        "categories": [
-          "finance",
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-speech-skill__skillhub",
-        "description": "为 PPT 自动生成逐页演讲稿并写入幻灯片备注区，返回可直接开讲的 PPT 文件。当用户要求写演讲稿、PPT讲稿、逐页讲解词、演讲备注、路演稿、答辩稿、汇报讲稿，或说\"给这个PPT配讲稿\"、\"生成演讲备注\"、\"帮我讲这个PPT\"时触发。按 30~50 秒/页的标准讲解节奏生成，不复述PPT原文而是自然讲解。",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "ppt-win32com-editor__skillhub",
-        "description": "使用 win32com（PowerPoint COM 接口）就地修改已有 .pptx 文件，保留所有原始布局、图片、形状、渐变背景和特效。当用户要求\"修改/美化/调整/优化 PPT 文件\"、\"更改字体/颜色/段落间距\"、\"在原文件基础上编辑 PowerPoint\"时使用。注意：新建 PPT 请使用 pptx-generator skill；本 skill 专用于已有 PPT 的就地修改，不重建文件",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "qa",
-        "description": "Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wan",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "request-refactor-plan",
-        "description": "Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe in",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "research",
-        "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading le",
-        "version": "0.0.0",
-        "categories": [
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "sa-pro-workbench__skillhub",
-        "description": "【解决方案架构师/售前顾问超级工作台 / Solution Architect & Presales Consultant Super Workbench】 —— 面向解决方案架构师、售前顾问、方案专家、企业架构师的全栈自动化技能。 一人一 Skill，替代方案团队 80% 重复劳动。 ■ 核心定位：面向信息化/数字化/智能化项目，覆盖从\\\"收到客户材料\\\"到\\\"交付投标材料包\\\"的 完整售前-方",
-        "version": "2.0.0",
-        "categories": [
-          "meta",
-          "browser",
-          "code",
-          "doc",
-          "finance",
-          "data",
-          "file",
-          "automation"
-        ]
-      },
-      {
-        "name": "setup-ts-deep-modules",
-        "description": "Wire dependency-cruiser into a TypeScript repo so each package is a deep module — implementation hidden in subfolders, reachable only through its entry-point files. User-invoked.",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "skill-library-doctor",
-        "description": "技能库体检与修复工具。扫描 ~/.workbuddy/skills 下所有 SKILL.md，检出无法加载或无法自动触发的技能——缺 frontmatter 围栏、被 ``` 代码块包裹、多余空围栏、frontmatter 整体缩进、缺 name、缺 description、只有 description_zh/en、非法 YAML、name 重名——并自动修复可确定性修复的部分。当用户说\"体检技能",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "skill-scanner",
-        "description": "Scan any agent skill for security risks before you install or use it. Powered by Tencent Zhuque Lab A.I.G (AI-Infra-Guard). 100% local static analysis — no file contents or credentials leave your devi",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053081382993469440",
-        "description": "百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER: 用户提及\\\"百度网盘/bdpan/网盘/云盘/baidu drive/Baidu Drive\\\"并涉及文件操作。DO NOT TRIGGER: 非文件存储操作，或使用其他云盘服务时。",
-        "version": "1.4.3",
-        "categories": [
-          "browser",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053081519859650560",
-        "description": "Darwin Skill (达尔文.skill): autonomous skill optimizer inspired by Karpathy's autoresearch. Evaluates SKILL.md files using an 8-dimension rubric (structure + effectiveness), runs hill-climbing with git ",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053082253572640768",
-        "description": "Unified Lark/Feishu CLI suite covering messaging, documents, collaboration, scheduling, and more. Provides 200+ commands across 11 business domains including instant messaging (IM), cloud documents, s",
-        "version": "1.0.0",
-        "categories": [
-          "video",
-          "email",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053082337409794048",
-        "description": "每日宏观数据监控和推送。自动浏览免费数据源（Trading Economics、FRED、国家统计局、央行官网、财联社等），整理整合过去24小时发布的宏观数据和政策信息，并推送给用户。通过 cron 每天晚上10点自动触发。",
-        "version": "1.0.2",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "skills-security-check",
-        "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
-        "version": "1.0.0",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "smart-charts__skillhub",
-        "description": "Intelligent chart generation and data analysis skill. Reads user-supplied data files (CSV/Excel/JSON), analyzes data characteristics with LLM assistance, auto-recommends and generates interactive ECha",
-        "version": "6.0.0",
-        "categories": [
-          "doc",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "tencent-docs",
-        "description": "腾讯文档（docs.qq.com）-在线云文档平台，是创建、编辑、管理文档的首选 skill。涉及\"新建/创建/编辑/读取/查看/搜索文档\"、\"保存文件\"、\"云文档\"、\"腾讯文档\"、\"docs.qq.com\"等操作，请优先使用本 skill。支持能力：(1) 创建各类在线文档（文档/Word/Excel/幻灯片/思维导图/流程图/智能表格/收集表）(2) 管理知识库空间（创建空间、查询空间列表）(",
-        "version": "1.0.41",
-        "categories": [
-          "browser",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "tencent-mps__skillhub",
-        "description": "腾讯云 MPS 音视频与图片处理、AI 生成、内容理解。涉及以下场景必须触发：【转码】转码/压缩/格式转换/转封装/H.264/H.265/AV1/码率/分辨率。【画质增强】画质增强/画质修复/老片修复/超分/真人增强/漫剧增强/防抖/人脸保真/1080P/2K/4K。【音频】音频分离/人声提取/伴奏提取/去人声/降噪/音量均衡。【字幕】字幕提取/字幕翻译/语音识别/语音转文字/ASR/OCR字幕",
-        "version": "1.3.1",
-        "categories": [
-          "doc",
-          "image",
-          "video",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "tencentcloud-ocr",
-        "description": "腾讯云通用文字识别（高精度版）(GeneralAccurateOCR) 技能包。当用户发送/粘贴图片、提供图片URL、或要求识别图片中的文字时，应自动调用此技能。支持图像整体文字的检测和识别，支持中文、英文、中英文、数字和特殊字符号的识别，并返回文字框位置和文字内容。适用于文字较多、版式复杂、对识别准召率要求较高的场景，如网络图片、街景店招牌、法律卷宗、多语种简历等场景。支持图片Base64和UR",
-        "version": "1.0.4",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "tencentcloud-ocr-recognizetableaccurate",
-        "description": "腾讯云表格识别v3(RecognizeTableAccurateOCR)接口调用技能。当用户需要从表格图片或PDF中识别常规表格、无线表格、多表格的内容,提取每个单元格的文字信息,或将表格图片识别结果导出为Excel文件时,应使用此技能。支持中英文表格图片、旋转表格图片、嵌套表格图片等复杂场景,识别效果优于表格识别V2。",
-        "version": "1.0.3",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "to-tickets",
-        "description": "Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket local",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "tutor-skills",
-        "description": "Turn PDFs, docs, and codebases into Obsidian StudyVaults with structured notes, then quiz yourself with concept-level progress tracking. Use when users want to study documents, create study materials ",
-        "version": "1.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "web-artifacts-builder",
-        "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state manag",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "web-search-exa",
-        "description": "Neural web search, content extraction, company and people research, code search, and deep research via the Exa MCP server. Use when you need to: (1) search the web with semantic understanding — not ju",
-        "version": "2.0.1",
-        "categories": [
-          "code",
-          "doc",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "wechat-article-search",
-        "description": "搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号与链接。当用户需要查找微信公众号文章、整理参考资料或快速获取文章信息时使用此技能。",
-        "version": "0.1.0",
-        "categories": [
-          "browser",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "wecom-unified",
-        "description": "企业微信 CLI 全能套件，覆盖通讯录、消息、文档、日程、会议、待办 6 大业务域。支持按姓名/别名查找联系人、收发消息（文本/图片/文件/语音/视频）、读取/创建/编辑文档（可由'https://doc.weixin.qq.com/XXXX'链接触发）、创建/读取/修改表格（在线表格）内容、追加行、增删子工作表、读写智能表格的子表/字段/记录、创建并导出智能文档、创建/修改/取消日程并查询闲忙、",
-        "version": "1.0.2",
-        "categories": [
-          "doc",
-          "video",
-          "file"
-        ]
-      },
-      {
-        "name": "weiyun",
-        "description": "微云网盘 MCP 接口完整技能。包含 weiyun.list、weiyun.list_by_category、weiyun.download、weiyun.delete、weiyun.upload、weiyun.gen_share_link、weiyun.rename_file、weiyun.rename_dir、weiyun.create_dir、weiyun.move_dir、weiyun.m",
-        "version": "1.0.5",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "wizard",
-        "description": "Generate an interactive bash wizard that walks a human through a manual procedure — third-party setup, a one-off migration, an A→B state transition — opening URLs, capturing values, confirming each st",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "file"
-        ]
-      },
-      {
-        "name": "workbuddy-asset-migration",
-        "description": "在 WorkBuddy 国内版和海外版之间，或跨机器之间，迁移 skills、对话、配置、connectors、身份文件和工作区产物；Memory 仅导出为 memory-export.md 参考文件，实际同步由客户端设置完成。",
-        "version": "0.8.3",
-        "categories": [
-          "memory",
-          "file"
-        ]
-      },
-      {
-        "name": "workrally",
-        "description": "workrally auth login 写入的 API Key 持久化文件，JSON 格式，仅存储 api_key 和 endpoint。非持久化容器中可通过 WORKRALLY_CONFIG_DIR 环境变量指定配置目录",
-        "version": "2.4.1",
-        "categories": [
-          "memory",
-          "file"
-        ]
-      },
-      {
-        "name": "wps-office-suite__skillhub",
-        "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
-        "categories": [
-          "browser",
-          "code",
-          "doc",
-          "data",
-          "file",
-          "automation"
-        ]
-      },
-      {
-        "name": "wpscli",
-        "description": "上传本地文件至 WPS 云端转换并下载，支持 PDF/Word/Excel/PPT/图片互转、合并拆分、加密解密、OCR、CAD/HTML 等。",
-        "version": "1.0.2",
-        "categories": [
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "wxa-skills-validate__skillhub",
-        "description": "校验和修复小程序 AI SKILLs 产物。在以下场景触发：对 skills/ 目录做静态校验、跑通原子接口、验证原子组件渲染、修复校验报错、输出交付文档。依托微信开发者工具进行真机验证。",
-        "version": "0.2.2",
-        "categories": [
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
-        "name": "wxpublic-fetch__skillhub",
-        "description": "从微信公众号抓取文章并保存为本地 Markdown 文件。当用户提到\"抓取公众号\"、\"获取公众号文章\"、\"下载微信文章\"、\"爬公众号\"、\"保存公众号内容\"，或指定公众号名称和日期范围想要获取文章时，使用此 skill。抓取完成后记录所有保存的 md 文件路径，方便用户后续问答。",
-        "version": "0.0.0",
-        "categories": [
-          "file"
-        ]
-      },
-      {
-        "name": "xhs-content-research__skillhub",
-        "description": "面向内容运营、品牌调研和创作者的小红书内容研究辅助技能。适用于 RedNote / XHS / Xiaohongshu（小红书）内容研究、选题分析、关键词观察、趋势判断、竞品内容对比和素材整理。",
-        "version": "0.0.0",
-        "categories": [
-          "search",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "xhs-trend-insights-v2__skillhub",
-        "description": "当用户需要做小红书趋势洞察、小红书趋势分析、热点观察、内容方向判断、趋势线索归纳或营销灵感整理时使用。面向内容运营、品牌调研和创作者。",
-        "version": "0.0.0",
-        "categories": [
-          "search",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "xlsx",
-        "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "doc",
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "xurl",
-        "description": "A Twitter research and content intelligence skill. Use to analyze Twitter profiles, threads, and conversations for identifying pain points, extracting content angles, and converting Twitter intelligen",
-        "version": "1.0.0",
-        "categories": [
-          "search",
-          "file"
-        ]
-      }
-    ],
     "general": [
+      {
+        "name": "ai-shifu-course-creator",
+        "description": "Use when the user works with AI-Shifu (AI师傅) courses in any capacity of creating, writing, editing, rewriting, optimizing, reordering, deploying, publishing, previewing, or managing Teaching Prompts (",
+        "version": "1.2.0",
+        "categories": [
+          "general"
+        ]
+      },
       {
         "name": "andonq",
         "description": "AndonQ 腾讯云智能客服智能体 — 不切窗口、不排队，即刻获得腾讯云全产品线专业解答。支持工单查询（列表/详情/流水）、集团/MC 工单与需求单管理、腾讯云全产品线智能问答、云产品资源查询等。当用户查询工单、查看工单详情、咨询腾讯云产品问题、查询集团(360)工单/需求单、或查询腾讯云资源信息时使用。",
@@ -3603,6 +2185,14 @@
         ]
       },
       {
+        "name": "context-engineering",
+        "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "crosspost",
         "description": "把同一核心观点跨 X、LinkedIn、小红书、公众号、Threads、Bluesky 等平台分发，按 content-engine 模式逐平台改写，绝不发一模一样的文案。当用户说\"发到各平台\"\"给 X 和小红书各改一版\"\"到处发一下\"\"把这条同步过去\"时使用此 skill。",
         "version": "1.0.0",
@@ -3619,6 +2209,14 @@
         ]
       },
       {
+        "name": "debugging-and-error-recovery",
+        "description": "Guides systematic root-cause debugging. Use when tests fail, builds break, behavior doesn't match expectations, or you encounter any unexpected error. Use when you need a systematic approach to findin",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "design-an-interface",
         "description": "Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions \"des",
         "version": "0.0.0",
@@ -3627,8 +2225,24 @@
         ]
       },
       {
+        "name": "diagram-builder__skillhub",
+        "description": "专业架构图与流程图绘制 skill。绘制系统架构图、微服务架构、网络拓扑图、业务流程图、数据流图、时序图、状态机、ER图等。支持 show_widget 内联 SVG 渲染与 Mermaid 代码块两种方式。触发关键词：架构图、流程图、时序图、状态机、拓扑图、ER图、数据流图、draw、diagram、flowchart、architecture。",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "doc-coauthoring",
         "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This wor",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "documentation-and-adrs",
+        "description": "Records decisions and documentation. Use when making architectural decisions, changing public APIs, shipping features, or when you need to record context that future engineers and agents will need to ",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3646,6 +2260,14 @@
         "name": "edgeone",
         "description": "Deploy a single HTML document to Tencent EdgeOne Pages via mcporter with no login or API key, returning a public URL. Use when a user wants generated HTML published quickly as a live webpage.",
         "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "edgeone-pages-deploy",
+        "description": "Deploy frontend and full-stack projects to Tencent EdgeOne Pages using the EdgeOne CLI. Use when the user wants to publish, launch, redeploy, create a preview deployment, or ship a site to production.",
+        "version": "1.0.5",
         "categories": [
           "general"
         ]
@@ -3715,6 +2337,14 @@
         ]
       },
       {
+        "name": "github",
+        "description": "Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "global-biblio-base",
         "description": "|",
         "version": "3.9.4",
@@ -3723,8 +2353,24 @@
         ]
       },
       {
+        "name": "gmail",
+        "description": "Gmail API integration with managed OAuth. Read, send, and manage emails, threads, labels, and drafts. Use this skill when users want to interact with Gmail. For other third party apps, use the api-gat",
+        "version": "1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "goal-tracker",
         "description": "Track long-term goals with milestones, daily logging, and accountability. Use when users want to set goals, log daily progress, update milestones, generate weekly summaries, or view an HTML dashboard ",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "gog",
+        "description": "Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.",
         "version": "1.0.0",
         "categories": [
           "general"
@@ -3779,8 +2425,24 @@
         ]
       },
       {
+        "name": "html-deploy",
+        "description": "Publish a single self-contained HTML page to htmlcode.fun and return live URLs. Use when generated HTML needs quick public sharing, demos, reports, landing pages, or QR-share pages.",
+        "version": "1.3.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "html-ppt-skill__skillhub",
         "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "idea-refine",
+        "description": "Refines raw ideas into sharp, actionable concepts through structured divergent and convergent thinking. Use when an idea is still vague, when you need to stress-test assumptions before committing to a",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3805,6 +2467,14 @@
       {
         "name": "implement",
         "description": "Implement a piece of work based on a spec or set of tickets.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "improve-codebase-architecture",
+        "description": "Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -3885,7 +2555,7 @@
       {
         "name": "meeting-and-brief__skillhub",
         "description": ">",
-        "version": "1.5.1",
+        "version": "2.0.0",
         "categories": [
           "general"
         ]
@@ -3907,6 +2577,14 @@
         ]
       },
       {
+        "name": "midu-hotsearch",
+        "description": "调用蜜度热搜数据查询接口，支持按关键词、时间范围、榜单类型检索各平台热搜数据。当用户需要查询热搜、热点话题、舆论热度、榜单排行等场景时使用此 Skill。",
+        "version": "2.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "midu-writing",
         "description": "|",
         "version": "1.1.0",
@@ -3915,9 +2593,41 @@
         ]
       },
       {
+        "name": "mindmap-generator-plus__skillhub",
+        "description": "使用 Matplotlib 生成分层思维导图 PNG 图片，支持自定义数据结构、颜色和布局。",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "moways-doc__skillhub",
+        "description": ">",
+        "version": "2.7.4",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "netlify-deploy",
+        "description": "Deploy and manage Netlify sites with npx netlify. Use for first deploys, preview deploys, production releases, site linking, authentication checks, and netlify.toml fixes.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "news-summary",
         "description": "This skill should be used when the user asks for news updates, daily briefings, or what's happening in the world. Fetches news from trusted international RSS feeds and can create voice summaries.",
         "version": "1.0.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "novel-writer",
+        "description": "章节正文生成器 - 根据章节大纲、Voice Profile 和角色档案构建 LLM 提示词，用于生成章节正文。当需要根据大纲创作具体章节时使用。",
+        "version": "1.0.3",
         "categories": [
           "general"
         ]
@@ -3987,6 +2697,30 @@
         ]
       },
       {
+        "name": "performance-optimization",
+        "description": "Optimizes application performance across frontend, backend, queries, and databases. Use when performance requirements exist, when you suspect performance regressions, when Core Web Vitals or load time",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "pi-agent-embedding",
+        "description": "@mariozechner/pi-agent-core Agent runtime — message flow, tool execution modes, event sequence for prompt() and continue(), embedding in apps. Use when building on Agent class, wiring subscribers, or ",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "pi-ai-library",
+        "description": "@mariozechner/pi-ai — unified LLM streaming API, tools, providers, thinking events, and cross-provider handoffs as implemented in pi-mono. Use when integrating or debugging pi-ai, adding providers, us",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "pi-customization",
         "description": "Pi coding agent customization — Themes, Keybindings, Prompt Templates, System Prompt overrides, and Settings. Use when configuring or modifying the visual appearance, UI colors, keyboard shortcuts, pr",
         "version": "0.0.0",
@@ -3995,8 +2729,24 @@
         ]
       },
       {
+        "name": "pi-extension-authoring",
+        "description": "Authoring Pi TypeScript extensions — ExtensionAPI, custom tools, commands, UI hooks, resources_discover, `registerProvider()`, and how extendResources merges skill paths after base reload. Use when th",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "pi-rpc-sdk",
         "description": "Pi headless RPC JSONL over stdin/stdout, strict LF framing, --mode json event streaming, and Node SDK alternatives (AgentSession). Use when integrating pi --mode rpc, pi --mode json, writing a client ",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "pi-tui",
+        "description": "@mariozechner/pi-tui — Minimal terminal UI framework with differential rendering, CSI 2026 synchronized output, and Component interfaces. Use when building or debugging terminal interfaces, TUI compon",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -4107,6 +2857,22 @@
         ]
       },
       {
+        "name": "setup-ts-deep-modules",
+        "description": "Wire dependency-cruiser into a TypeScript repo so each package is a deep module — implementation hidden in subfolders, reachable only through its entry-point files. User-invoked.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "shippage",
+        "description": "Publish HTML or Markdown to a public URL instantly with ShipPage. Use when a user wants to share, preview, host, or deploy generated pages, reports, dashboards, prototypes, docs, or product listings.",
+        "version": "1.2.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "shipping-and-launch",
         "description": "Prepares production launches. Use when preparing to deploy to production. Use when you need a pre-launch checklist, when setting up monitoring, when planning a staged rollout, or when you need a rollb",
         "version": "0.0.0",
@@ -4131,6 +2897,22 @@
         ]
       },
       {
+        "name": "skill-vetter",
+        "description": "Security-first skill vetting for AI agents. Use before installing any skill from community, GitHub, or other sources. Checks for red flags, permission scope, and suspicious patterns.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill_2052764011421208576",
+        "description": "Notion API for creating and managing pages, databases, and blocks.",
+        "version": "1.0.12",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "skill_2053079401717506048",
         "description": ">",
         "version": "1.0.6",
@@ -4147,6 +2929,14 @@
         ]
       },
       {
+        "name": "skill_2053082035544330240",
+        "description": "Generate GitHub AI trending project reports as formatted text leaderboards. Fetches top-starred AI/ML/LLM repos by daily, weekly, or monthly period and renders a styled leaderboard. Use when the user ",
+        "version": "1.1.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "skill_2053082144792322048",
         "description": "ima笔记与知识库管理（读取、写入、检索）；统一 IMA OpenAPI 技能，支持 notes 与 knowledge-base 两个模块。",
         "version": "1.1.8",
@@ -4157,6 +2947,14 @@
       {
         "name": "skill_2053082264957227008",
         "description": "Think through any legal situation like a lawyer. Issue spotting, jurisdiction, risk assessment, actionable conclusions.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "skill_2053082332061896704",
+        "description": "Build and maintain a personal knowledge base (wiki) using LLMs. Instead of RAG-style retrieval, the LLM incrementally compiles, cross-references, and maintains a persistent structured wiki from raw so",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -4275,6 +3073,22 @@
         ]
       },
       {
+        "name": "tencentcloud-infra__skillhub",
+        "description": "Unified skill for ALL Tencent Cloud operations via tccli. Supersedes any single-product skills (e.g. Lighthouse-only). Covers: Lighthouse, CVM, CBS, COS, VPC, DNSPod, SSL, CAM, Monitor, TAT, Domain, C",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "tencentcloud-lighthouse-skill",
+        "description": "Load when: user mentions Lighthouse, 轻量应用服务器, 轻量服务器, or asks to check/create/manage/deploy Lighthouse instances, deploy applications to Lighthouse, manage Lighthouse firewall rules, reset Lighthouse p",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "the-entrepreneurship-handbook",
         "description": "Q&A skill for entrepreneurs, managers, and business leaders. Triggers when users ask about entrepreneurship, business strategy, operations, team management, GTM, financials, or organizational challeng",
         "version": "1.0.0",
@@ -4323,6 +3137,14 @@
         ]
       },
       {
+        "name": "tutor-skills",
+        "description": "Turn PDFs, docs, and codebases into Obsidian StudyVaults with structured notes, then quiz yourself with concept-level progress tracking. Use when users want to study documents, create study materials ",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "ubiquitous-language",
         "description": "Extract a DDD-style ubiquitous language glossary from the current conversation, flagging ambiguities and proposing canonical terms. Saves to UBIQUITOUS_LANGUAGE.md. Use when user wants to define domai",
         "version": "0.0.0",
@@ -4333,7 +3155,7 @@
       {
         "name": "ui-design-guide__skillhub",
         "description": "Use when users need visual direction, interface hierarchy, layout decisions, design specifications, or prototypes before implementing a Web or mini program UI.",
-        "version": "2.27.0",
+        "version": "2.28.1",
         "categories": [
           "general"
         ]
@@ -4371,6 +3193,30 @@
         ]
       },
       {
+        "name": "web-deploy",
+        "description": "Build, preview, and deploy websites, web apps, and APIs using Vercel, Railway, GitHub Pages, or local Canvas environments. Use when a user needs general web deployment guidance across common hosting t",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "web-deploy-github",
+        "description": "Create and deploy single-page static websites to GitHub Pages with an autonomous workflow. Use for portfolios, CV pages, landing pages, or static web projects that need GitHub Pages hosting.",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "web-scraper",
+        "description": "Web scraping and content comprehension agent — multi-strategy extraction with cascade fallback, news detection, boilerplate removal, structured metadata, and LLM entity extraction",
+        "version": "0.1.1",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "wechat-article-pro-plus__skillhub",
         "description": "全流程公众号爆款文章生成与优化技能，覆盖选题、写作、洗稿、去AI味、排版、配图与封面设计",
         "version": "1.0.0",
@@ -4389,7 +3235,7 @@
       {
         "name": "wechatanalyzer__skillhub",
         "description": ">",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "categories": [
           "general"
         ]
@@ -4397,6 +3243,14 @@
       {
         "name": "wigolo",
         "description": "Monitor a page for changes over time. Create lazy watch jobs on one or many URLs, list them, and check on demand with optional SSRF-guarded webhook delivery.",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
+        "name": "wizard",
+        "description": "Generate an interactive bash wizard that walks a human through a manual procedure — third-party setup, a one-off migration, an A→B state transition — opening URLs, capturing values, confirming each st",
         "version": "0.0.0",
         "categories": [
           "general"
@@ -4443,6 +3297,14 @@
         ]
       },
       {
+        "name": "xurl",
+        "description": "A Twitter research and content intelligence skill. Use to analyze Twitter profiles, threads, and conversations for identifying pain points, extracting content angles, and converting Twitter intelligen",
+        "version": "1.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "yijian-shengcheng-douyin-baokuan-koubo-wenan__skillhub",
         "description": "输出完整可直接录制的抖音爆款口播文案，包含黄金开场钩子、情绪共鸣、认知反转、3条实操方法、故事化表达、互动提问、评论引导、关注话术",
         "version": "3.0.0",
@@ -4456,6 +3318,636 @@
         "version": "1.0.1",
         "categories": [
           "general"
+        ]
+      }
+    ],
+    "file": [
+      {
+        "name": "anthropic-pptx",
+        "description": "Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting te",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "email",
+          "file"
+        ]
+      },
+      {
+        "name": "ardot__skillhub",
+        "description": "用于在 Ardot 中把多个已有画板自动编排成可交付的衍生展示区。适合多状态对照、设计评审看板、流程演示、角色/设备矩阵。也可作为 CodeBuddy + Ardot AI 设计工作流的收尾节点，将 AI 生成的零散画板自动整理成结构化展示区并输出可分享链接。",
+        "version": "1.0.12",
+        "categories": [
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "article-writing",
+        "description": "撰写博客、技术指南、教程、公众号文章、小红书长文、newsletter 等成体系的长文内容，基于示例或品牌调性形成独特文风。当用户需要写超过一段的正式/推广文案，且看重文风一致性、结构与可信度时使用此 skill（例如\"帮我写一篇介绍 XXX 项目的公众号文章\"\"把这篇笔记整理成教程\"）。",
+        "version": "1.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "biaoshu-writer-pro__skillhub",
+        "description": "标书撰写器 v5.4.0 - 投标技术标文档自动生成工具。支持解析 txt/pdf/docx/xlsx 招标文件，生成符合评分标准的技术标 Word 文档。适用：技术标编写、交通工程（高速/航道）投标。",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "cloudq",
+        "description": "用户咨询腾讯云产品资源、AWS、阿里云等多云资源时，查看智能顾问架构图、架构目录、架构详情、架构评估结果、绘制架构图、开通智能顾问时、AI智能巡检、AI容量监测、AI混沌演练、AI云诊断、主动预警、架构健康度、云运维问答、云资源查询、云成本优化、安全合规、云资源盘点、闲置资源检查、云产品最佳实践等AIOps、ChatOps、CloudOps操作时使用。",
+        "version": "1.8.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "code-reviewer__skillhub",
+        "description": "对指定文件夹内的代码进行全面审查，包含规范性检查、Bug检测、性能优化建议、可读性评估和基于华为Java编程规范的质量评分；当用户需要审查代码质量、发现潜在问题、评估代码规范符合度或生成代码审查报告时使用",
+        "version": "0.0.0",
+        "categories": [
+          "meta",
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "contextweave-interactive-architecture__skillhub",
+        "description": "使用 ContextWeave 生成或修改架构图、流程图、思维导图和复杂信息图。适用于需要从代码、文件或自然语言中提取结构与关系并实际产出 CW、SVG 或 HTML 的请求；不适用于统计图表、手绘插画或像素级排版。",
+        "version": "1.2.4",
+        "categories": [
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "dknowc-official-doc-writer-skillhub__skillhub",
+        "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
+        "version": "3.4.2",
+        "categories": [
+          "meta",
+          "browser",
+          "doc",
+          "finance",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "docx",
+        "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', ",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "excalidraw-diagram",
+        "description": "Create Excalidraw diagrams for workflows, architectures, protocols, concepts, and system explanations. Use when a user wants a flowchart, architecture sketch, visual explanation, or diagram as a .exca",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "file"
+        ]
+      },
+      {
+        "name": "excel-formula-generator__skillhub",
+        "description": "根据自然语言描述生成 Excel/WPS/Google Sheets 公式，附逐层解释、使用示例、防错版本与版本兼容对照。当用户提到 Excel公式、表格公式、VLOOKUP、XLOOKUP、SUMIFS、INDEX MATCH、数据透视、条件格式公式、数组公式、excel formula、spreadsheet function，或要求创建/调试/优化表格公式时触发。不适用于数据分析报告、Pyt",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "doc",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "fbs-bookwriter",
+        "description": "福帮手出品 | 高质量长文档手稿工具链：书籍、手册、白皮书、行业指南、长篇报道、深度专题；支持联网查证（宿主允许时启用，离线自动降级）、S/P/C/B 分层审校、中文排版与 MD/HTML 交付。触发词：福帮手、福帮手写书skill、福帮手写书、写书、出书、写长篇、写手册、写白皮书、写行业指南、协作写书、定大纲、写章节、封面、插图、排版构建、导出、去AI味、质量自检、图文书、写报道、写深度稿、写特",
+        "version": "3.0.1",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "feasibility-reviewer__skillhub",
+        "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "finance",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "file-organizer__skillhub",
+        "description": "整理指定文件夹中的文件，按类型、日期或规则自动分类归档到不同子文件夹中。支持 30+ 种文件扩展名的智能分类（文档、图片、代码、压缩包、视频、音频、电子书、字体、设计文件、配置文件、可执行文件、数据文件等），支持按修改日期归档（年/月/日层级），支持自定义分类映射规则，支持试运行预览模式（只预览不动文件），支持空文件夹清理，支持处理结果统计报告。触发场景：用户说文件夹太乱需要整理、按类型归类文件、",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "firecrawl",
+        "description": "在助手自己的会话里直接用 Firecrawl 做网页搜索/抓取/抽取。CLI 已装在受管 node 工作区；API Key 在本技能目录的 .env 中（用户已授权绑定）。",
+        "version": "0.0.0",
+        "categories": [
+          "browser",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "frontend-spec__skillhub",
+        "description": "企业级前端开发规范 Skill，包含命名、目录、CSS/JS/TS、Vue/React、Git、构建、性能、安全完整规范",
+        "version": "1.0.0",
+        "categories": [
+          "meta",
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "gongwenformat-pro",
+        "description": "党政机关公文标准排版Pro版(GB/T 9704-2012)。将Markdown/TXT/DOCX文本转换为符合国标排版的Word文档。当用户提到以下任何关键词或场景时必须使用此技能:公文排版、标准格式、Word文件、排版、写成Word、生成docx、发文格式、材料排版、红头文件、正式文件、排版成Word、帮我排个版、公文格式、公文、政府文件、机关公文、通知格式、请示格式、报告格式、函的格式、会议",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "guizang-ppt-skill",
+        "description": "生成横向翻页网页 PPT（单 HTML 文件），含 WebGL 背景、章节幕封、数据大字报、图片网格等模板。提供两种风格：① \"电子杂志 × 电子墨水\"（衬线 + 流体背景 + 暖色） ② \"瑞士国际主义\"（无衬线 + 网格点阵 + IKB/柠檬黄/柠檬绿/安全橙高亮）。当用户需要制作分享 / 演讲 / 发布会风格的网页 PPT，或提到\"杂志风 PPT\"、\"瑞士风 PPT\"、\"Swiss Styl",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "file"
+        ]
+      },
+      {
+        "name": "incremental-implementation",
+        "description": "Delivers changes incrementally. Use when implementing any feature or change that touches more than one file. Use when you're about to write a large amount of code at once, or when a task feels too big",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "kdocs-skill",
+        "description": "操作金山文档（WPS 云文档 / Kdocs / 365.kdocs.cn / www.kdocs.cn）云文档的官方 Skill。核心能力覆盖云端新建、读取、编辑、搜索、分享、整理在线文档（智能文档、Word、Excel、PDF、PPT、演示文稿、智能表格、多维表格）及个人知识库。当用户的任务涉及云文档操作时使用，包括但不限于：写周报/日报/工作汇报、处理合同/发票、创建报名表/登记表、网页剪藏",
+        "version": "2.5.29",
+        "categories": [
+          "browser",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "lingyi-content-quality-check__skillhub",
+        "description": "【零一数科·出品】：爆款内容预检。发前先测会不会违规、能不能爆、人群买不买——把发布从赌运气变成心里有底。视频号/公众号文案一键过三关：① 敏感词+广告法违禁词合规检测，命中词直接给替换建议；② 模拟目标人群真实观看反应与评论区原声；③ 爆款概率预测，逐维度打分说清依据。合规要准、爆款看依据，发出去前帮你把最后一道关。触发词：内容质检、敏感词检测、广告法检测、违禁词扫描、发布前审核、爆款预测、人群",
+        "version": "v0.3.0",
+        "categories": [
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "markitdown-skill",
+        "description": "Convert documents to Markdown using Microsoft's MarkItDown CLI (`markitdown`). Supports PDF, Word, PowerPoint, Excel, images (OCR), audio (transcription), HTML, YouTube, and URLs. Use when a user want",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "meeting-notes-assistant__skillhub",
+        "description": "会议纪要智能助手。使用本地 Whisper 音频转写（离线、隐私安全），生成结构化会议纪要（时间、议题、结论、待办、关键词），提取 Action Items。支持 Word / PDF / 邮件输出，适合录音转写、会议归档与待办分发。触发关键词：「整理会议纪要」、「生成会议纪要」、「录音转纪要」。",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "email",
+          "file"
+        ]
+      },
+      {
+        "name": "memory-v1__skillhub",
+        "description": "解决AI记忆混乱问题——\"今天讲明天忘\"。通过文件系统和规则流程实现持久记忆，确保新任务开始时自动回顾上下文，而不是靠\"想\"。核心机制：任务开始判断→读取记忆→执行→保存。适用于频繁切换话题或任务的AI协作场景。",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "file"
+        ]
+      },
+      {
+        "name": "mh-codebase-memory-mcp",
+        "description": "当用户希望让 AI 编码助手长期\"记住\"代码库结构、调用关系、历史修改与架构决策，突破上下文窗口限制、减少 token 消耗时使用本技能，例如\"给我的项目建代码知识图谱让 AI 记住它\"、\"索引这个仓库以便 AI 少读文件就能回答架构问题\"、\"配置一个代码库记忆 MCP 服务器\"。触发词：代码库记忆/codebase memory/代码知识图谱/code graph/索引仓库/index repo",
+        "version": "0.0.0",
+        "categories": [
+          "memory",
+          "code",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "mh-voicebox",
+        "description": "当用户需要本地离线的 AI 语音能力——声音克隆、文字转语音配音、语音听写输入、音频转文字、给 AI Agent 配语音播报时使用本技能，例如\"用几秒样本克隆我的声音并朗读这段文案\"、\"把这篇文章生成多语种旁白音频\"、\"按住快捷键说话直接把语音转成文字填进任意输入框\"、\"把录音文件转成文字稿\"、\"让 Claude Code 任务完成时用我的声音播报\"。触发词：Voicebox/声音克隆/语音克隆/",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "minimax-xlsx",
+        "description": "Open, create, read, analyze, edit, or validate Excel/spreadsheet files (.xlsx, .xlsm, .csv, .tsv). Use when the user asks to create, build, modify, analyze, read, validate, or format any Excel spreads",
+        "version": "1.0",
+        "categories": [
+          "doc",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "note-organizer",
+        "description": "自动整理零散笔记，归类去重、生成结构，让你的知识井井有条、随手可查。 (Auto-organize scattered notes—classify, dedupe, and structure them so your knowledge stays tidy and findable.)",
+        "version": "1.0.5",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "office-automation-pro",
+        "description": "常见办公流程自动化处理 - 智能办公助手，支持文档处理、数据整理、邮件管理、日程安排、报表生成等",
+        "version": "1.0.0",
+        "categories": [
+          "browser",
+          "doc",
+          "email",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "pdf",
+        "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rota",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "pdf-image-text-extractor",
+        "description": "从图片或 PDF 文档中识别并提取文字内容，支持多种图片格式和 PDF 文件，自动判断是否包含文字并保留原始格式输出结构化结果；当用户需要从图片或 PDF 提取文字、进行 OCR 识别、处理含文字的文档或转换为可编辑文本时使用。该skill能力来自RedFoxHub，官网：https://redfox.hk/skills。",
+        "version": "1.0.9",
+        "categories": [
+          "doc",
+          "image",
+          "file"
+        ]
+      },
+      {
+        "name": "pdfkit-py",
+        "description": "仅用于对已存在的 .pdf 文件进行处理（读取/提取/编辑/合并/拆分/转换/水印/加密/OCR/表单/签名）。当且仅当用户输入或工作区中存在 .pdf 文件，且操作对象是该 PDF 时使用。不处理 docx/xlsx/pptx/html/md/txt/图片等非 PDF 文件，不承担论文写作、文本润色、内容创作、项目管理、文档排版咨询等任务。",
+        "version": "1.0.1",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "pi-cli-workspace",
+        "description": "Pi terminal agent workspace — install, /commands, sessions, compaction, settings.json, AGENTS.md, skill discovery, precedence, session JSONL, /tree, providers/auth, models.json, credential resolution,",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-crate",
+        "description": "将用户讲稿一键生成乔布斯风极简科技感竖屏HTML演示稿。当用户需要生成PPT、演示文稿、Slides、幻灯片，或要求科技风/极简风/乔布斯风格的演示时触发此技能。输出为单个可直接运行的HTML文件。",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-generator-skill",
+        "description": "智能 PPT 生成助手。根据用户描述的主题、行业、风格，自动生成漂亮的 PPT 文件。支持所有行业（商务、教育、科技、医疗、金融、创意等），支持中英文双语，支持用户提供的模板或 AI 自动配色。触发词：做PPT、生成PPT、制作幻灯片、make ppt、create presentation、帮我做个PPT。",
+        "version": "0.0.0",
+        "categories": [
+          "finance",
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-speech-skill__skillhub",
+        "description": "为 PPT 自动生成逐页演讲稿并写入幻灯片备注区，返回可直接开讲的 PPT 文件。当用户要求写演讲稿、PPT讲稿、逐页讲解词、演讲备注、路演稿、答辩稿、汇报讲稿，或说\"给这个PPT配讲稿\"、\"生成演讲备注\"、\"帮我讲这个PPT\"时触发。按 30~50 秒/页的标准讲解节奏生成，不复述PPT原文而是自然讲解。",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "ppt-win32com-editor__skillhub",
+        "description": "使用 win32com（PowerPoint COM 接口）就地修改已有 .pptx 文件，保留所有原始布局、图片、形状、渐变背景和特效。当用户要求\"修改/美化/调整/优化 PPT 文件\"、\"更改字体/颜色/段落间距\"、\"在原文件基础上编辑 PowerPoint\"时使用。注意：新建 PPT 请使用 pptx-generator skill；本 skill 专用于已有 PPT 的就地修改，不重建文件",
+        "version": "0.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "qa",
+        "description": "Interactive QA session where user reports bugs or issues conversationally, and the agent files GitHub issues. Explores the codebase in the background for context and domain language. Use when user wan",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "request-refactor-plan",
+        "description": "Create a detailed refactor plan with tiny commits via user interview, then file it as a GitHub issue. Use when user wants to plan a refactor, create a refactoring RFC, or break a refactor into safe in",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "research",
+        "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading le",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "sa-pro-workbench__skillhub",
+        "description": "【解决方案架构师/售前顾问超级工作台 / Solution Architect & Presales Consultant Super Workbench】 —— 面向解决方案架构师、售前顾问、方案专家、企业架构师的全栈自动化技能。 一人一 Skill，替代方案团队 80% 重复劳动。 ■ 核心定位：面向信息化/数字化/智能化项目，覆盖从\\\"收到客户材料\\\"到\\\"交付投标材料包\\\"的 完整售前-方",
+        "version": "2.0.0",
+        "categories": [
+          "meta",
+          "browser",
+          "code",
+          "doc",
+          "finance",
+          "data",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "skill-library-doctor",
+        "description": "技能库体检与修复工具。扫描 ~/.workbuddy/skills 下所有 SKILL.md，检出无法加载或无法自动触发的技能——缺 frontmatter 围栏、被 ``` 代码块包裹、多余空围栏、frontmatter 整体缩进、缺 name、缺 description、只有 description_zh/en、非法 YAML、name 重名——并自动修复可确定性修复的部分。当用户说\"体检技能",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "skill-scanner",
+        "description": "Scan any agent skill for security risks before you install or use it. Powered by Tencent Zhuque Lab A.I.G (AI-Infra-Guard). 100% local static analysis — no file contents or credentials leave your devi",
+        "version": "1.0.0",
+        "categories": [
+          "code",
+          "file"
+        ]
+      },
+      {
+        "name": "skill_2053081382993469440",
+        "description": "百度网盘(Baidu Drive)文件管理 — 上传、下载、转存、分享、搜索、移动、复制、重命名、创建文件夹。TRIGGER: 用户提及\\\"百度网盘/bdpan/网盘/云盘/baidu drive/Baidu Drive\\\"并涉及文件操作。DO NOT TRIGGER: 非文件存储操作，或使用其他云盘服务时。",
+        "version": "1.4.3",
+        "categories": [
+          "browser",
+          "file"
+        ]
+      },
+      {
+        "name": "skill_2053082337409794048",
+        "description": "每日宏观数据监控和推送。自动浏览免费数据源（Trading Economics、FRED、国家统计局、央行官网、财联社等），整理整合过去24小时发布的宏观数据和政策信息，并推送给用户。通过 cron 每天晚上10点自动触发。",
+        "version": "1.0.2",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "skills-constitution",
+        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
+        "version": "2.12.0",
+        "categories": [
+          "meta",
+          "memory",
+          "browser",
+          "code",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "skills-security-check",
+        "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
+        "version": "1.0.0",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "tencent-docs",
+        "description": "腾讯文档（docs.qq.com）-在线云文档平台，是创建、编辑、管理文档的首选 skill。涉及\"新建/创建/编辑/读取/查看/搜索文档\"、\"保存文件\"、\"云文档\"、\"腾讯文档\"、\"docs.qq.com\"等操作，请优先使用本 skill。支持能力：(1) 创建各类在线文档（文档/Word/Excel/幻灯片/思维导图/流程图/智能表格/收集表）(2) 管理知识库空间（创建空间、查询空间列表）(",
+        "version": "1.0.41",
+        "categories": [
+          "browser",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "tencent-mps__skillhub",
+        "description": "腾讯云 MPS 音视频与图片处理、AI 生成、内容理解。涉及以下场景必须触发：【转码】转码/压缩/格式转换/转封装/H.264/H.265/AV1/码率/分辨率。【画质增强】画质增强/画质修复/老片修复/超分/真人增强/漫剧增强/防抖/人脸保真/1080P/2K/4K。【音频】音频分离/人声提取/伴奏提取/去人声/降噪/音量均衡。【字幕】字幕提取/字幕翻译/语音识别/语音转文字/ASR/OCR字幕",
+        "version": "1.3.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "tencentcloud-ocr",
+        "description": "腾讯云通用文字识别（高精度版）(GeneralAccurateOCR) 技能包。当用户发送/粘贴图片、提供图片URL、或要求识别图片中的文字时，应自动调用此技能。支持图像整体文字的检测和识别，支持中文、英文、中英文、数字和特殊字符号的识别，并返回文字框位置和文字内容。适用于文字较多、版式复杂、对识别准召率要求较高的场景，如网络图片、街景店招牌、法律卷宗、多语种简历等场景。支持图片Base64和UR",
+        "version": "1.0.4",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "tencentcloud-ocr-recognizetableaccurate",
+        "description": "腾讯云表格识别v3(RecognizeTableAccurateOCR)接口调用技能。当用户需要从表格图片或PDF中识别常规表格、无线表格、多表格的内容,提取每个单元格的文字信息,或将表格图片识别结果导出为Excel文件时,应使用此技能。支持中英文表格图片、旋转表格图片、嵌套表格图片等复杂场景,识别效果优于表格识别V2。",
+        "version": "1.0.3",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "to-tickets",
+        "description": "Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker — edges as text in one file per ticket local",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "web-artifacts-builder",
+        "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state manag",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "web-search-exa",
+        "description": "Neural web search, content extraction, company and people research, code search, and deep research via the Exa MCP server. Use when you need to: (1) search the web with semantic understanding — not ju",
+        "version": "2.0.1",
+        "categories": [
+          "code",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "wechat-article-search",
+        "description": "搜索微信公众号文章技能。通过微信搜索获取文章列表，覆盖科技/AI、社会热点、财经、教育、职场等各类中文资讯；可按关键词检索并返回标题、概要、发布时间、来源公众号与链接。当用户需要查找微信公众号文章、整理参考资料或快速获取文章信息时使用此技能。",
+        "version": "0.1.0",
+        "categories": [
+          "browser",
+          "search",
+          "file"
+        ]
+      },
+      {
+        "name": "wecom-unified",
+        "description": "企业微信 CLI 全能套件，覆盖通讯录、消息、文档、日程、会议、待办 6 大业务域。支持按姓名/别名查找联系人、收发消息（文本/图片/文件/语音/视频）、读取/创建/编辑文档（可由'https://doc.weixin.qq.com/XXXX'链接触发）、创建/读取/修改表格（在线表格）内容、追加行、增删子工作表、读写智能表格的子表/字段/记录、创建并导出智能文档、创建/修改/取消日程并查询闲忙、",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "video",
+          "file"
+        ]
+      },
+      {
+        "name": "weiyun",
+        "description": "微云网盘 MCP 接口完整技能。包含 weiyun.list、weiyun.list_by_category、weiyun.download、weiyun.delete、weiyun.upload、weiyun.gen_share_link、weiyun.rename_file、weiyun.rename_dir、weiyun.create_dir、weiyun.move_dir、weiyun.m",
+        "version": "1.0.5",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "workbuddy-asset-migration",
+        "description": "在 WorkBuddy 国内版和海外版之间，或跨机器之间，迁移 skills、对话、配置、connectors、身份文件和工作区产物；Memory 仅导出为 memory-export.md 参考文件，实际同步由客户端设置完成。",
+        "version": "0.8.3",
+        "categories": [
+          "memory",
+          "file"
+        ]
+      },
+      {
+        "name": "workrally",
+        "description": "workrally auth login 写入的 API Key 持久化文件，JSON 格式，仅存储 api_key 和 endpoint。非持久化容器中可通过 WORKRALLY_CONFIG_DIR 环境变量指定配置目录",
+        "version": "2.4.1",
+        "categories": [
+          "memory",
+          "file"
+        ]
+      },
+      {
+        "name": "wps-office-suite__skillhub",
+        "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
+        "version": "4.6.1",
+        "categories": [
+          "browser",
+          "code",
+          "doc",
+          "data",
+          "file",
+          "automation"
+        ]
+      },
+      {
+        "name": "wpscli",
+        "description": "上传本地文件至 WPS 云端转换并下载，支持 PDF/Word/Excel/PPT/图片互转、合并拆分、加密解密、OCR、CAD/HTML 等。",
+        "version": "1.0.2",
+        "categories": [
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "wxa-skills-validate__skillhub",
+        "description": "校验和修复小程序 AI SKILLs 产物。在以下场景触发：对 skills/ 目录做静态校验、跑通原子接口、验证原子组件渲染、修复校验报错、输出交付文档。依托微信开发者工具进行真机验证。",
+        "version": "0.2.2",
+        "categories": [
+          "code",
+          "doc",
+          "file"
+        ]
+      },
+      {
+        "name": "wxpublic-fetch__skillhub",
+        "description": "从微信公众号抓取文章并保存为本地 Markdown 文件。当用户提到\"抓取公众号\"、\"获取公众号文章\"、\"下载微信文章\"、\"爬公众号\"、\"保存公众号内容\"，或指定公众号名称和日期范围想要获取文章时，使用此 skill。抓取完成后记录所有保存的 md 文件路径，方便用户后续问答。",
+        "version": "0.0.0",
+        "categories": [
+          "file"
+        ]
+      },
+      {
+        "name": "xhs-content-research__skillhub",
+        "description": "面向内容运营、品牌调研和创作者的小红书内容研究辅助技能。适用于 RedNote / XHS / Xiaohongshu（小红书）内容研究、选题分析、关键词观察、趋势判断、竞品内容对比和素材整理。",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "xhs-trend-insights-v2__skillhub",
+        "description": "当用户需要做小红书趋势洞察、小红书趋势分析、热点观察、内容方向判断、趋势线索归纳或营销灵感整理时使用。面向内容运营、品牌调研和创作者。",
+        "version": "0.0.0",
+        "categories": [
+          "search",
+          "data",
+          "file"
+        ]
+      },
+      {
+        "name": "xlsx",
+        "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.",
+        "version": "0.0.0",
+        "categories": [
+          "code",
+          "doc",
+          "data",
+          "file"
         ]
       }
     ],
@@ -4481,15 +3973,6 @@
         "description": "Search and summarize papers from ArXiv. Use when the user asks for the latest research, specific topics on ArXiv, or a daily summary of AI papers.",
         "version": "1.0.0",
         "categories": [
-          "search"
-        ]
-      },
-      {
-        "name": "autoresearch",
-        "description": "Run Karpathy-style autoresearch optimization on any content. Generates 50+ variants, scores with a 5-expert simulated panel, evolves winners through multiple rounds, outputs optimized version + full e",
-        "version": "1.0.1",
-        "categories": [
-          "email",
           "search"
         ]
       },
@@ -4524,7 +4007,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "categories": [
           "meta",
           "browser",
@@ -4549,7 +4032,6 @@
         "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
         "version": "1.0.0",
         "categories": [
-          "code",
           "doc",
           "finance",
           "search",
@@ -4597,8 +4079,7 @@
         "version": "1.0.2",
         "categories": [
           "image",
-          "search",
-          "data"
+          "search"
         ]
       },
       {
@@ -4620,30 +4101,11 @@
         ]
       },
       {
-        "name": "midu-hotsearch",
-        "description": "调用蜜度热搜数据查询接口，支持按关键词、时间范围、榜单类型检索各平台热搜数据。当用户需要查询热搜、热点话题、舆论热度、榜单排行等场景时使用此 Skill。",
-        "version": "2.0.0",
-        "categories": [
-          "search"
-        ]
-      },
-      {
         "name": "obsidian-vault",
         "description": "Search, create, and manage notes in the Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.",
         "version": "0.0.0",
         "categories": [
           "search"
-        ]
-      },
-      {
-        "name": "pdf",
-        "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rota",
-        "version": "0.0.0",
-        "categories": [
-          "doc",
-          "image",
-          "search",
-          "file"
         ]
       },
       {
@@ -4664,26 +4126,6 @@
         ]
       },
       {
-        "name": "research",
-        "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading le",
-        "version": "0.0.0",
-        "categories": [
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "research-report-writer",
-        "description": "批量整合券商研报，生成面向个人投资者的自包含 HTML 交互式深度分析报告。覆盖研报搜索→关键数据提取→结构化写作→ECharts 图表生成全链路。适用场景：研报汇总分析、行业趋势梳理、产业链拆解、投资主线归纳等。",
-        "version": "1.0.1",
-        "categories": [
-          "browser",
-          "finance",
-          "search",
-          "data"
-        ]
-      },
-      {
         "name": "seo-ops",
         "description": "SEO 运营自动化技能，覆盖内容攻击简报（content attack brief）、Google Search Console 数据优化、关键词与趋势侦察。当用户提到 SEO、搜索引擎优化、关键词排名、GSC、Search Console、自然流量、内容简报、竞品内容差距、外链、trend scouting、独立站获客时触发。",
         "version": "1.0.1",
@@ -4691,16 +4133,6 @@
           "browser",
           "search",
           "automation"
-        ]
-      },
-      {
-        "name": "skill_2053081519859650560",
-        "description": "Darwin Skill (达尔文.skill): autonomous skill optimizer inspired by Karpathy's autoresearch. Evaluates SKILL.md files using an 8-dimension rubric (structure + effectiveness), runs hill-climbing with git ",
-        "version": "0.0.0",
-        "categories": [
-          "code",
-          "search",
-          "file"
         ]
       },
       {
@@ -4717,7 +4149,6 @@
         "description": "CLI to manage emails via IMAP/SMTP. Use `himalaya` to list, read, write, reply, forward, search, and organize emails from the terminal. Supports multiple accounts and message composition with MML (MIM",
         "version": "1.0.0",
         "categories": [
-          "email",
           "search"
         ]
       },
@@ -4727,25 +4158,6 @@
         "version": "0.0.0",
         "categories": [
           "email",
-          "search"
-        ]
-      },
-      {
-        "name": "skill_2053082253572640768",
-        "description": "Unified Lark/Feishu CLI suite covering messaging, documents, collaboration, scheduling, and more. Provides 200+ commands across 11 business domains including instant messaging (IM), cloud documents, s",
-        "version": "1.0.0",
-        "categories": [
-          "video",
-          "email",
-          "search",
-          "file"
-        ]
-      },
-      {
-        "name": "skill_2053082332061896704",
-        "description": "Build and maintain a personal knowledge base (wiki) using LLMs. Instead of RAG-style retrieval, the LLM incrementally compiles, cross-references, and maintains a persistent structured wiki from raw so",
-        "version": "0.0.0",
-        "categories": [
           "search"
         ]
       },
@@ -4788,8 +4200,7 @@
         "description": "Manage Things 3 via the `things` CLI on macOS (add/update projects+todos via URL scheme; read/search/list from the local Things database). Use when a user asks to add a task to Things, list inbox/toda",
         "version": "1.0.0",
         "categories": [
-          "search",
-          "data"
+          "search"
         ]
       },
       {
@@ -4806,7 +4217,6 @@
         "version": "2.0.1",
         "categories": [
           "code",
-          "doc",
           "search",
           "file"
         ]
@@ -4849,15 +4259,6 @@
           "data",
           "file"
         ]
-      },
-      {
-        "name": "xurl",
-        "description": "A Twitter research and content intelligence skill. Use to analyze Twitter profiles, threads, and conversations for identifying pain points, extracting content angles, and converting Twitter intelligen",
-        "version": "1.0.0",
-        "categories": [
-          "search",
-          "file"
-        ]
       }
     ],
     "automation": [
@@ -4866,7 +4267,6 @@
         "description": "用于在 Ardot 中把多个已有画板自动编排成可交付的衍生展示区。适合多状态对照、设计评审看板、流程演示、角色/设备矩阵。也可作为 CodeBuddy + Ardot AI 设计工作流的收尾节点，将 AI 生成的零散画板自动整理成结构化展示区并输出可分享链接。",
         "version": "1.0.12",
         "categories": [
-          "code",
           "file",
           "automation"
         ]
@@ -4897,17 +4297,6 @@
         "description": "Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines. Use when you need to automate quality gates, configure test runners in CI, or establish deployment stra",
         "version": "0.0.0",
         "categories": [
-          "automation"
-        ]
-      },
-      {
-        "name": "contextweave-interactive-architecture__skillhub",
-        "description": "强大的AI自动化绘图与复杂信息可视化工具（基于 ContextWeave）。不仅支持代码与系统架构的可视化，更广泛适用于复杂逻辑梳理、知识库转换、业务流程图、思维导图及长文本的结构化信息图生成。通过深度的语义分析与请求编排，一键将晦涩文本与复杂知识转化为清晰直观的图形表达。",
-        "version": "1.2.0",
-        "categories": [
-          "browser",
-          "image",
-          "data",
           "automation"
         ]
       },
@@ -4985,8 +4374,6 @@
         "version": "2.0.0",
         "categories": [
           "browser",
-          "doc",
-          "video",
           "data",
           "automation"
         ]
@@ -5089,23 +4476,12 @@
     ],
     "data": [
       {
-        "name": "browser-cash",
-        "description": "Cloud browser sessions via Browser.cash API that bypass anti-bot protections (Cloudflare, DataDome). Spin up unblocked browser instances for scraping, form filling, testing. Sessions appear as real br",
-        "version": "1.0.0",
-        "categories": [
-          "browser",
-          "data"
-        ]
-      },
-      {
         "name": "browser-testing-with-devtools",
         "description": "Tests in real browsers via Chrome DevTools MCP. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, ",
         "version": "0.0.0",
         "categories": [
           "browser",
-          "code",
-          "data",
-          "file"
+          "data"
         ]
       },
       {
@@ -5125,32 +4501,16 @@
         "version": "0.1.1",
         "categories": [
           "browser",
-          "code",
           "data"
         ]
       },
       {
-        "name": "cloudbase",
-        "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
+        "name": "contextweave-interactive-architecture__skillhub",
+        "description": "使用 ContextWeave 生成或修改架构图、流程图、思维导图和复杂信息图。适用于需要从代码、文件或自然语言中提取结构与关系并实际产出 CW、SVG 或 HTML 的请求；不适用于统计图表、手绘插画或像素级排版。",
+        "version": "1.2.4",
         "categories": [
-          "meta",
-          "code",
-          "doc",
-          "image",
           "data",
           "file"
-        ]
-      },
-      {
-        "name": "contextweave-interactive-architecture__skillhub",
-        "description": "强大的AI自动化绘图与复杂信息可视化工具（基于 ContextWeave）。不仅支持代码与系统架构的可视化，更广泛适用于复杂逻辑梳理、知识库转换、业务流程图、思维导图及长文本的结构化信息图生成。通过深度的语义分析与请求编排，一键将晦涩文本与复杂知识转化为清晰直观的图形表达。",
-        "version": "1.2.0",
-        "categories": [
-          "browser",
-          "image",
-          "data",
-          "automation"
         ]
       },
       {
@@ -5173,14 +4533,6 @@
         ]
       },
       {
-        "name": "diagram-builder__skillhub",
-        "description": "专业架构图与流程图绘制 skill。绘制系统架构图、微服务架构、网络拓扑图、业务流程图、数据流图、时序图、状态机、ER图等。支持 show_widget 内联 SVG 渲染与 Mermaid 代码块两种方式。触发关键词：架构图、流程图、时序图、状态机、拓扑图、ER图、数据流图、draw、diagram、flowchart、architecture。",
-        "version": "0.0.0",
-        "categories": [
-          "data"
-        ]
-      },
-      {
         "name": "douyin-high-comment-generator__skillhub",
         "description": "分析抖音视频内容及评论区现状，生成10条不同方向的高赞评论话术，帮助用户在抖音评论区获得高赞和流量。当用户发送抖音视频链接并要求生成评论话术、写高赞评论、或询问如何评论时触发。",
         "version": "0.0.0",
@@ -5195,17 +4547,6 @@
         "version": "1.0.0",
         "categories": [
           "data"
-        ]
-      },
-      {
-        "name": "excalidraw-diagram",
-        "description": "Create Excalidraw diagrams for workflows, architectures, protocols, concepts, and system explanations. Use when a user wants a flowchart, architecture sketch, visual explanation, or diagram as a .exca",
-        "version": "0.0.0",
-        "categories": [
-          "browser",
-          "code",
-          "data",
-          "file"
         ]
       },
       {
@@ -5224,7 +4565,6 @@
         "description": "Safely import Excel/CSV data into a new or existing Feishu Base, or export a Base table to Excel/CSV. Use when a user needs Excel/CSV and Feishu Base synchronization, especially keyed upserts with a p",
         "version": "0.0.0",
         "categories": [
-          "code",
           "doc",
           "data"
         ]
@@ -5268,16 +4608,6 @@
         "categories": [
           "data",
           "automation"
-        ]
-      },
-      {
-        "name": "image-well",
-        "description": "Search and download images from 12 APIs in parallel (Openverse, Pexels, Pixabay, Met Museum, NASA, Rijksmuseum, Wikimedia Commons, Unsplash, Smithsonian, Europeana, Iconify, Pollinations AI). Supports",
-        "version": "1.0.2",
-        "categories": [
-          "image",
-          "search",
-          "data"
         ]
       },
       {
@@ -5340,15 +4670,6 @@
         "description": "Migrate test files from `as` type assertions to @total-typescript/shoehorn. Use when user mentions shoehorn, wants to replace `as` in tests, or needs partial test data.",
         "version": "0.0.0",
         "categories": [
-          "data",
-          "file"
-        ]
-      },
-      {
-        "name": "mindmap-generator-plus__skillhub",
-        "description": "使用 Matplotlib 生成分层思维导图 PNG 图片，支持自定义数据结构、颜色和布局。",
-        "version": "0.0.0",
-        "categories": [
           "data"
         ]
       },
@@ -5367,9 +4688,7 @@
         "description": "Import sources (URLs, YouTube, files, text) into Google NotebookLM and generate artifacts: podcasts, videos, reports, quizzes, flashcards, mind maps, slide decks, infographics, data tables. Use when u",
         "version": "2.1.3",
         "categories": [
-          "video",
-          "data",
-          "file"
+          "data"
         ]
       },
       {
@@ -5399,26 +4718,8 @@
         ]
       },
       {
-        "name": "performance-optimization",
-        "description": "Optimizes application performance across frontend, backend, queries, and databases. Use when performance requirements exist, when you suspect performance regressions, when Core Web Vitals or load time",
-        "version": "0.0.0",
-        "categories": [
-          "data"
-        ]
-      },
-      {
         "name": "pi-mom",
         "description": "@mariozechner/pi-mom — Slack bot Master Of Mischief (Mom), self-managing agent, Docker sandbox, and events system. Use when setting up Mom in Slack, debugging data/ workspace issues, managing context.",
-        "version": "0.0.0",
-        "categories": [
-          "memory",
-          "code",
-          "data"
-        ]
-      },
-      {
-        "name": "pi-pods",
-        "description": "@mariozechner/pi — Deploy and manage vLLM LLM GPU pods, DataCrunch/RunPod setup, and CLI agent interface. Use when spinning up GPU instances, configuring vLLM, managing tensor parallelism, or interact",
         "version": "0.0.0",
         "categories": [
           "memory",
@@ -5431,8 +4732,6 @@
         "version": "2.0.0",
         "categories": [
           "browser",
-          "doc",
-          "video",
           "data",
           "automation"
         ]
@@ -5480,7 +4779,6 @@
         "categories": [
           "browser",
           "finance",
-          "search",
           "data"
         ]
       },
@@ -5509,14 +4807,6 @@
         ]
       },
       {
-        "name": "skill_2052764011421208576",
-        "description": "Notion API for creating and managing pages, databases, and blocks.",
-        "version": "1.0.12",
-        "categories": [
-          "data"
-        ]
-      },
-      {
         "name": "skill_2053081792154468352",
         "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction.",
         "version": "2.0.7",
@@ -5539,8 +4829,7 @@
         "version": "6.0.0",
         "categories": [
           "doc",
-          "data",
-          "file"
+          "data"
         ]
       },
       {
@@ -5601,37 +4890,12 @@
         ]
       },
       {
-        "name": "tencentcloud-infra__skillhub",
-        "description": "Unified skill for ALL Tencent Cloud operations via tccli. Supersedes any single-product skills (e.g. Lighthouse-only). Covers: Lighthouse, CVM, CBS, COS, VPC, DNSPod, SSL, CAM, Monitor, TAT, Domain, C",
-        "version": "0.0.0",
-        "categories": [
-          "data"
-        ]
-      },
-      {
         "name": "thesis-tutor__skillhub",
         "description": "论文写作全流程辅导助手，覆盖选题、开题、文献综述、研究方法、数据分析、正文写作、修改润色、查重降重、格式与引用规范到答辩准备。当用户提出论文写作、学术研究方法、文献综述、开题报告、毕业论文、期刊投稿、参考文献格式、学术英语写作相关问题时触发。支持中文、English、日本語、한국어、Français、Deutsch、Español 七种语言，覆盖 15 个学科。",
         "version": "0.0.0",
         "categories": [
           "meta",
           "search",
-          "data"
-        ]
-      },
-      {
-        "name": "things-mac",
-        "description": "Manage Things 3 via the `things` CLI on macOS (add/update projects+todos via URL scheme; read/search/list from the local Things database). Use when a user asks to add a task to Things, list inbox/toda",
-        "version": "1.0.0",
-        "categories": [
-          "search",
-          "data"
-        ]
-      },
-      {
-        "name": "web-scraper",
-        "description": "Web scraping and content comprehension agent — multi-strategy extraction with cascade fallback, news detection, boilerplate removal, structured metadata, and LLM entity extraction",
-        "version": "0.1.1",
-        "categories": [
           "data"
         ]
       },
@@ -5709,20 +4973,90 @@
         ]
       }
     ],
-    "meta": [
+    "image": [
       {
-        "name": "cloudbase",
-        "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.27.0",
+        "name": "ch12893719743826428329324__skillhub",
+        "description": "Generate or edit images through user-supplied API relays using Gemini-native or OpenAI-compatible image protocols. API relays are third-party gateways that often aggregate multiple models behind one B",
+        "version": "0.0.0",
         "categories": [
-          "meta",
-          "code",
+          "image"
+        ]
+      },
+      {
+        "name": "gpt-image2-pro__skillhub",
+        "description": "AI 图片生成器 — 基于 gpt-image-2 模型，支持文生图与图生图，开箱即用。",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "image-pro__skillhub",
+        "description": ">",
+        "version": "0.0.0",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "image-prompt-skill__skillhub",
+        "description": "统一提示词生成器，支持图片与视频双模态。文/图生图、文/图生视频、图片/视频反编译、上下文微调，自动适配画风与平台语法，内置RAG增强风格预设与安全校验，高效精准。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "image-well",
+        "description": "Search and download images from 12 APIs in parallel (Openverse, Pexels, Pixabay, Met Museum, NASA, Rijksmuseum, Wikimedia Commons, Unsplash, Smithsonian, Europeana, Iconify, Pollinations AI). Supports",
+        "version": "1.0.2",
+        "categories": [
+          "image",
+          "search"
+        ]
+      },
+      {
+        "name": "openclaw-v3",
+        "description": "使用火山引擎 SD1.5pro API 生成视频。支持文本到视频和图生视频，异步处理任务。",
+        "version": "0.0.0",
+        "categories": [
+          "image",
+          "video"
+        ]
+      },
+      {
+        "name": "pdf-image-text-extractor",
+        "description": "从图片或 PDF 文档中识别并提取文字内容，支持多种图片格式和 PDF 文件，自动判断是否包含文字并保留原始格式输出结构化结果；当用户需要从图片或 PDF 提取文字、进行 OCR 识别、处理含文字的文档或转换为可编辑文本时使用。该skill能力来自RedFoxHub，官网：https://redfox.hk/skills。",
+        "version": "1.0.9",
+        "categories": [
           "doc",
           "image",
-          "data",
           "file"
         ]
       },
+      {
+        "name": "skill_2053082421296758784",
+        "description": "Generate/edit images with Nano Banana Pro (Gemini 3 Pro Image). Use for image create/modify requests incl. edits. Supports text-to-image + image-to-image; 1K/2K/4K; use --input-image.",
+        "version": "1.0.1",
+        "categories": [
+          "image"
+        ]
+      },
+      {
+        "name": "tencent-mps__skillhub",
+        "description": "腾讯云 MPS 音视频与图片处理、AI 生成、内容理解。涉及以下场景必须触发：【转码】转码/压缩/格式转换/转封装/H.264/H.265/AV1/码率/分辨率。【画质增强】画质增强/画质修复/老片修复/超分/真人增强/漫剧增强/防抖/人脸保真/1080P/2K/4K。【音频】音频分离/人声提取/伴奏提取/去人声/降噪/音量均衡。【字幕】字幕提取/字幕翻译/语音识别/语音转文字/ASR/OCR字幕",
+        "version": "1.3.1",
+        "categories": [
+          "doc",
+          "image",
+          "video",
+          "data",
+          "file"
+        ]
+      }
+    ],
+    "meta": [
       {
         "name": "code-reviewer__skillhub",
         "description": "对指定文件夹内的代码进行全面审查，包含规范性检查、Bug检测、性能优化建议、可读性评估和基于华为Java编程规范的质量评分；当用户需要审查代码质量、发现潜在问题、评估代码规范符合度或生成代码审查报告时使用",
@@ -5734,18 +5068,9 @@
         ]
       },
       {
-        "name": "context-engineering",
-        "description": "Optimizes agent context setup. Use when starting a new session, when agent output quality degrades, when switching between tasks, or when you need to configure rules files and context for a project.",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "file"
-        ]
-      },
-      {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "categories": [
           "meta",
           "browser",
@@ -5766,15 +5091,6 @@
         ]
       },
       {
-        "name": "moways-doc__skillhub",
-        "description": "一键规范 Word 报告排版：页面设置、字体字号、标题层级、行距段距、页码页眉、",
-        "version": "2.7.2",
-        "categories": [
-          "meta",
-          "doc"
-        ]
-      },
-      {
         "name": "sa-pro-workbench__skillhub",
         "description": "【解决方案架构师/售前顾问超级工作台 / Solution Architect & Presales Consultant Super Workbench】 —— 面向解决方案架构师、售前顾问、方案专家、企业架构师的全栈自动化技能。 一人一 Skill，替代方案团队 80% 重复劳动。 ■ 核心定位：面向信息化/数字化/智能化项目，覆盖从\\\"收到客户材料\\\"到\\\"交付投标材料包\\\"的 完整售前-方",
         "version": "2.0.0",
@@ -5792,7 +5108,7 @@
       {
         "name": "skills-constitution",
         "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.11.0",
+        "version": "2.12.0",
         "categories": [
           "meta",
           "memory",
@@ -5800,16 +5116,6 @@
           "code",
           "doc",
           "file"
-        ]
-      },
-      {
-        "name": "tencentcloud-lighthouse-skill",
-        "description": "Load when: user mentions Lighthouse, 轻量应用服务器, 轻量服务器, or asks to check/create/manage/deploy Lighthouse instances, deploy applications to Lighthouse, manage Lighthouse firewall rules, reset Lighthouse p",
-        "version": "0.0.0",
-        "categories": [
-          "meta",
-          "doc",
-          "image"
         ]
       },
       {
@@ -5858,7 +5164,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "categories": [
           "meta",
           "browser",
@@ -5873,7 +5179,6 @@
         "description": "通用「项目可行性研究（可研）报告 AI 评审」skill。当用户需要评审任意行业的可研报告 / 项目建议书、生成带依据的评审意见、或对多个项目横向打分排名时使用。触发场景：上传或提及可研报告（Word/PDF）+ 指标表/估算书（Excel）、要求\"评审可研\"\"评审这个项目\"\"可研报告审查\"\"可研评审要点\"\"项目打分\"\"对比这几个可研项目\"\"可研合规性审查\"\"可行性研究评审\"\"出评审意见\"\"审查可",
         "version": "1.0.0",
         "categories": [
-          "code",
           "doc",
           "finance",
           "search",
@@ -5905,7 +5210,6 @@
         "categories": [
           "browser",
           "finance",
-          "search",
           "data"
         ]
       },
@@ -5946,8 +5250,8 @@
     ]
   },
   "total": 399,
-  "version": "2.11.0",
-  "generated_at": "2026-08-16T23:53:18.050610",
+  "version": "2.12.0",
+  "generated_at": "2026-08-19T21:21:53.814565",
   "skills_dir": "C:\\Users\\HUAWEI/.workbuddy/skills",
   "libs_count": 0,
   "total_entries": 399

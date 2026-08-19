@@ -14,9 +14,13 @@
 用法:
   python pre-hook.py --task "推送github"             # 生成注入块(按任务过滤技能树)
   python pre-hook.py --task "写文章" --output inj.md # 输出到文件
-  python pre-hook.py --task "爬虫" --json            # JSON 输出(机器可读)
+  python pre-hook.py --task "爬虫" --json            # JSON 输出(机器可读,含 sad_candidates)
   python pre-hook.py --check --input agent_opening.txt  # 校验开场是否已注入(宿主hook用)
   python pre-hook.py --check --input agent_opening.txt --strict  # 校验失败 exit 1
+
+v2.12.0:
+  - 任务同义词扩展(TASK_SYNONYM_MAP):"把代码传上去"等口语表达也能命中 git/push 必需分类
+  - SAD 宽松语义检索(loose_retrieve_skills):零依赖 token 重叠打分,注入 top-K 候选技能
 
 返回码:
   --check 模式: 0=注入合规, 1=缺注入(宿主 hook 应阻断任务)
@@ -26,6 +30,40 @@ import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    from lib.text import overlap_score
+except ImportError:
+    def overlap_score(text_a, text_b):  # 兜底:与 lib.text 同逻辑(零依赖轻语义)
+        word_re = re.compile(r"[a-z0-9][a-z0-9_\-\.]*")
+        cjk_re = re.compile(r"[一-鿿]")
+        def tok(text):
+            t = (text or "").lower()
+            words = word_re.findall(t)
+            tokens = set(words)
+            for w in words:
+                if "-" in w or "_" in w or "." in w:
+                    for part in re.split(r"[_\-\.]", w):
+                        if part:
+                            tokens.add(part)
+            chars = cjk_re.findall(t)
+            tokens.update(chars)
+            for i in range(len(chars) - 1):
+                tokens.add(chars[i] + chars[i + 1])
+            return {x for x in tokens if x.strip()}
+        a, b = tok(text_a), tok(text_b)
+        if not a or not b:
+            return 0.0
+        inter = set(a & b)
+        a_ascii = {t for t in a if t.isascii() and len(t) >= 3}
+        b_ascii = {t for t in b if t.isascii() and len(t) >= 3}
+        for x in a_ascii:
+            for y in b_ascii:
+                if x != y and (x in y or y in x):
+                    inter.add(x)
+                    break
+        return len(inter) / max(1, min(len(a), len(b)))
 
 DEFAULT_MEMORY = os.path.expanduser("~/.workbuddy/MEMORY.md")
 DEFAULT_TREE = os.path.join(
@@ -72,15 +110,57 @@ REQUIRED_CATEGORY_KEYWORDS = [
 ]
 
 
+# v2.12.0 新增:任务同义词扩展表(SAD 第一轮"用词对齐"的确定性实现)
+# 痛点(v2.11.0 真实漏洞):用户说"我要把代码传上去",无 git/push 关键词 →
+# Layer C 失效。口语/近义表达先映射到正式关键词,再走原有关键词映射,
+# 不依赖 Agent 自觉联想,也不需要 LLM-in-loop。
+TASK_SYNONYM_MAP = {
+    # 代码/版本管理口语
+    "传上去": ["git", "push", "推送"], "推上去": ["git", "push", "推送"],
+    "上传代码": ["git", "push", "推送"], "同步代码": ["git", "push", "commit"],
+    "提交代码": ["git", "commit"], "拉代码": ["git", "clone"],
+    "签入": ["git", "commit"], "检出": ["git", "clone"],
+    "上线": ["部署", "deploy"], "发布": ["部署", "deploy"],
+    # 爬虫/数据口语
+    "抓一下": ["抓取", "爬虫"], "爬一下": ["爬虫", "抓取"],
+    "采集": ["抓取", "数据"], "抓点": ["抓取", "爬虫"],
+    # 文档/办公口语
+    "做幻灯片": ["ppt"], "做个表": ["excel", "表格"],
+    "写个文档": ["word", "文档"], "画个图": ["图表", "图片"],
+    # 通信口语
+    "发个邮件": ["邮件", "发送邮件"], "发邮件": ["邮件", "发送邮件"],
+    # 检索口语
+    "查一下": ["查询", "搜索"], "搜一下": ["搜索", "查询"],
+    # 文件口语
+    "整理文件": ["文件"], "清理文件": ["文件"],
+}
+
+
+def expand_task_text(task):
+    """v2.12.0:同义词扩展 — 把口语表达蕴含的正式关键词追加到任务文本后
+
+    返回扩展后的文本,供关键词匹配使用(仅召回侧扩展,不改原任务)。
+    """
+    t = (task or "").lower()
+    extra = []
+    for phrase, implied in TASK_SYNONYM_MAP.items():
+        if phrase.lower() in t:
+            extra.extend(implied)
+    if not extra:
+        return task or ""
+    return (task or "") + " " + " ".join(extra)
+
+
 def required_categories_for_task(task):
     """v2.11.0:按任务关键词返回必需技能分类(确定性,非 Agent 自觉)
+    v2.12.0:先经同义词扩展(TASK_SYNONYM_MAP)再匹配,口语表达不再漏判。
 
     返回 list[str],如 ["code"] / ["browser","data"] / [] (无强相关)
     这是硬校验的依据:任务含"代码/git/部署"关键词 → 输出必须命中 code 分类技能。
     """
     if not task:
         return []
-    task_lower = task.lower()
+    task_lower = expand_task_text(task).lower()
     matched = []
     for kw, cats in REQUIRED_CATEGORY_KEYWORDS:
         if kw.lower() in task_lower:
@@ -152,7 +232,7 @@ def classify_task(text):
     """
     if not text:
         return "ambiguous"
-    text_lower = text.lower()
+    text_lower = expand_task_text(text).lower()  # v2.12.0:同义词扩展后分类
     for marker in SIMPLE_TASK_MARKERS:
         if marker.lower() in text_lower:
             return "simple"
@@ -189,11 +269,78 @@ def load_tree(tree_path=DEFAULT_TREE):
     return result
 
 
+def load_tree_full(tree_path=DEFAULT_TREE):
+    """v2.12.0:读取 skill_tree.json 完整条目(含描述),供宽松语义检索使用
+
+    返回 [{name, description, categories}],按技能名去重、跨分类合并。
+    """
+    if not os.path.exists(tree_path):
+        return []
+    with open(tree_path, encoding="utf-8") as f:
+        tree = json.load(f)
+    skills = {}
+    for cat, items in tree.get("categories", {}).items():
+        if not isinstance(items, list):
+            continue
+        for item in items:
+            if isinstance(item, dict) and item.get("name"):
+                e = skills.setdefault(item["name"], {
+                    "name": item["name"], "description": "", "categories": []})
+                if item.get("description") and not e["description"]:
+                    e["description"] = item["description"]
+                if cat not in e["categories"]:
+                    e["categories"].append(cat)
+            elif isinstance(item, str):
+                e = skills.setdefault(item, {"name": item, "description": "", "categories": []})
+                if cat not in e["categories"]:
+                    e["categories"].append(cat)
+    return list(skills.values())
+
+
+def loose_retrieve_skills(skills, task, top_k=6, min_score=0.08,
+                          category_boost=0.25, name_boost=0.15):
+    """v2.12.0 SAD 第一轮:宽松语义检索(零依赖 token 重叠打分)
+
+    SkillWeaver SAD 反馈循环的确定性实现:
+    原方案需要 LLM 草拟→检索→喂回→重写;本实现把"粗检索"环节代码化 ——
+    pre-hook 先按任务与技能描述的 token 重叠度检索 top-K 候选注入上下文,
+    Agent 起草方案时天然带着候选技能"重写对齐"(第二轮由 Agent 完成)。
+
+    打分 = token 重叠度 + 必需分类加成(category_boost) + 技能名命中加成(name_boost):
+    - 技能的分类命中任务必需分类(REQUIRED_CATEGORY_KEYWORDS 映射结果)时加分,
+      让确定性路由信号(Layer C 同源)参与排序;
+    - 任务与**技能名**有 token 交集时再加 name_boost —— 技能名是最强标识,
+      避免 git-workflow 这类描述简短的技能被描述冗长的泛相关技能挤掉。
+
+    返回 [(score, skill)],按相关度降序;排除元规则自身。
+    """
+    if not task or not skills:
+        return []
+    EXCLUDED = {"skills-constitution", "constitution-check"}
+    required_cats = set(required_categories_for_task(task))
+    expanded = expand_task_text(task)
+    scored = []
+    for s in skills:
+        if s.get("name") in EXCLUDED:
+            continue
+        hay = f"{s.get('name','')} {s.get('description','')}"
+        score = overlap_score(expanded, hay)
+        if required_cats and (set(s.get("categories", [])) & required_cats):
+            score += category_boost
+        if s.get("name") and overlap_score(expanded, s["name"]) > 0:
+            score += name_boost
+        if score >= min_score:
+            scored.append((round(score, 3), s))
+    scored.sort(key=lambda x: (-x[0], x[1]["name"]))
+    return scored[:top_k]
+
+
 def filter_tree_by_task(tree, task):
-    """按任务关键词过滤技能树分类，返回相关分类名列表"""
+    """按任务关键词过滤技能树分类，返回相关分类名列表
+    v2.12.0:先经同义词扩展再匹配,口语表达也能定位分类。"""
     if not task:
         return list(tree.keys())
-    task_lower = task.lower()
+    task_lower = expand_task_text(task).lower()
     matched = []
     for cat, keywords in TASK_CATEGORY_MAP.items():
         for kw in keywords:
@@ -216,8 +363,9 @@ def filter_tree_by_task(tree, task):
     return result
 
 
-def build_injection(memory_text, tree, matched_cats, task):
-    """生成注入块 Markdown"""
+def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None):
+    """生成注入块 Markdown
+    v2.12.0:新增 sad_candidates(SAD 宽松语义检索 top-K 候选)渲染段落。"""
     lines = []
     lines.append("## ⚡ 宪法 Pre-hook 注入（任务开始前强制注入，禁止跳过）")
     lines.append("")
@@ -264,6 +412,18 @@ def build_injection(memory_text, tree, matched_cats, task):
             cat_skills = [s for s in required_skills if s in tree.get(cat, [])]
             if cat_skills:
                 lines.append(f"- **{cat}** 分类命中候选: {', '.join(cat_skills[:10])}")
+        lines.append("")
+
+    # v2.12.0 SAD 候选技能注入（宽松语义检索 top-K，起草方案时对齐用词）
+    if sad_candidates:
+        lines.append("### 🧠 SAD 候选技能（v2.12.0 宽松语义检索 top-K，按相关度排序）")
+        for score, s in sad_candidates:
+            desc = (s.get("description") or "")[:60]
+            cats = "/".join(s.get("categories", [])[:3])
+            lines.append(f"- `{s['name']}` ({cats}, 相关度 {score}): {desc}")
+        lines.append("")
+        lines.append("> **SAD 流程**：先草拟执行方案 → 对照以上候选技能修订用词与粒度 → 再输出【宪法三查】。"
+                     "候选均不相关时才允许声明\"技能树无匹配\"。")
         lines.append("")
 
     lines.append("**执行要求：**")
@@ -375,7 +535,9 @@ def main():
     memory_text = load_memory(a.memory)
     tree = load_tree(a.tree)
     matched_cats = filter_tree_by_task(tree, a.task)
-    injection = build_injection(memory_text, tree, matched_cats, a.task)
+    # v2.12.0:SAD 宽松语义检索候选(top-K)
+    sad_candidates = loose_retrieve_skills(load_tree_full(a.tree), a.task) if a.task else []
+    injection = build_injection(memory_text, tree, matched_cats, a.task, sad_candidates)
 
     if a.output:
         with open(a.output, "w", encoding="utf-8") as f:
@@ -390,6 +552,10 @@ def main():
             "memory_len": len(memory_text),
             "tree_categories": len(tree),
             "injected_categories": matched_cats,
+            "sad_candidates": [
+                {"name": s["name"], "score": sc, "categories": s.get("categories", [])}
+                for sc, s in sad_candidates
+            ],
             "injection": injection,
         }, ensure_ascii=False, indent=2))
     else:

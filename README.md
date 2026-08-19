@@ -3,8 +3,8 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.11.0-blue.svg)](SKILL.md)
-[![Skills Indexed](https://img.shields.io/badge/skills_indexed-688-author_snapshot-green.svg)](SKILL_TREE.md)
+[![Version](https://img.shields.io/badge/version-2.12.0-blue.svg)](SKILL.md)
+[![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
 
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.11.0
+## Skills 宪法（Skills Constitution）v2.12.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -271,6 +271,16 @@ python scripts/constitution-check --step 5 --input output.txt
 
 ## 📝 改版说明（CHANGELOG 摘要）
 
+### v2.12.0（2026-08-19）— SkillWeaver 启发：语义增强 + 防蒙混升级
+- **任务同义词扩展**（`TASK_SYNONYM_MAP`）：口语表达不再漏判——"我要把代码传上去"（无 git 关键词）也能命中 code 必需分类，Layer C 恢复生效
+- **SAD 宽松语义检索**：SkillWeaver 反馈循环的确定性实现——pre-hook 按 token 重叠度（零依赖）检索 top-K 候选技能注入，Agent 起草方案时带着候选完成用词对齐，token 再降一档
+- **Layer D 语义相关性校验**（step3）：引用的技能必须与任务语义相关（overlap ≥ 0.10），杜绝"引用真实存在但与任务无关的技能"蒙混过关
+- **多技能编排兼容性检查**（step4 + registry.json schema）：识别技能链 `A → B`，校验相邻技能 output→input 兼容
+- **可选语义向量索引**（`scripts/semantic_index.py`）：sentence-transformers + FAISS 的完整实现作为可选增强层；缺依赖明确提示，主链路永远零依赖
+- **分类子串误杀修复**：英文关键词改词边界匹配，`code` 不再误杀 `encode`、`search` 不再误杀 `research`
+- 顺手修复 4 个已核实 Bug（正文版本号残留/CHANGELOG 链接/CI 死代码/badge 失真）
+- 完整细节见 [CHANGELOG.md](CHANGELOG.md)
+
 ### v2.11.0（2026-08-16）— 任务相关硬校验（Layer C）+ 命中清单强制 + 推荐定位修正
 - **新增 Layer C 任务相关硬校验**：任务含"代码/编码/编程/开发/写一个/实现/git/github/push/commit/deploy/部署/爬虫/抓取/网页/前端/文档/数据/邮件/图片/视频"等关键词时，输出必须引用 skill_tree.json 对应分类下的**实际技能名**（如 `git-workflow-and-versioning`）——彻底杜绝"查了 skills-constitution 就算查了技能"的空头汇报
 - **三查汇报强制命中清单**：②技能树必须列出命中的技能名（名称+依据），禁止只写"已读技能树"
@@ -303,17 +313,20 @@ skills-constitution/
 ├── SKILL_TREE.md               # 技能树索引（人类可读）
 ├── skill_tree.json             # 技能树索引（机器可读）
 ├── scripts/
-│   ├── build_skill_tree.py     # 分类脚本
-│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）
+│   ├── build_skill_tree.py     # 分类脚本（v2.12.0 词边界匹配修复子串误杀）
+│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）；同义词扩展+SAD 宽松检索（v2.12.0）
+│   ├── semantic_index.py       # 可选语义向量索引（v2.12.0，sentence-transformers 可选依赖）
 │   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook；v2.11.0 支持 --task）
 │   ├── retry-wrapper.py        # Post-hook 重试循环（v2.9.0）
 │   ├── steps/                  # 5 个 step 独立校验脚本
 │   │   ├── step1-check.py      # 三查汇报（软+硬+Layer C 任务相关，v2.11.0）
 │   │   ├── step2-check.py      # 技能树已读（软+硬+Layer C，v2.11.0）
-│   │   ├── step3-check.py      # 技能调用（软+硬+Layer C，v2.11.0）
-│   │   ├── step4-check.py      # 交付自检
+│   │   ├── step3-check.py      # 技能调用（软+硬+Layer C+Layer D 语义相关，v2.12.0）
+│   │   ├── step4-check.py      # 交付自检+多技能编排兼容性（v2.12.0）
 │   │   └── step5-check.py      # 推荐板块（软+硬两层）
-│   └── lib/                    # 状态文件 + 文本工具
+│   ├── tests/
+│   │   └── run_tests.py        # 零依赖回归测试（v2.12.0，CI 可跑）
+│   └── lib/                    # 状态文件 + 文本工具（v2.12.0 轻语义工具）
 └── .github/
     └── workflows/
         └── build-skill-tree.yml  # 自动更新

@@ -5,6 +5,76 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.12.0] - 2026-08-19
+
+### 重大改版：SkillWeaver 启发 —— 语义增强 + 防蒙混升级
+
+**核心问题**（对照 SkillWeaver 论文解读逐条评审后确认）：
+1. 关键词硬编码存在双向缺陷：子串误杀（`code` 命中 `encode`、`search` 命中 `research`）+
+   口语漏判（"我要把代码传上去"无 git 关键词 → Layer C 失效）
+2. Agent 可引用**真实存在但与任务无关**的技能名蒙混过关（Layer B 只验"名在树中"，不验"与任务相关"）
+3. 单技能匹配假设无法覆盖"下载→清洗→出报告"类多步骤任务
+4. 论文的 sentence-transformers/FAISS/cross-encoder 方案为重依赖，与项目
+   "主链路零依赖、确定性、任何平台可跑"原则冲突 → 全部做零依赖适配，重依赖只作可选增强层
+
+#### 新增：任务同义词扩展（`pre-hook.py` TASK_SYNONYM_MAP）
+- 口语/近义表达 → 正式关键词确定性映射："传上去/推上去/上传代码/同步代码"→git/push；
+  "抓一下/爬一下/采集"→爬虫/抓取；"上线/发布"→部署 等
+- 同步作用于任务分类器（--classify）、必需分类映射（Layer C 依据）、注入块分类过滤
+
+#### 新增：SAD 宽松语义检索（`pre-hook.py` loose_retrieve_skills）
+- SkillWeaver SAD 反馈循环的确定性实现：粗检索环节代码化，
+  按任务与技能描述的 token 重叠度（零依赖：中文单字+二元组、英文词+连字符子词拆分、
+  git/github 子串近似）检索 top-K 候选注入上下文
+- 注入块新增「🧠 SAD 候选技能」段落，Agent 起草方案时带着候选完成第二轮用词对齐
+
+#### 新增：Layer D 语义相关性校验（`steps/step3-check.py`）
+- 输出引用的技能中至少一个与任务文本 overlap_score ≥ 0.10（保守阈值防误杀），否则 FAIL
+- 任务文本先经同义词扩展再打分，避免口语任务误判零相关
+
+#### 新增：多技能编排兼容性检查（`steps/step4-check.py` + `registry.json`）
+- registry.json 16 条全部增加 input_schema / output_schema
+- step4 识别技能链（`A` → `B`），校验相邻技能 output→input 兼容；无 schema 覆盖跳过（保守）
+
+#### 新增：可选语义向量索引（`scripts/semantic_index.py`，SkillWeaver 启发一完整实现）
+- sentence-transformers（all-MiniLM-L6-v2，本地免费）构建全量技能 embedding 索引
+- query 语义检索 top-K；faiss-cpu 可选（缺省 numpy 余弦，功能等价）
+- 缺依赖明确提示安装并 exit 2（功能开关非兜底），不影响主链路
+
+#### 修复：分类子串误杀（`build_skill_tree.py`）
+- 英文关键词改词边界正则匹配（`lib/text.py` keyword_in）：code≠encode、search≠research
+
+#### 顺手修复（2026-08-19 调研发现的 4 个已核实 Bug）
+- SKILL.md 正文头部版本号过期（v2.8.0 → 与 frontmatter 同步）
+- CHANGELOG [Unreleased] 链接指向错误（v2.10.0...HEAD → v2.11.0...HEAD）
+- ci.yml 补 workflow_dispatch 触发器（原 SKILLS_DIR inputs 永远为空，rebuild 步骤是死代码）
+- README 静态 badge 技能数硬编码失真（去掉数字，标注 author snapshot）
+
+#### 验证测试（本机实测通过，见 scripts/tests/run_tests.py）
+| 场景 | 结果 |
+|------|------|
+| 口语任务"我要把代码传上去"（无 git 关键词） | 同义词扩展命中 code 必需分类 ✅ |
+| 分类误杀用例（encode/research） | 词边界匹配不再误入对应分类 ✅ |
+| SAD 候选检索（git 任务 top-K） | 含 git 类技能且按相关度排序 ✅ |
+| Layer D：引用与任务无关的真实技能 | FAIL ✅ |
+| Layer D：引用相关技能 | PASS ✅ |
+| 技能链 schema 不兼容 | step4 FAIL ✅ |
+| semantic_index.py 缺依赖 | 提示安装 exit 2 ✅ |
+
+### 新增文件
+- `scripts/semantic_index.py` - 可选语义向量索引（增强层）
+- `scripts/tests/run_tests.py` - 零依赖回归测试（CI 可跑）
+
+### 修改文件
+- `scripts/lib/text.py` - keyword_in 词边界匹配 / tokenize / overlap_score 轻语义工具
+- `scripts/pre-hook.py` - 同义词扩展 + SAD 宽松检索 + 注入块新段落
+- `scripts/build_skill_tree.py` - 分类改词边界匹配
+- `scripts/steps/step3-check.py` - Layer D 语义相关性校验
+- `scripts/steps/step4-check.py` - 多技能编排兼容性检查
+- `registry.json` - 16 条增加 input/output schema
+- `.github/workflows/ci.yml` - 补 workflow_dispatch + 跑回归测试
+- `SKILL.md` / `README.md` - 同步 v2.12.0
+
 ## [2.11.0] - 2026-08-16
 
 ### 重大改版：任务相关硬校验（Layer C）+ 命中清单强制 + 推荐定位修正
@@ -185,7 +255,8 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.10.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.12.0...HEAD
+[2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0
 [2.9.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.9.0

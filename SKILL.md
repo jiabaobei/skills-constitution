@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"。
-version: 2.11.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"；v2.12.0 SkillWeaver 启发改版：任务同义词扩展（口语表达如"把代码传上去"也能命中 git 必需分类）+ SAD 宽松语义检索注入 top-K 候选（零依赖 token 重叠打分）+ Layer D 语义相关性校验（防引用与任务无关技能蒙混）+ 多技能编排兼容性检查（registry.json input/output schema）+ 可选语义向量索引（semantic_index.py，sentence-transformers 可选依赖）+ 修复分类子串误杀（code 不再命中 encode）。
+version: 2.12.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,7 @@ agent_created: true
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
 >
-> **v2.8.0** — 新增精选技能注册表 `registry.json`（技能名+来源仓库+描述，按需安装），与「索引=使用者自己生成」思路一致
+> **v2.12.0** — SkillWeaver 启发改版：任务同义词扩展（口语任务不再漏判）+ SAD 宽松语义检索注入 + Layer D 语义相关性校验 + 多技能编排兼容性检查 + 可选语义向量索引；修复分类子串误杀（code≠encode）
 
 ---
 
@@ -345,7 +345,7 @@ flowchart TD
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.11.0
+## Skills 宪法（Skills Constitution）v2.12.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -544,6 +544,54 @@ python scripts/pre-hook.py --task "推送github代码"
 - **校验输入 = Agent 输出文本 + 状态痕迹**：设计上要求 Agent 每步显式输出产物并调用 check 写状态，脚本才有内容可查
 - **校验失败在软模式下仅警告**，脚本 bug/状态丢失不会卡死任务
 - **分类器是确定性代码**：简单/专业关键词硬编码，不依赖 Agent 自觉判断任务类型，杜绝"把专业任务误判为简单任务"的逃逸
+
+---
+
+## v2.12.0：SkillWeaver 启发改版（语义增强 + 防蒙混升级）
+
+> 背景：对照 SkillWeaver 论文解读（语义检索 / SAD 反馈循环 / 多技能编排 / 语义校验）逐条评审后落地。
+> 原则不变：**主链路零依赖、确定性**；重依赖语义模型（sentence-transformers）只作可选增强层。
+
+### ① 任务同义词扩展（修复"词不对就抓瞎"）
+- `pre-hook.py` 新增 `TASK_SYNONYM_MAP`：口语/近义表达 → 正式关键词（确定性映射，不需要 LLM-in-loop）
+- 案例（v2.11.0 真实漏洞）：用户说"我要把代码传上去"，无 git/push 关键词 → Layer C 失效；
+  v2.12.0 经同义词扩展后命中 `code` 必需分类，门禁恢复生效
+- 扩展同步作用于：任务分类器（`--classify`）、必需分类映射、注入块分类过滤
+
+### ② SAD 宽松语义检索（Skill-Aware Decomposition 的确定性实现）
+- SkillWeaver 的 SAD 需要 LLM 草拟→检索→喂回→重写；本实现把"粗检索"环节代码化：
+  `loose_retrieve_skills()` 按任务与技能描述的 **token 重叠度**（零依赖，中文单字+二元组、英文词+子词拆分、git/github 子串近似）检索 top-K 候选
+- 注入块新增「🧠 SAD 候选技能」段落：Agent 起草方案时天然带着候选技能完成"第二轮重写对齐"
+- 收益：从"扫描整个分类 ~50 个技能"收窄到"重点看 5-6 个最相关候选"，token 再降一档
+
+### ③ Layer D 语义相关性校验（step3 新增）
+- 防的漏洞：Agent 引用一个**真实存在但与任务无关**的技能名蒙混过关（Layer B 只验"名在树中"，不验"与任务相关"）
+- 规则：输出引用的技能中，至少一个与任务文本 overlap_score ≥ 0.10（保守阈值防误杀），否则 FAIL
+- 任务文本先经同义词扩展再打分，避免"口语任务"被误判零相关
+
+### ④ 多技能编排兼容性检查（step4 新增，启发三轻量落地）
+- `registry.json` 16 条全部增加 `input_schema` / `output_schema` 字段
+- step4 识别输出中的技能链（`` `A` → `B` ``），按 schema 校验相邻技能 输出→输入 是否兼容；
+  无 schema 覆盖的相邻对跳过（保守，不误杀）
+
+### ⑤ 可选语义向量索引（`scripts/semantic_index.py`，启发一完整实现）
+- `build`：sentence-transformers（all-MiniLM-L6-v2，本地免费）为全量技能描述生成 embedding，存 `skill_vectors.npz`
+- `query`：任务文本语义检索 top-K；装了 faiss-cpu 走 FAISS，没装走 numpy 余弦（功能等价）
+- **缺依赖时明确提示安装并退出（exit 2）**——这是功能开关不是兜底；不装不影响主链路任何功能
+
+### ⑥ 分类子串误杀修复（`build_skill_tree.py`）
+- 英文关键词改用**词边界正则**匹配：`code` 不再误杀 `encode`、`search` 不再误杀 `research`；中文关键词保持子串匹配
+
+### 验证测试（v2.12.0 已本机实测）
+| 场景 | 结果 |
+|------|------|
+| 口语任务"我要把代码传上去"（无 git 关键词） | 同义词扩展命中 code 必需分类，pre-hook 校验生效 ✅ |
+| 分类误杀用例（encode/research 描述） | 词边界匹配不再误入 code/search 分类 ✅ |
+| SAD 候选检索（git 任务） | top-K 含 git 类技能且按相关度排序 ✅ |
+| Layer D：引用与任务无关的真实技能 | FAIL（疑似乱引用）✅ |
+| Layer D：引用相关技能 | PASS ✅ |
+| 技能链 schema 不兼容（docx→git-workflow） | step4 FAIL ✅ |
+| semantic_index.py 缺依赖 | 明确提示安装，exit 2，不影响主链路 ✅ |
 
 ---
 
