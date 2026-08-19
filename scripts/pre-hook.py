@@ -107,6 +107,11 @@ REQUIRED_CATEGORY_KEYWORDS = [
     ("记忆", ["memory"]), ("知识库", ["memory"]),
     ("金融", ["finance"]), ("股票", ["finance"]), ("基金", ["finance"]),
     ("文件", ["file"]),
+    # v2.12.1 宪法自举：安装/配置/元规则类任务必须查 meta 分类
+    # 覆盖单复数：skill / skills / 技能
+    ("skill", ["meta"]), ("skills", ["meta"]), ("技能", ["meta"]),
+    ("安装", ["meta"]), ("install", ["meta"]), ("配置", ["meta"]),
+    ("元规则", ["meta"]), ("元规则层", ["meta"]), ("宪法", ["meta"]),
 ]
 
 
@@ -316,7 +321,11 @@ def loose_retrieve_skills(skills, task, top_k=6, min_score=0.08,
     """
     if not task or not skills:
         return []
-    EXCLUDED = {"skills-constitution", "constitution-check"}
+    # v2.12.1: 只有非安装类任务才排除自身
+    # 若任务含"安装/配置"等关键词，说明宪法本身就是目标，不应排除
+    has_install_intent = any(k in expand_task_text(task).lower()
+                             for k in ["安装", "install", "配置", "configure"])
+    EXCLUDED = set() if has_install_intent else {"skills-constitution", "constitution-check"}
     required_cats = set(required_categories_for_task(task))
     expanded = expand_task_text(task)
     scored = []
