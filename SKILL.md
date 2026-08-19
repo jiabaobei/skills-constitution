@@ -7,8 +7,8 @@ author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
 display_name_en: "Skills Constitution"
-description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.11.0任务相关硬校验+命中清单强制输出。"
-description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.11.0 adds task-relevant hard validation (must cite actual skill names for code/git/deploy tasks) and mandatory hit-list reporting."
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.12.0：任务同义词扩展 + SAD 宽松语义检索 + Layer D 语义相关性校验 + 多技能编排兼容性检查。"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.12.0 adds synonym expansion, SAD loose semantic retrieval, Layer D semantic relevance check, and multi-skill DAG compatibility checks."
 visibility: "public"
 agent_created: true
 ---
