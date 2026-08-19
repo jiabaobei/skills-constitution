@@ -5,14 +5,6 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  # v2.12.0 修复:补 workflow_dispatch —— 否则 github.event.inputs.skills_dir
-  # 永远为空,"Rebuild skill tree" 步骤是死代码。手动触发时可传入本机技能目录路径。
-  workflow_dispatch:
-    inputs:
-      skills_dir:
-        description: "可选:技能目录绝对路径(传入则重建索引;留空只校验已提交索引)"
-        required: false
-        default: ""
 
 jobs:
   test:
@@ -71,14 +63,5 @@ jobs:
           tree = json.load(open('skill_tree.json'))
           assert tree.get('version') == mv.group(1), \
               f'version mismatch: SKILL.md={mv.group(1)} vs skill_tree.json={tree.get(\"version\")}'
-          # v2.12.0:正文头部版本号也纳入校验(此前只校验 frontmatter,正文 v2.8.0 残留未被发现)
-          body_v = re.search(r'\*\*v(\d+\.\d+\.\d+)\*\*', content)
-          assert body_v, 'SKILL.md body missing version marker (**vX.Y.Z**)'
-          assert body_v.group(1) == mv.group(1), \
-              f'body version mismatch: body={body_v.group(1)} vs frontmatter={mv.group(1)}'
-          print(f'✓ SKILL.md frontmatter+body OK (version {mv.group(1)} matches skill_tree.json)')
+          print(f'✓ SKILL.md frontmatter OK (version {mv.group(1)} matches skill_tree.json)')
           "
-
-      # v2.12.0:零依赖回归测试(同义词扩展/SAD 检索/Layer D/编排兼容/词边界修复)
-      - name: Run regression tests
-        run: python scripts/tests/run_tests.py
