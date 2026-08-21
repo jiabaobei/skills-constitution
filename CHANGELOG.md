@@ -1,9 +1,32 @@
-# Changelog
-
-所有重要变更都将记录在此文件中。
-
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
+(https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+
+## [2.13.0] - 2026-08-21
+
+### 重大更新：宪法强制拦截上线 — hooks + Ruler 跨平台分发
+
+**核心目标**：把宪法从"建议性规则"升级为"可强制拦截的运行时机制"。
+
+#### 新增：WorkBuddy 钩子系统（`hooks/`）
+- `hooks.json`：注册 `SessionStart` + `UserPromptSubmit` 两个系统事件钩子
+- `session-start.sh/.ps1`：会话启动时自动运行 pre-hook.py，注入记忆+技能树上下文到 `injected-context.json`
+- `user-prompt-submit.sh`：任务提交前调用分类器判断通道（简单→A 跳过 | 专业→B 强制门禁）
+
+#### 新增：Ruler 跨平台分发
+- `.ruler/AGENTS.md`：宪法核心条款单一源文件
+- `ruler apply` 一键分发到 10 个平台：Claude Code / Cursor / Cline / Codex / Copilot / Windsurf / Aider / Goose / OpenCode / Gemini CLI
+- 生成分发文件：`CLAUDE.md` / `AGENTS.md` / `.clinerules` / `.goosehints` / `.aider.conf.yml` / `.gemini/settings.json` / `.codex/config.toml` / `opencode.json` / `.mcp.json`
+
+#### 修复
+- **pre-hook.py --classify 模式忽略 --task 参数**：之前只从 stdin 读取，导致命令行调用始终返回 ambiguous
+- **Windows 路径兼容**：Git Bash `/c/Users/...` 路径在 Windows Python 中不被识别，新增 `to_win()` 路径转换函数
+
+### 影响范围
+- WorkBuddy 用户：需在插件管理页面点击"Trust"激活 hooks（否则仅作为建议规则生效）
+- Claude Code / Cursor / Windsurf 等用户：将 `.ruler/AGENTS.md` 内容复制到对应规则文件即可生效
+- 所有平台：宪法从"被动读取"升级为"主动拦截"
+
+---
 
 ## [2.12.0] - 2026-08-19
 
