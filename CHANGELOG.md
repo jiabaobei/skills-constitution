@@ -5,6 +5,22 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.13.3] - 2026-08-21
+
+### 修复：python 分支失败原因可定位 + 兜底文案动态化
+
+**背景**：复盘发现 edge case——session-start.sh 的 python 分支失败时 stderr 被 `2>/dev/null` 丢弃，失败原因无从定位；bash 兜底模板固定写「无 python 环境」，与真实原因（python 分支失败）不符，导致误判环境。
+
+#### 修复
+- `session-start.sh`：python 分支 stderr 捕获到临时文件并快照进 `debug.pre_hook_stderr`（不再丢弃），失败原因可定位
+- 兜底模板文案动态化：`fallback_reason` 区分 `no_python`（PATH 无 python3/python/py）与 `python_branch_failed`（有 python 但 pre-hook.py 未产出注入块），注入块标题与提示按真实原因生成
+- `injected-context.json` 新增 `python_branch_ok` / `fallback_reason` / `debug.pre_hook_stderr` 三个字段
+
+#### 验证
+- 成功路径：`branch_ok=yes`、`injected_cats=doc,code,browser,email,memory`、注入块 3266 字符 ✅
+- 模拟 python 分支崩溃：`fallback=python_branch_failed`、`debug.pre_hook_stderr` 捕获到模拟错误信息 ✅
+- 无 python 环境（PATH 受限）：`fallback=no_python`、bash 兜底注入块含记忆+技能树路径 ✅
+
 ## [2.13.2] - 2026-08-21
 
 ### 修复：宪法 hooks 未真正执行的三大根因

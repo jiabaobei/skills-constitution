@@ -2,6 +2,9 @@
 # SessionStart hook: 注入宪法上下文到会话
 # 产出 injected-context.json，并把「完整注入块」输出到 stdout（平台会注入 Agent 上下文）
 #
+# v2.13.3 修复（2026-08-21）:
+#   4. 失败可定位: python 分支 stderr 不再被 2>/dev/null 丢弃，捕获进 debug.pre_hook_stderr
+#   5. 文案动态化: 兜底模板不再固定写"无 python 环境"，按真实原因区分（无 python / python 分支失败）
 # v2.13.2 修复（2026-08-21）:
 #   1. 解释器检测: python3/python/py 逐个尝试，不再硬编码 python3（平台 hook 环境 PATH 无 python3 → tree=0）
 #   2. 关键: 把 pre-hook.py 生成的完整注入块（宪法三查+记忆+技能树+SAD候选）输出到 stdout，
@@ -27,6 +30,9 @@ tree_categories=0
 injected_cats=""
 sad_candidates=""
 INJECTION=""
+PRE_HOOK_ERR=""          # v2.13.3: pre-hook.py 分支失败时的 stderr 快照
+python_branch_ok="no"    # v2.13.3: python 分支是否真实成功产出注入块
+FALLBACK_REASON=""       # v2.13.3: 兜底触发原因（无 python / python 分支失败）
 
 # ---- 解释器检测（关键修复1）----
 PY_CMD=""
@@ -46,22 +52,36 @@ if [[ -n "${PY_CMD}" && -f "${TREE_FILE}" ]]; then
   PRE_HOOK_WIN="$(to_win "${PRE_HOOK}")"
   if [[ -f "${PRE_HOOK}" ]]; then
     TASK_DESC="${CODEBUDDY_TASK_DESC:-默认任务}"
-    result=$("${PY_CMD}" "${PRE_HOOK_WIN}" --task "${TASK_DESC}" --json --memory "${MEMORY_FILE_WIN}" --tree "${TREE_FILE_WIN}" 2>/dev/null || echo '{}')
+    # v2.13.3: stderr 捕获到临时文件（不再 2>/dev/null 丢弃），失败原因可定位
+    result=$("${PY_CMD}" "${PRE_HOOK_WIN}" --task "${TASK_DESC}" --json --memory "${MEMORY_FILE_WIN}" --tree "${TREE_FILE_WIN}" 2>"${HOOK_DIR}/pre-hook.err" || echo '{}')
+    PRE_HOOK_ERR=$(head -c 300 "${HOOK_DIR}/pre-hook.err" 2>/dev/null | tr '\r\n' ' ' | sed 's/"/'"'"'/g')
+    rm -f "${HOOK_DIR}/pre-hook.err"
     if [[ "${result}" != '{}' && "${result}" != '' ]]; then
       INJECTION=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; print(json.load(sys.stdin).get('injection',''))" 2>/dev/null || echo "")
       injected_cats=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); print(','.join(d.get('injected_categories',[])))" 2>/dev/null || echo "")
       sad_candidates=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); c=d.get('sad_candidates',[]); print(';'.join([x['name'] for x in c[:3]]))" 2>/dev/null || echo "")
+      [[ -n "${INJECTION}" ]] && python_branch_ok="yes"
     fi
   fi
 fi
 
-# ---- bash 兜底注入块（无 python 也要让 Agent 看到宪法核心，关键修复）----
+# ---- bash 兜底注入块（v2.13.3: 文案按真实原因动态化，不再固定写"无 python 环境"）----
 if [[ -z "${INJECTION}" ]]; then
   # 分类计数兜底（categories 为数组结构 "doc": [；技能对象内嵌的 "categories": [ 需排除）
   if [[ -f "${TREE_FILE}" ]]; then
     tree_categories=$(grep -o '"[a-z][a-z0-9_-]*": \[' "${TREE_FILE}" | grep -v '"categories":' | wc -l 2>/dev/null | tr -d '\r\n' || echo 0)
   fi
-  INJECTION="## ⚡ 宪法 Pre-hook 注入（bash 兜底版，无 python 环境）
+  # v2.13.3: 区分兜底触发原因
+  if [[ -z "${PY_CMD}" ]]; then
+    FALLBACK_REASON="no_python"
+    FALLBACK_TAG="bash 兜底版，无 python 环境"
+    FALLBACK_NOTE="⚠️ 当前环境无 python，请 Agent 用 Read 工具直接读取技能树文件后按分类定位技能（doc/code/browser/email/memory 等）。"
+  else
+    FALLBACK_REASON="python_branch_failed"
+    FALLBACK_TAG="bash 兜底版（python 分支失败，已降级）"
+    FALLBACK_NOTE="⚠️ python 存在但 pre-hook.py 分支失败（stderr 快照见 injected-context.json 的 debug.pre_hook_stderr），bash 兜底接管；请 Agent 用 Read 工具直接读取技能树文件后按分类定位技能（doc/code/browser/email/memory 等）。"
+  fi
+  INJECTION="## ⚡ 宪法 Pre-hook 注入（${FALLBACK_TAG}）
 
 > 本会话 Skills 宪法（v2.13）已启用。**任何专业任务开始前必须执行【宪法三查】并显式汇报**：
 > ① 查记忆：已读用户级 MEMORY.md 与项目记忆
@@ -78,7 +98,7 @@ $(cat "${MEMORY_FILE}" 2>/dev/null | head -80)
 ### 🗂️ 技能树
 - 路径: ${TREE_FILE_WIN}
 - 分类数: ${tree_categories}（bash 兜底计数）
-- ⚠️ 当前环境无 python，请 Agent 用 Read 工具直接读取技能树文件后按分类定位技能（doc/code/browser/email/memory 等）。"
+- ${FALLBACK_NOTE}"
 fi
 
 # ---- 写注入上下文文件（供 UserPromptSubmit hook 校验）----
@@ -93,7 +113,12 @@ cat > "${OUTPUT}" << EOF
   "injected_categories": "${injected_cats}",
   "sad_candidates": "${sad_candidates}",
   "python": "${PY_CMD:-none}",
+  "python_branch_ok": "${python_branch_ok}",
+  "fallback_reason": "${FALLBACK_REASON}",
   "injection_len": ${#INJECTION},
+  "debug": {
+    "pre_hook_stderr": "${PRE_HOOK_ERR}"
+  },
   "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF
