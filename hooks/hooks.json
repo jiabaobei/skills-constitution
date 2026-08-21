@@ -1,0 +1,37 @@
+{
+  "description": "skills-constitution — 宪法强制拦截钩子（SessionStart 注入 + UserPromptSubmit 校验）",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session-start.sh\" </dev/null >/dev/null 2>&1 &",
+            "timeout": 15,
+            "description": "宪法 SessionStart 钩子：注入记忆+技能树上下文，生成 injected-context.json"
+          },
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session-start.ps1\"",
+            "timeout": 15,
+            "description": "宪法 SessionStart (Windows 兜底)"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "编码|开发|python|git|push|爬虫|API|部署|Docker|数据库|Linux|shell|npm|pip|安装|配置|调试|测试|重构|优化|架构|系统|引擎|项目|仓库|文件操作|数据抓取|分析|报告|PDF|Excel|Word|PPT|图片|视频|生成|创作|写文章|写代码|做网站|建应用|设计|UI|UX|前端|后端|全栈|开发工具|IDE|VSCode|JetBrains|WebFetch|Bash|PowerShell|Edit|Write|Read|Glob|Grep|Skill|Agent|Team|automation|自动化|流水线|CI|CD|GitHub|Gitee|GitLab|Bitbucket|上传|推送|提交|发布|拉取|克隆|合并|分支|commit|merge|branch|pull request|pr|github actions|gitee actions|gitops|版本控制|远程仓库|origin|remote|ssh|token|API key|密钥|凭证|OAuth|权限|token|access_token|环境变量|secret|密钥管理|secrets|secrets management|密钥泄露|泄露|泄漏|安全检查|安全扫描|依赖扫描|漏洞扫描|安全审计|渗透测试|web安全|owasp|xss|csrf|sql注入|sql injection|代码审计|安全编码|安全规范|安全配置|安全基线|等保|护网|攻防|红队|蓝队|应急响应|入侵检测|IDS|IPS|防火墙|waf|vpn|堡垒机|零信任|IAM|身份认证|访问控制|RBAC|ABAC|最小权限|权限分离|职责分离|三权分立|审计日志|操作日志|访问日志|安全日志|合规审计|合规检查|SOX|ISO27001|等级保护|关键信息基础设施|数据安全|个人信息保护|GDPR|CCPA|隐私保护|数据脱敏|数据加密|传输加密|存储加密|密钥轮换|密钥生命周期|密钥托管|KMS|HSM|TPM|安全芯片|国密算法|SM2|SM3|SM4|商用密码|密码应用|密评|密改|信创|国产化|自主可控|技术中立|供应链安全|软件供应链|SBOM|开源合规|license合规|开源治理|安全开发|SDL|DevSecOps|安全左移|shift left|chaos engineering|混沌工程|故障注入|容错设计|韧性工程|resilience|高可用|容灾|备份恢复|RTO|RPO|SLA|SLO|SLI|错误预算|error budget|oncall|值班|告警|监控|可观测性|observability|prometheus|grafana|elk|loki|jaeger|zipkin|opentelemetry|skywalking|pinpoint|cat|apm|tracing|logging|metrics|event|事件|通知|告警收敛|告警风暴|根因分析|RCA|故障演练|故障复盘|事后分析|postmortem|blameless|文化|安全文化|质量文化|工程效能|研发效能|DORA|加速度|state of devops|四关键指标|变更失败率|部署频率|恢复时间|交付周期|lead time|MTTR|MTBF|MTTD|MTTA|flow|流动效率|value stream|价值流|精益|lean|敏捷|scrum|kanban|极限编程|XP|结对编程|测试驱动开发|TDD|行为驱动开发|BDD|领域驱动设计|DDD|整洁架构|clean architecture|六边形架构|hexagonal|洋葱架构|onion|分层架构|微服务|单体|模块化|组件化|服务化|中台|平台化|云原生|容器化|kubernetes|docker|serverless|FaaS|边缘计算|IoT|物联网|5G|区块链|Web3|元宇宙|AR|VR|MR|XR|数字孪生|数字线程|工业互联网|智能制造|智慧城市|智慧医疗|智慧教育|智慧金融|智慧能源|智慧交通|智慧农业|智慧物流|智慧零售|智慧政务|智慧园区|智慧社区|智慧家庭|车联网|自动驾驶|无人机|机器人|RPA|低代码|无代码|aPaaS|iPaaS|SaaS|PaaS|IaaS|DaaS|数据湖|数据仓库|数据集市|数据中台|大数据|实时计算|离线计算|流批一体|湖仓一体|HTAP|OLAP|OLTP|NoSQL|NewSQL|时序数据库|图数据库|向量数据库|搜索引擎|推荐系统|广告系统|交易系统|支付系统|清算系统|风控系统|信贷系统|核心系统|账务系统|CRM|ERP|SCM|HRM|OA|协同办公|视频会议|即时通讯|IM|邮件|日历|云盘|文档|表格|演示|设计|原型|思维导图|流程图|架构图|时序图|类图|ER图|状态图|活动图|用例图|部署图|组件图|包图|对象图|复合结构图|交互概览图|时间图|建模|UML|BPMN|ArchiMate|TOGAF|Zachman|FEAF|DoDAF|MODAF|NAF|UPDM|SysML|SoaML|SPEM|IFML|OCL|Alloy|TLA+|Z notation|VDM|B method|Event-B|COQ|Isabelle|Lean|Agda|Idris|F*|K framework|Maude|CASL|CafeOBJ|OBJ|ACT ONE|ACT TWO|LOTOS|CCS|CSP|ACP|π-calculus|ambient calculus|join calculus|fusion calculus|spi calculus|applied pi calculus|psi calculus|bigraph|reactive modules|charon|hybrid automata|timed automata|probabilistic automata|stochastic automata|markov chains|markov decision processes|game semantics|concurrency theory|process algebra|structural operational semantics|denotational semantics|axiomatic semantics|algebraic semantics|categorical semantics|domain theory|fixpoint theory|order theory|lattice theory|universal algebra|category theory|topos theory|homotopy type theory|univalent foundations|cubical type theory|observational type theory|extensional type theory|intensional type theory|predicative type theory|impredicative type theory|polymorphic type theory|dependent type theory|linear type theory|affine type theory|relevant type theory|ordered type theory|session types|effect types|refinement types|liquid types|haskell|scala|ocaml|f#|clojure|elixir|erlang|racket|scheme|common lisp|emacs lisp|vimscript|lua|perl|ruby|crystal|nim|zig|odin|vlang|hare|pony|ballerina|dart|kotlin|swift|objective-c|c++|c#|java|groovy|kotlin|scala|clojure|jython|jruby|golo|ceylon|xtend|frege|eta|ghcjs|purescript|elm|idris|agda|coq|lean|isabelle|f*|k framework|maude|tla+|pluscal|tlaplus|alloy|z notation|vdm|b method|event-b|why3|dafny|frama-c|acsl|spark|ada|misra-c|cert-c|autosar|misma|jsf|cwe|cve|cpe|cpe|cwe|cve|cvss|cwss|owasp|sans|nist|iso|iec|ieee|ansi|din|jis|gb|gjb|qj|cb|yb|tb|db|lb|nb|sb|qb|hb|wb|xb|zb|ab|bb|db|eb|fb|gb|hb|ib|jb|kb|lb|mb|nb|ob|pb|qb|rb|sb|tb|ub|vb|wb|xb|yb|zb",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/user-prompt-submit.sh\" \"$USER_PROMPT\" 2>/dev/null || exit 0",
+            "timeout": 10,
+            "description": "宪法 UserPromptSubmit 钩子：任务分类 + 注入校验"
+          }
+        ]
+      }
+    ]
+  }
+}

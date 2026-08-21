@@ -13,3 +13,23 @@ skill_index.pkl
 
 # 测试临时文件
 tests/tmp/
+
+
+# START Ruler Generated Files
+/.aider.conf.yml
+/.aider.conf.yml.bak
+/.clinerules
+/.clinerules.bak
+/.codex/config.toml
+/.codex/config.toml.bak
+/.goosehints
+/.goosehints.bak
+/.mcp.json
+/.mcp.json.bak
+/AGENTS.md
+/AGENTS.md.bak
+/CLAUDE.md
+/CLAUDE.md.bak
+/opencode.json
+/opencode.json.bak
+# END Ruler Generated Files

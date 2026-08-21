@@ -502,7 +502,9 @@ def main():
     # ---- 任务分类模式（零号条款双通道分流） ----
     if a.classify:
         task_text = ""
-        if a.input:
+        if a.task:
+            task_text = a.task
+        elif a.input:
             with open(a.input, encoding="utf-8") as f:
                 task_text = f.read()
         else:
