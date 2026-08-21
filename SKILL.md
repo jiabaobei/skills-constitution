@@ -11,6 +11,19 @@ description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，
 description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.12.0 adds synonym expansion, SAD loose semantic retrieval, Layer D semantic relevance check, and multi-skill DAG compatibility checks. v2.13.0 adds hooks-based enforcement, Ruler cross-platform distribution, pre-hook --task fix, and Windows path conversion."
 visibility: "public"
 agent_created: true
+hooks:
+  SessionStart:
+    - hooks:
+        - type: command
+          command: bash "C:/Users/HUAWEI/.workbuddy/skills/skills-constitution/hooks/session-start.sh"
+          timeout: 15
+          description: "宪法 SessionStart：会话启动时注入记忆+技能树上下文"
+  UserPromptSubmit:
+    - hooks:
+        - type: command
+          command: bash "C:/Users/HUAWEI/.workbuddy/skills/skills-constitution/hooks/user-prompt-submit.sh"
+          timeout: 10
+          description: "宪法 UserPromptSubmit：任务分类（简单→A跳过 | 专业→B强制校验）"
 ---
 
 # Skills 宪法（Skills Constitution）

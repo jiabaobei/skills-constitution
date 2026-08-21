@@ -1,13 +1,35 @@
 #!/usr/bin/env bash
 # UserPromptSubmit hook: 宪法分类器 + 注入校验
 # 简单任务 → 通道A跳过 | 专业任务 → 通道B强制校验
+# 输入支持两种方式:
+#   1. WorkBuddy hook: stdin JSON payload {"prompt": "..."}
+#   2. 直接调用: bash user-prompt-submit.sh "任务描述"
 set -uo pipefail
 
 PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT:-/c/Users/HUAWEI/.workbuddy/skills/skills-constitution}"
 PRE_HOOK="${PLUGIN_ROOT}/scripts/pre-hook.py"
 CONTEXT_FILE="${PLUGIN_ROOT}/hooks/injected-context.json"
-TASK_DESC="${1:-}"
+TASK_DESC=""
 
+# ---- 读取任务描述: 优先 stdin JSON(prompt 字段), 其次 $1 ----
+if [[ -n "${1:-}" ]]; then
+  TASK_DESC="${1}"
+else
+  # 读取 stdin JSON payload
+  read -r stdin_payload
+  if [[ -n "${stdin_payload}" ]]; then
+    TASK_DESC=$(echo "${stdin_payload}" | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    print(d.get('prompt', d.get('task', d.get('input', ''))).strip())
+except Exception:
+    print('')
+" 2>/dev/null)
+  fi
+fi
+
+# 无任务描述则放行
 if [[ -z "${TASK_DESC}" ]]; then
   exit 0
 fi
