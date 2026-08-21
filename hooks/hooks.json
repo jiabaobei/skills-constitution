@@ -1,5 +1,5 @@
 {
-  "description": "skills-constitution — 宪法强制拦截钩子（SessionStart 注入 + UserPromptSubmit 校验）",
+  "description": "skills-constitution — 宪法强制拦截钩子（SessionStart 注入 + UserPromptSubmit 校验）v2.13.2",
   "hooks": {
     "SessionStart": [
       {
@@ -7,15 +7,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session-start.sh\" </dev/null >/dev/null 2>&1 &",
-            "timeout": 15,
-            "description": "宪法 SessionStart 钩子：注入记忆+技能树上下文，生成 injected-context.json"
-          },
-          {
-            "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session-start.ps1\"",
-            "timeout": 15,
-            "description": "宪法 SessionStart (Windows 兜底)"
+            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session-start.sh\"",
+            "timeout": 30,
+            "description": "宪法 SessionStart 钩子 v2.13.2：注入记忆+技能树完整注入块到 stdout（前台执行保留输出）"
           }
         ]
       }
@@ -26,9 +20,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/user-prompt-submit.sh\" \"$USER_PROMPT\" 2>/dev/null || exit 0",
+            "command": "bash \"${CODEBUDDY_PLUGIN_ROOT}/hooks/user-prompt-submit.sh\" \"$USER_PROMPT\"",
             "timeout": 10,
-            "description": "宪法 UserPromptSubmit 钩子：任务分类 + 注入校验"
+            "description": "宪法 UserPromptSubmit 钩子 v2.13.2：任务分类 + 注入校验（保留退出码，拦截真实生效）"
           }
         ]
       }

@@ -5,6 +5,33 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.13.2] - 2026-08-21
+
+### 修复：宪法 hooks 未真正执行的三大根因
+
+**背景**：v2.13.0 上线后实测发现，Agent 上下文只注入了一行 `宪法上下文已注入: memory=1237字 tree=0分类`，技能树分类为 0、无任何可执行内容，宪法形同虚设。逐层排查确认三大根因并全部修复：
+
+#### 根因1：hook 环境 PATH 无 `python3`，技能树注入静默归零
+- `session-start.sh` / `user-prompt-submit.sh` 硬编码调用 `python3`，而平台 hook 进程的 PATH 不含 managed python → `2>/dev/null || echo 0` 把所有失败静默吞掉 → `tree_categories=0`、注入分类为空
+- **修复**：解释器检测 `python3 → python → py` 逐个尝试（`command -v`），全部缺失时降级到 bash 兜底注入
+
+#### 根因2（最致命）：脚本只输出一行统计，完整注入块从未进入 Agent 上下文
+- `pre-hook.py` 能生成 3500+ 字符的完整注入块（宪法三查要求 + 记忆层 + 技能树分类 + SAD 候选技能），但 `session-start.sh` 只 `echo` 了一行统计信息 → Agent 上下文里从来没有宪法实体内容，无从执行
+- **修复**：`session-start.sh` 把 `pre-hook.py` 生成的 `injection` 字段**完整输出到 stdout**（平台 hook 会注入 Agent 上下文）；无 python 环境用 bash 兜底注入宪法三查核心条款 + 记忆原文 + 技能树路径
+
+#### 根因3：UserPromptSubmit 拦截被 `|| exit 0` 中和，永不阻断
+- `hooks.json` 中钩子命令带 `|| exit 0`，脚本 `exit 1`（拦截）被强制转成 0 → 拦截机制永远不生效
+- **修复**：去掉 `|| exit 0`，保留真实退出码；SessionStart 去掉 `>/dev/null 2>&1 &` 后台丢输出，改为前台执行
+
+#### 其他修复
+- bash 兜底分类计数：grep 模式匹配数组结构 `"doc": [`（原 `{` 模式匹配不到）；排除技能对象内嵌 `"categories": [`；`tr -d '\r\n'` 防换行污染 JSON
+- `injected-context.json` 增加 `python` / `injection_len` 字段，便于排查注入是否成功
+
+#### 验证
+- 有 python3 环境：完整注入块（记忆+技能树+SAD 候选）✅，tree=14
+- 无 python 环境（模拟平台 hook PATH）：bash 兜底注入块 ✅，tree=14，JSON 合法
+- 分类器：专业任务放行（注入 ready）、简单任务放行 ✅
+
 ## [2.13.0] - 2026-08-21
 
 ### 重大更新：宪法强制拦截上线 — hooks + Ruler 跨平台分发

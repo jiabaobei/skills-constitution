@@ -11,6 +11,15 @@ PRE_HOOK="${PLUGIN_ROOT}/scripts/pre-hook.py"
 CONTEXT_FILE="${PLUGIN_ROOT}/hooks/injected-context.json"
 TASK_DESC=""
 
+# 解释器检测（v2.13.2: 兼容 hook 环境无 python3 的情况，找不到则降级放行）
+PY_CMD=""
+for c in python3 python py; do
+  if command -v "$c" >/dev/null 2>&1; then PY_CMD="$c"; break; fi
+done
+if [[ -z "${PY_CMD}" ]]; then
+  exit 0
+fi
+
 # ---- 读取任务描述: 优先 stdin JSON(prompt 字段), 其次 $1 ----
 if [[ -n "${1:-}" ]]; then
   TASK_DESC="${1}"
@@ -18,7 +27,7 @@ else
   # 读取 stdin JSON payload
   read -r stdin_payload
   if [[ -n "${stdin_payload}" ]]; then
-    TASK_DESC=$(echo "${stdin_payload}" | python3 -c "
+    TASK_DESC=$(echo "${stdin_payload}" | "${PY_CMD}" -c "
 import sys, json
 try:
     d = json.load(sys.stdin)
@@ -45,10 +54,10 @@ PRE_HOOK_WIN="$(to_win "${PRE_HOOK}")"
 CONTEXT_FILE_WIN="$(to_win "${CONTEXT_FILE}")"
 
 # 调用分类器判断任务类型（使用 --task 参数，不是 stdin）
-result=$(python3 "${PRE_HOOK_WIN}" --classify --task "${TASK_DESC}" --json 2>/dev/null || echo '{"task_type":"ambiguous"}')
+result=$("${PY_CMD}" "${PRE_HOOK_WIN}" --classify --task "${TASK_DESC}" --json 2>/dev/null || echo '{"task_type":"ambiguous"}')
 
 # 提取任务类型
-task_type=$(echo "${result}" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('task_type','ambiguous'))" 2>/dev/null || echo "ambiguous")
+task_type=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); print(d.get('task_type','ambiguous'))" 2>/dev/null || echo "ambiguous")
 
 case "${task_type}" in
   "simple")
@@ -58,7 +67,7 @@ case "${task_type}" in
   "professional"|"ambiguous")
     # 专业/模糊任务：检查注入上下文
     if [[ -f "${CONTEXT_FILE}" ]]; then
-      status=$(python3 -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
+      status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
       if [[ "${status}" == "ready" ]]; then
         exit 0
       fi
