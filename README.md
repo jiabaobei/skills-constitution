@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.12.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.13.3-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.12.0
+## Skills 宪法（Skills Constitution）v2.13.3
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -74,7 +74,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.12.0）
+## 📋 宪法条款（v2.13.3）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
@@ -270,6 +270,25 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.13.3（2026-08-21）— 失败可定位 + 兜底文案动态化
+- **python 分支 stderr 不再被丢弃**：捕获进 `debug.pre_hook_stderr`（injected-context.json），失败原因可定位
+- **兜底文案按真实原因动态化**：`fallback_reason` 区分「无 python」vs「python 分支失败」，bash 降级时给用户准确提示
+- **injected-context.json 新增字段**：`python_branch_ok` / `fallback_reason`，供 UserPromptSubmit 钩子诊断
+- 技能树索引重建：total=402
+
+### v2.13.2（2026-08-21）— hooks 执行链路三大根因修复 + 版本号修正
+- **解释器检测修复**：`python3/python/py` 逐个尝试，不再硬编码 python3（hook 环境 PATH 无 python3 导致 skill_tree.json 计数归零）
+- **注入块输出到 stdout**：pre-hook.py 生成的完整注入块改为输出到 stdout，平台才能注入 Agent 上下文（此前只有统计行，无任何可执行内容）
+- **版本号修正**：SKILL.md frontmatter / description_zh / description_en 三处版本标注统一为 v2.13.2
+- 技能树索引重建：total=401
+
+### v2.13.0（2026-08-21）— hooks 强制拦截上线
+- **hooks.json 注册钩子**：`SessionStart`（启动注入）+ `UserPromptSubmit`（提交校验），WorkBuddy settings.json 一键注册
+- **Ruler 跨平台分发**：一键将宪法安装到 10 个主流平台（Claude Code / Cursor / Windsurf / Cline / ChatGPT / Gemini / WorkBuddy / 扣子 / 文心 / 通义）
+- **pre-hook --task 参数修复**：`bash user-prompt-submit.sh "$USER_PROMPT"` 支持直接传参（不再依赖 stdin JSON）
+- **Windows 路径转换**：`to_win()` 函数将 Git Bash `/c/...` → `C:/...`，解决 python 在 Windows 下不认 `/c/` 路径的问题
+- 完整细节见 [CHANGELOG.md](CHANGELOG.md)
 
 ### v2.12.0（2026-08-19）— SkillWeaver 启发：语义增强 + 防蒙混升级
 - **任务同义词扩展**（`TASK_SYNONYM_MAP`）：口语表达不再漏判——"我要把代码传上去"（无 git 关键词）也能命中 code 必需分类，Layer C 恢复生效
