@@ -651,6 +651,15 @@
         ]
       },
       {
+        "name": "constitution-release",
+        "description": "Skills 宪法（skills-constitution）标准版本发布流程的一键固化。当用户说「改宪法版本」「宪法发版」「发布 v2.x.x」「跑一遍发布流程」「双端推送」「重建技能树索引」「宪法版本升级」时使用——自动完成：改版本→双场景验证→重建索引→双端推送。也适用于任何「改版本号→测试→双端 git 推送→重建索引」模式的仓库发版。",
+        "version": "1.0.0",
+        "categories": [
+          "meta",
+          "code"
+        ]
+      },
+      {
         "name": "deprecation-and-migration",
         "description": "Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when deciding whether to maintain or sunset existi",
         "version": "0.0.0",
@@ -5019,6 +5028,15 @@
         ]
       },
       {
+        "name": "constitution-release",
+        "description": "Skills 宪法（skills-constitution）标准版本发布流程的一键固化。当用户说「改宪法版本」「宪法发版」「发布 v2.x.x」「跑一遍发布流程」「双端推送」「重建技能树索引」「宪法版本升级」时使用——自动完成：改版本→双场景验证→重建索引→双端推送。也适用于任何「改版本号→测试→双端 git 推送→重建索引」模式的仓库发版。",
+        "version": "1.0.0",
+        "categories": [
+          "meta",
+          "code"
+        ]
+      },
+      {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
         "version": "3.4.4",
@@ -5059,7 +5077,7 @@
       {
         "name": "skills-constitution",
         "description": "宪法 UserPromptSubmit：任务分类（简单→A跳过 | 专业→B强制校验）",
-        "version": "2.13.2",
+        "version": "2.13.3",
         "categories": [
           "meta"
         ]
@@ -5195,10 +5213,10 @@
       }
     ]
   },
-  "total": 401,
-  "version": "2.13.2",
-  "generated_at": "2026-08-21T17:50:08.950422",
+  "total": 402,
+  "version": "2.13.3",
+  "generated_at": "2026-08-21T18:07:43.515027",
   "skills_dir": "C:\\Users\\HUAWEI/.workbuddy/skills",
   "libs_count": 0,
-  "total_entries": 401
+  "total_entries": 402
 }

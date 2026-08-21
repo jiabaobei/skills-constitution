@@ -5,9 +5,14 @@
   "memory_len": 1237,
   "tree_file": "c:/Users/HUAWEI/.workbuddy/skills/skills-constitution/skill_tree.json",
   "tree_categories": 14,
-  "injected_categories": "doc,code,browser,email,memory",
-  "sad_candidates": "card-weekly-report;jm-jsjkxyjs02-cyr-406__skillhub;kdocs-skill",
-  "python": "python3",
-  "injection_len": 3266,
-  "timestamp": "2026-08-21T09:50:22Z"
+  "injected_categories": "",
+  "sad_candidates": "",
+  "python": "none",
+  "python_branch_ok": "no",
+  "fallback_reason": "no_python",
+  "injection_len": 1360,
+  "debug": {
+    "pre_hook_stderr": ""
+  },
+  "timestamp": "2026-08-21T10:07:33Z"
 }
