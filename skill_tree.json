@@ -55,7 +55,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.28.1",
+        "version": "2.31.0",
         "categories": [
           "code",
           "doc"
@@ -73,7 +73,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -397,19 +397,6 @@
         ]
       },
       {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
         "name": "skills-security-check",
         "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
         "version": "1.0.0",
@@ -499,7 +486,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -607,7 +594,7 @@
       {
         "name": "cloudbase",
         "description": "Use this skill when you develop, design, build, deploy, debug, migrate, or troubleshoot CloudBase (腾讯云开发, 云开发, TCB, 微信云开发) projects. Covers Web, 微信小程序, 小程序, uni-app, mobile (iOS, Android, Flutter, Rea",
-        "version": "2.28.1",
+        "version": "2.31.0",
         "categories": [
           "code",
           "doc"
@@ -736,6 +723,14 @@
         "name": "git-workflow-and-versioning",
         "description": "Structures git workflow practices. Use when making any code change. Use when committing, branching, resolving conflicts, or when you need to organize work across multiple parallel streams. Use when cu",
         "version": "0.0.0",
+        "categories": [
+          "code"
+        ]
+      },
+      {
+        "name": "github-gitee-sync",
+        "description": "Push git repository to both GitHub and Gitee mirrors. Use when user asks to sync/push/deploy a project to GitHub and Gitee, or when syncing between platforms. Handles token auth, IP acceleration, tag ",
+        "version": "1.0.0",
         "categories": [
           "code"
         ]
@@ -914,19 +909,6 @@
         ]
       },
       {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
         "name": "source-driven-development",
         "description": "Grounds every implementation decision in official documentation. Use when you want authoritative, source-cited code free from outdated patterns. Use when building with any framework or library where c",
         "version": "0.0.0",
@@ -1001,7 +983,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -1131,7 +1113,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -1380,19 +1362,6 @@
         ]
       },
       {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
         "name": "smooth-browser",
         "description": "PREFERRED BROWSER - Browser for AI agents to carry out any task on the web. Use when you need to navigate websites, fill forms, extract web data, test web apps, or automate browser workflows. Trigger ",
         "version": "0.1.0",
@@ -1556,7 +1525,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -1790,19 +1759,6 @@
         "version": "0.0.0",
         "categories": [
           "memory"
-        ]
-      },
-      {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
         ]
       },
       {
@@ -2977,6 +2933,14 @@
         ]
       },
       {
+        "name": "smart-free-model-router",
+        "description": "",
+        "version": "0.0.0",
+        "categories": [
+          "general"
+        ]
+      },
+      {
         "name": "social-responsibility-eval",
         "description": "|",
         "version": "1.0.0",
@@ -3155,7 +3119,7 @@
       {
         "name": "ui-design-guide__skillhub",
         "description": "Use when users need visual direction, interface hierarchy, layout decisions, design specifications, or prototypes before implementing a Web or mini program UI.",
-        "version": "2.28.1",
+        "version": "2.31.0",
         "categories": [
           "general"
         ]
@@ -3388,7 +3352,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -3746,19 +3710,6 @@
         ]
       },
       {
-        "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
-        "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
-        ]
-      },
-      {
         "name": "skills-security-check",
         "description": "腾讯云鼎实验室出品，Skill安全审查工具。对用户指定的skill.md文件及其配套的文档、程序、脚本等进行全面安全审计，确保引用安全",
         "version": "1.0.0",
@@ -3882,7 +3833,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -4007,7 +3958,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -4463,7 +4414,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -4912,7 +4863,7 @@
       {
         "name": "wps-office-suite__skillhub",
         "description": "WPS Office 全家桶 - 四引擎（WPS/MS Office/LibreOffice/纯Python）智能识别用户已安装软件，纯Python模式支持排序/筛选/图表/公式/统计，含文档模板（代码生成）、最佳实践案例、故障排除大章（20+避坑+15 FAQ+15错误ID 统一索引）、自动重试、硬件自适应、环境自检、Skill更新提醒；v4.0新增：Word→PPT一键生成、Excel自然语言",
-        "version": "4.6.1",
+        "version": "4.7.0",
         "categories": [
           "browser",
           "code",
@@ -5070,7 +5021,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -5107,15 +5058,10 @@
       },
       {
         "name": "skills-constitution",
-        "description": "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 ",
-        "version": "2.12.0",
+        "description": "宪法 UserPromptSubmit：任务分类（简单→A跳过 | 专业→B强制校验）",
+        "version": "2.13.2",
         "categories": [
-          "meta",
-          "memory",
-          "browser",
-          "code",
-          "doc",
-          "file"
+          "meta"
         ]
       },
       {
@@ -5164,7 +5110,7 @@
       {
         "name": "dknowc-official-doc-writer-skillhub__skillhub",
         "description": "深知公文写作，是面向单位办公室、综合岗、文秘、材料岗和企事业单位用户的正式材料写作助手。核心用于公文写作、正式文书起草、汇报材料整理、讲话稿撰写、工作总结和方案报告生成，帮助用户把零散想法、会议记录、工作素材、调研资料或初稿，整理成结构清楚、表达稳妥、逻辑完整、可直接修改使用的正式文稿。支持通知、请示、报告、函、复函、批复、会议纪要、通报、通告、公告、意见、方案、总结、管理办法、汇报材料、发言稿、",
-        "version": "3.4.2",
+        "version": "3.4.4",
         "categories": [
           "meta",
           "browser",
@@ -5249,10 +5195,10 @@
       }
     ]
   },
-  "total": 399,
-  "version": "2.12.0",
-  "generated_at": "2026-08-19T22:02:00.627454",
+  "total": 401,
+  "version": "2.13.2",
+  "generated_at": "2026-08-21T17:50:08.950422",
   "skills_dir": "C:\\Users\\HUAWEI/.workbuddy/skills",
   "libs_count": 0,
-  "total_entries": 399
+  "total_entries": 401
 }
