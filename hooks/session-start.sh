@@ -114,6 +114,37 @@ $(cat "${MEMORY_FILE}" 2>/dev/null | head -80)
 fi
 
 # ---- 写注入上下文文件（供 UserPromptSubmit hook 校验）----
+# v2.16.0: 有 python 时用 json.dump 写（修复 heredoc 反斜杠/引号转义导致 JSON 非法，
+# 进而 UserPromptSubmit 钩子读不到 status -> 误报"宪法拦截"）；无 python 时保留 heredoc（值简单无风险）
+if [[ -n "${PY_CMD}" ]]; then
+  OUTPUT_WIN="$(to_win "${OUTPUT}")"
+  export CONST_MEMORY_FILE="${MEMORY_FILE_WIN}"
+  export CONST_TREE_FILE="${TREE_FILE_WIN}"
+  export CONST_INJECTED_CATS="${injected_cats}"
+  export CONST_SAD_CANDS="${sad_candidates}"
+  export CONST_PRE_HOOK_ERR="${PRE_HOOK_ERR}"
+  "${PY_CMD}" -c "
+import json, os
+data = {
+    'status': 'ready',
+    'hook': 'SessionStart',
+    'memory_file': os.environ.get('CONST_MEMORY_FILE', ''),
+    'memory_len': ${memory_len},
+    'tree_file': os.environ.get('CONST_TREE_FILE', ''),
+    'tree_categories': ${tree_categories:-0},
+    'injected_categories': os.environ.get('CONST_INJECTED_CATS', ''),
+    'sad_candidates': os.environ.get('CONST_SAD_CANDS', ''),
+    'python': '${PY_CMD:-none}',
+    'python_branch_ok': '${python_branch_ok}',
+    'fallback_reason': '${FALLBACK_REASON}',
+    'injection_len': ${#INJECTION},
+    'debug': {'pre_hook_stderr': os.environ.get('CONST_PRE_HOOK_ERR', '')},
+    'timestamp': '$(date -u +%Y-%m-%dT%H:%M:%SZ)',
+}
+with open(r'${OUTPUT_WIN}', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+"
+else
 cat > "${OUTPUT}" << EOF
 {
   "status": "ready",
@@ -134,6 +165,7 @@ cat > "${OUTPUT}" << EOF
   "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF
+fi
 
 # ---- 关键修复2: 完整注入块输出到 stdout（平台注入 Agent 上下文）----
 echo "${INJECTION}"

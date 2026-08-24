@@ -33,3 +33,8 @@ tests/tmp/
 /opencode.json
 /opencode.json.bak
 # END Ruler Generated Files
+
+# 运行时产物（不入库）
+hooks/injected-context.json
+.constitution-violations.json
+.constitution-simple

@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.16.0] - 2026-08-24
+
+### Token 瘦身：description 只留触发条件 + SKILL.md 渐进式披露 + 注入 JSON 修复
+**背景**：复盘确认项目在"增加 token"方向上只进不出——description 2069 字符中 90% 是版本历史（每次对话扫描技能列表都付 ~2K token）；SKILL.md 膨胀到 682 行/42KB（每次加载全付）；injected-context.json 用 heredoc 手写，PRE_HOOK_ERR 含反斜杠导致 JSON 非法 → UserPromptSubmit 钩子读不到 status → 每次专业任务误报"【宪法拦截】"。
+
+#### 修复
+- **description 瘦身**：2069 字符 → ~415 字符，版本历史全移出（放 CHANGELOG），只留触发条件（文章公式：[做什么]+[怎么做]+[什么时候用]）。**每次对话省 ~1.8K token**
+- **SKILL.md 渐进式披露**：平台映射表/安装与验证/门禁详解拆到 `reference/`（platform-mapping.md 51 行 / installation.md 101 行 / gate-details.md 132 行）；主文件加"参考文档（按需加载）"契约式引用。**SKILL.md 682 行/42KB → 327 行/8.4KB（省 80%）**
+- **修复 injected-context.json JSON 转义**：session-start.sh 有 python 时改用 `json.dump`（环境变量传值防 shell 注入），无 python 保留 heredoc 兜底。修复后 UserPromptSubmit 钩子能正常读到 status，不再误报拦截
+- **注入去重确认**：user-prompt-submit.sh 只校验不注入，SessionStart 注入一次，无重复
+- 版本史迁移：SKILL.md description 不再堆版本历史，统一看 CHANGELOG.md
+
+#### 验证（本机实测）
+- [x] description 415 字符（原 2069）；SKILL.md 327 行/8.4KB（原 682 行/42KB）
+- [x] 六条宪法/第五条 v2.15 排除已装/快速注入模板/违规判定 全部保留
+- [x] reference/ 三文件生成，主文件契约引用 3 处
+- [x] session-start.sh 运行后 injected-context.json 合法（json.load 通过），bash -n 语法通过
+- [x] 版本全文件核查 2.16.0
+
 ## [2.15.0] - 2026-08-24
 
 ### 修复：推荐板块把本地已装技能列入推荐（第五条缺口 + Layer E 硬校验）
@@ -367,9 +386,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.14.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.15.0...HEAD
+[2.16.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.16.0
 [2.15.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.15.0
-[2.14.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.14.0
 [2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0

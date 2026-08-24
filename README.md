@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.15.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.16.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.15.0
+## Skills 宪法（Skills Constitution）v2.16.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -74,7 +74,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.15.0）
+## 📋 宪法条款（v2.16.0）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
@@ -270,6 +270,12 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.16.0（2026-08-24）— Token 瘦身
+- **description 瘦身**：2069 字符 → ~415 字符，版本历史移出（放 CHANGELOG），只留触发条件——每次对话省 ~1.8K token
+- **SKILL.md 渐进式披露**：平台映射表/安装验证/门禁详解拆 `reference/` 三文件，主文件 682 行/42KB → 327 行/8.4KB（省 80%），契约式引用按需加载
+- **修复 injected-context.json JSON 转义**（heredoc 反斜杠导致钩子误报"宪法拦截"），改用 json.dump
+- 注入去重确认：SessionStart 注入一次，无重复
 
 ### v2.15.0（2026-08-24）— 推荐排除已装技能
 - **第五条补硬性条款**："推荐候选必须排除本地已装技能"——推荐前先核对本地已装清单（`ls ~/.workbuddy/skills/`），已装项一律不推（含"搜索结果恰好命中已装仓库"场景），仅可作背景说明
