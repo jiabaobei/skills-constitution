@@ -5,6 +5,21 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.18.0] - 2026-08-24
+
+### 新增：使用者建技能树指南（skill-tree-guide.md）+ 重建命令统一
+**背景**：复盘"别人用 skills 宪法时怎么建技能树"——文档 7 处提到 build_skill_tree.py 但命令分散、裸命令无 SKILLS_DIR、缺"必须重建"警告、缺自检/FAQ。使用者照 README 跑会扫默认目录，技能不在树里 → 查树即"无匹配"（与作者快照问题同源）。
+
+#### 新增/修复
+- **新增 `reference/skill-tree-guide.md`**：为什么必须重建（作者快照 vs 你的技能）→ 完整命令（SKILLS_DIR/BINARIES_DIR + WorkBuddy/Claude Code/Cursor/Windows 四平台示例）→ 3 步自检确认（自检输出/total 对比/skills_dir 字段）→ 5 条 FAQ（total 不变/general 分类/Windows 路径/自动重建/改技能后重建）
+- **SKILL.md**：技能树章节改"使用者安装后必须重建"+ Load 指向指南；参考文档列表新增第 4 项
+- **README / reference/installation.md**：重建命令统一带 `SKILLS_DIR="$HOME/.workbuddy/skills"`（原裸命令会扫默认目录），并指向指南；验证章节补"应出现 ✓ 自检通过、total ≈ 实际技能数"
+
+#### 验证（本机实测）
+- [x] skill-tree-guide.md 生成（30+ 行，含命令/平台/自检/FAQ）
+- [x] SKILL.md / README / installation 三处命令带 SKILLS_DIR 且指向指南
+- [x] 版本全文件核查 2.18.0
+
 ## [2.17.0] - 2026-08-24
 
 ### 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身 + semantic_index 可选标注
@@ -402,9 +417,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.16.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.17.0...HEAD
+[2.18.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.18.0
 [2.17.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.17.0
-[2.16.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.16.0
 [2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0

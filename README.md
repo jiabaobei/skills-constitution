@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.17.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.18.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.17.0
+## Skills 宪法（Skills Constitution）v2.18.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -43,8 +43,8 @@ git clone https://github.com/jiabaobei/skills-constitution.git
 # 安装技能
 cp -r skills-constitution ~/.workbuddy/skills/skills-constitution/
 
-# 生成技能树索引
-python scripts/build_skill_tree.py
+# 重建技能树（必做：生成你自己的索引，替换作者快照；完整命令/平台差异见 reference/skill-tree-guide.md）
+SKILLS_DIR="$HOME/.workbuddy/skills" python scripts/build_skill_tree.py
 ```
 
 ### Claude Code
@@ -74,7 +74,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.17.0）
+## 📋 宪法条款（v2.18.0）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
@@ -111,7 +111,7 @@ cp SKILL.md .clinerules
 | 💰 业务专用类 | 金融、法律、电商、营销 | `配网规划评审器`, `wind-finance` |
 | 🔧 通用工具类 | 文件操作、进程管理、环境配置 | `file-ops`, `process-manager` |
 
-**完整索引**：仓库内 [SKILL_TREE.md](SKILL_TREE.md) / [skill_tree.json](skill_tree.json) 为**作者快照（示例）**；使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成**自己的**技能树（或用平台自身能力清单）
+**完整索引**：仓库内 [SKILL_TREE.md](SKILL_TREE.md) / [skill_tree.json](skill_tree.json) 为**作者快照（示例）**；使用者在自己的环境运行 `scripts/build_skill_tree.py` 生成**自己的**技能树（或用平台自身能力清单）。**安装后必须重建**——完整命令（含 SKILLS_DIR）/平台差异/自检/FAQ 见 `reference/skill-tree-guide.md`
 
 ---
 
@@ -270,6 +270,10 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.18.0（2026-08-24）— 使用者建技能树指南
+- **新增 `reference/skill-tree-guide.md`**：为什么必须重建 / 完整命令（SKILLS_DIR+BINARIES_DIR，四平台）/ 3 步自检 / 5 条 FAQ
+- **重建命令统一带 SKILLS_DIR**（README / installation 原裸命令会扫默认目录），SKILL.md 技能树章节改"安装后必须重建"
 
 ### v2.17.0（2026-08-24）— 技能树重建 + 注入记忆瘦身
 - **技能树重建**：本机跑 `build_skill_tree.py`，**402 → 757 技能全入库**（替换 HUAWEI 快照，`skills_dir` 指向本机），修"查树即无匹配"

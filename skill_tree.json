@@ -4250,7 +4250,7 @@
       {
         "name": "skills-constitution",
         "description": "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。",
-        "version": "2.17.0",
+        "version": "2.18.0",
         "categories": [
           "meta",
           "memory",
@@ -7273,7 +7273,7 @@
     ]
   },
   "total": 757,
-  "version": "2.17.0",
+  "version": "2.18.0",
   "generated_at": "2026-08-24T17:36:28.563563",
   "skills_dir": "C:/Users/user/.workbuddy/skills",
   "libs_count": 3,

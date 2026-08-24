@@ -9,8 +9,9 @@
 ### WorkBuddy / CodeBuddy（用户级，跨项目生效）
 ```bash
 cp -r skills-constitution ~/.workbuddy/skills/skills-constitution/
-# 生成技能树索引（可选，建议定期运行）
-python scripts/build_skill_tree.py
+# 重建技能树（必做：生成你自己的索引，替换作者快照；SKILLS_DIR 指向你的技能根目录）
+SKILLS_DIR="$HOME/.workbuddy/skills" python scripts/build_skill_tree.py
+# 完整命令/平台差异/自检/FAQ 见 reference/skill-tree-guide.md
 ```
 
 **WorkBuddy 钩子注册（v2.14.0 必读）**：WorkBuddy 的钩子注册点在 `~/.workbuddy/settings.json` 的 `hooks` 字段（**不是**技能目录里的 `hooks/hooks.json`——那是 CodeBuddy/Claude Code 插件机制用的）。装完技能后需手动把以下三事件写入 settings.json（路径换成你的实际 python.exe 与技能路径；改完**重启 WorkBuddy 生效**）：
@@ -93,10 +94,10 @@ cp SKILL.md .cursor/rules/skills-constitution.md
 # 检查技能是否加载
 ls ~/.workbuddy/skills/skills-constitution/SKILL.md
 
-# 生成技能树索引
-python scripts/build_skill_tree.py
+# 重建技能树索引（SKILLS_DIR 指向你的技能根目录）
+SKILLS_DIR="$HOME/.workbuddy/skills" python scripts/build_skill_tree.py
 
-# 查看索引
+# 查看索引（应出现 "✓ 自检通过"；total 应 ≈ 你的实际技能数）
 cat skill_tree.json | jq '.total'
 ```
 

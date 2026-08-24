@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.17.0
+version: 2.18.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,9 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.17.0（当前）** — 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身（任务相关片段，42K→~1K）+ semantic_index 可选标注。
+> **v2.18.0（当前）** — 新增使用者建技能树指南（reference/skill-tree-guide.md：完整命令含 SKILLS_DIR / 平台差异 / 自检 / FAQ）；README/installation 重建命令统一带 SKILLS_DIR 并指向指南
+>
+> **v2.17.0** — 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身（任务相关片段，42K→~1K）+ semantic_index 可选标注。
 >
 > **v2.16.0** — Token 瘦身：description 只留触发条件（省 ~1.8K token/会话）；SKILL.md 渐进式披露（平台映射/安装/门禁详解拆 `reference/`，主文件 42KB→~20KB）；修复 injected-context.json JSON 转义。
 >
@@ -229,7 +231,7 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 └── 🔧 通用工具类（文件操作/进程管理/环境配置）
 ```
 
-**完整索引**：`skill_tree.json` 为作者快照（示例）；使用者运行 `scripts/build_skill_tree.py` 生成自己的索引。**精选技能**：`registry.json`。
+**完整索引**：`skill_tree.json` 为作者快照（示例）；**使用者安装后必须重建自己的技能树**（完整命令/平台差异/自检见 → Load `reference/skill-tree-guide.md`）。**精选技能**：`registry.json`。
 
 ---
 
@@ -304,6 +306,7 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 - 跨平台适配 / 平台映射表 → Load `reference/platform-mapping.md`
 - 安装 / 钩子注册 / 验证 → Load `reference/installation.md`
 - 门禁校验机制（constitution-check 用法 / hooks / 设计要点）→ Load `reference/gate-details.md`
+- **使用者建技能树指南（完整命令 / 平台差异 / 自检 / FAQ）→ Load `reference/skill-tree-guide.md`**
 
 > 以上为**渐进式披露**：主文件只含核心条款，细节按需加载，控制 token。
 
