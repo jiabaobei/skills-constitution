@@ -5,6 +5,29 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.14.0] - 2026-08-24
+
+### 修复："假装查技能"漏洞闭环（WorkBuddy 宿主钩子）
+**背景**：复盘发现 Agent 可以"口头假装查了技能树然后说无匹配"，旧门禁拦不住——UserPromptSubmit 只重置状态、PreToolUse 只查状态文件是否 PASS（旧 PASS 一次通过、后续所有 Write/Edit 永久放行）、Stop 校验只软提示不记录。
+
+#### 修复
+- **新增 `scripts/constitution-gate.py`（v2.14.0）**：WorkBuddy settings.json 钩子的正式实现，三事件：
+  - `PreToolUse` 新鲜度校验：step1 的 ts 必须 ≥ 本任务 UserPromptSubmit 写入的 `reset_ts`，旧任务 PASS 不再赦免（exit 2 阻断 + 指引如何合规通过）
+  - `Stop` 违规硬记录：校验最终回复（`--step 1 --strict --task <last_task>`，Layer C 任务相关技能命中），FAIL 写入 `.constitution-violations.json`（累计计数 + 时间 + 原因 + 任务），PASS 清空违规标记
+  - `UserPromptSubmit` 违规警告注入：有违规记录时输出到 stdout（平台注入 Agent 上下文），下个任务开头 Agent 即见"上轮假查被抓"警告
+- **去掉 HUAWEI 硬编码**：`hooks/session-start.sh`、`hooks/user-prompt-submit.sh`、SKILL.md frontmatter 三处 `PLUGIN_ROOT` 改为 `CODEBUDDY_PLUGIN_ROOT` 环境变量优先 + 脚本自定位兜底；session-start 定位失败报错退出、user-prompt-submit 定位失败静默放行（fail-open）
+- **SKILL.md frontmatter 移除 hooks 块**：跨平台仓库不再写死机器路径；WorkBuddy 钩子改走 `~/.workbuddy/settings.json`（见安装章节），CodeBuddy 走 `hooks/hooks.json`
+- **文档补齐**：安装章节新增 WorkBuddy settings.json 三步注册示例；README 改版说明；skill_tree.json version 同步
+- **验证中发现并修复**：
+  - `scripts/lib/text.py`：`read_input` 支持 `-` 显式 stdin（原 `--input -` 会 FileNotFoundError——**v2.11.0 遗留 bug，Stop 钩子校验因此从未真正生效**，是"假查从没被 Stop 拦过"的根因之一）
+  - `hooks/session-start.sh`：内联 python 解析改 `printf` + generator（`echo` 对反斜杠/横线开头不安全、嵌套方括号偶发解析问题）；`rm -f pre-hook.err` 容忍失败（部分沙箱拦截 rm）
+
+#### 验证（本机实测）
+- [x] `bash -n` 两个 .sh 语法通过；gate.py 三事件模拟运行（UserPromptSubmit 重置+警告注入 / PreToolUse 新鲜度拦截 / Stop 违规记录）
+- [x] PreToolUse 新鲜度：旧 PASS 状态（ts < reset_ts）→ 阻断；本任务内新 PASS → 放行
+- [x] Stop：假查文本（无技能名）→ 违规计数 +1；合规文本（含三查+技能名）→ 清零
+- [x] skill_tree.json / SKILL.md / README / CHANGELOG 版本号全文件核查一致
+
 ## [2.13.3] - 2026-08-21
 
 ### 修复：python 分支失败原因可定位 + 兜底文案动态化
@@ -325,7 +348,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.12.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.13.3...HEAD
+[2.14.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.14.0
+[2.13.3]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.13.3
 [2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0

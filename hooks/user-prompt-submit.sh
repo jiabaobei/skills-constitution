@@ -6,7 +6,16 @@
 #   2. 直接调用: bash user-prompt-submit.sh "任务描述"
 set -uo pipefail
 
-PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT:-/c/Users/HUAWEI/.workbuddy/skills/skills-constitution}"
+# v2.14.0: 去掉 HUAWEI 硬编码——环境变量优先，缺失时按脚本位置自定位；定位失败静默放行（fail-open，不卡任务）
+if [[ -n "${CODEBUDDY_PLUGIN_ROOT:-}" ]]; then
+  PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT}"
+else
+  _SK_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  PLUGIN_ROOT="$(dirname "${_SK_SCRIPT_DIR}")"
+fi
+if [[ ! -f "${PLUGIN_ROOT}/SKILL.md" ]]; then
+  exit 0
+fi
 PRE_HOOK="${PLUGIN_ROOT}/scripts/pre-hook.py"
 CONTEXT_FILE="${PLUGIN_ROOT}/hooks/injected-context.json"
 TASK_DESC=""

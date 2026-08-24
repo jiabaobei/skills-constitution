@@ -1,34 +1,26 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"；v2.12.0 SkillWeaver 启发改版：任务同义词扩展（口语表达如"把代码传上去"也能命中 git 必需分类）+ SAD 宽松语义检索注入 top-K 候选（零依赖 token 重叠打分）+ Layer D 语义相关性校验（防引用与任务无关技能蒙混）+ 多技能编排兼容性检查（registry.json input/output schema）+ 可选语义向量索引（semantic_index.py，sentence-transformers 可选依赖）+ 修复分类子串误杀（code 不再命中 encode）；v2.13.0 强制拦截上线：hooks.json 注册 SessionStart/UserPromptSubmit 钩子，ruler apply 一键分发到 10 个平台，pre-hook --task 参数修复 + Windows 路径转换。v2.13.2 版本号修正 + 改版说明补齐（v2.13.1 三大 hooks 修复：无 python3 技能树归零 / 注入块未输出 stdout / || exit 0 中和拦截）。v2.13.3 失败可定位：python 分支 stderr 不再被丢弃，捕获进 debug.pre_hook_stderr；兜底文案按真实原因动态化（fallback_reason 区分无 python / python 分支失败），injected-context.json 增加 python_branch_ok 字段。"
-version: 2.13.3
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"；v2.12.0 SkillWeaver 启发改版：任务同义词扩展（口语表达如"把代码传上去"也能命中 git 必需分类）+ SAD 宽松语义检索注入 top-K 候选（零依赖 token 重叠打分）+ Layer D 语义相关性校验（防引用与任务无关技能蒙混）+ 多技能编排兼容性检查（registry.json input/output schema）+ 可选语义向量索引（semantic_index.py，sentence-transformers 可选依赖）+ 修复分类子串误杀（code 不再命中 encode）；v2.13.0 强制拦截上线：hooks.json 注册 SessionStart/UserPromptSubmit 钩子，ruler apply 一键分发到 10 个平台，pre-hook --task 参数修复 + Windows 路径转换。v2.13.2 版本号修正 + 改版说明补齐（v2.13.1 三大 hooks 修复：无 python3 技能树归零 / 注入块未输出 stdout / || exit 0 中和拦截）。v2.13.3 失败可定位：python 分支 stderr 不再被丢弃，捕获进 debug.pre_hook_stderr；兜底文案按真实原因动态化（fallback_reason 区分无 python / python 分支失败），injected-context.json 增加 python_branch_ok 字段。v2.14.0 假查漏洞修复 + 跨机器可用：constitution-gate.py 正式回归仓库（WorkBuddy settings.json 钩子实现），新增 PreToolUse 新鲜度校验（step1 必须在本任务内 PASS，防旧 PASS 永久放行）、Stop 违规硬记录（.constitution-violations.json 累计）+ UserPromptSubmit 违规警告注入，形成"事前拦+事后记+下次警"闭环；hooks/ 两个 .sh 与 frontmatter 去掉 HUAWEI 硬编码（环境变量+自定位）；安装章节补 WorkBuddy settings.json 三步注册。"
+version: 2.14.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
 display_name: "Skills 宪法"
 display_name_en: "Skills Constitution"
-description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.12.0：任务同义词扩展 + SAD 宽松语义检索 + Layer D 语义相关性校验 + 多技能编排兼容性检查。v2.13.0：hooks 强制拦截 + Ruler 跨平台分发 + pre-hook --task 修复 + Windows 路径转换。v2.13.3：失败可定位（stderr 进 debug）+ 兜底文案动态化。"
-description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.12.0 adds synonym expansion, SAD loose semantic retrieval, Layer D semantic relevance check, and multi-skill DAG compatibility checks. v2.13.0 adds hooks-based enforcement, Ruler cross-platform distribution, pre-hook --task fix, and Windows path conversion. v2.13.3 adds diagnosable failures (stderr captured into debug) and dynamic fallback messaging."
+description_zh: "Skills 宪法 —— 凌驾于全部技能之上的元规则，强制 Agent 先查记忆、再查技能索引（按功能分类）、有匹配必用，跨平台通用。v2.12.0：任务同义词扩展 + SAD 宽松语义检索 + Layer D 语义相关性校验 + 多技能编排兼容性检查。v2.13.0：hooks 强制拦截 + Ruler 跨平台分发 + pre-hook --task 修复 + Windows 路径转换。v2.13.3：失败可定位（stderr 进 debug）+ 兜底文案动态化。v2.14.0：假查漏洞修复（PreToolUse 新鲜度校验 + Stop 违规记录 + 违规警告注入）+ 去掉 HUAWEI 硬编码 + WorkBuddy 注册文档。"
+description_en: "Skills Constitution — universal meta-rule governing all skill/tool invocations. Pre-check memory, lookup skill tree by category, mandatory use when matched. Cross-platform for WorkBuddy / Claude / ChatGPT / Cursor / Gemini and 20+ frameworks. v2.12.0 adds synonym expansion, SAD loose semantic retrieval, Layer D semantic relevance check, and multi-skill DAG compatibility checks. v2.13.0 adds hooks-based enforcement, Ruler cross-platform distribution, pre-hook --task fix, and Windows path conversion. v2.13.3 adds diagnosable failures (stderr captured into debug) and dynamic fallback messaging. v2.14.0 fixes fake-skill-check loopholes (PreToolUse freshness check + Stop violation tracking + warning injection), removes HUAWEI hardcoding, and documents WorkBuddy settings.json registration."
 visibility: "public"
 agent_created: true
-hooks:
-  SessionStart:
-    - hooks:
-        - type: command
-          command: bash "C:/Users/HUAWEI/.workbuddy/skills/skills-constitution/hooks/session-start.sh"
-          timeout: 15
-          description: "宪法 SessionStart：会话启动时注入记忆+技能树上下文"
-  UserPromptSubmit:
-    - hooks:
-        - type: command
-          command: bash "C:/Users/HUAWEI/.workbuddy/skills/skills-constitution/hooks/user-prompt-submit.sh"
-          timeout: 10
-          description: "宪法 UserPromptSubmit：任务分类（简单→A跳过 | 专业→B强制校验）"
+# v2.14.0: hooks 不再写死在 frontmatter（跨平台仓库不得硬编码机器路径）。
+# 各平台钩子注册见「安装」章节：WorkBuddy → ~/.workbuddy/settings.json（constitution-gate.py 三事件）；
+# CodeBuddy → hooks/hooks.json（session-start.sh / user-prompt-submit.sh）
 ---
 
 # Skills 宪法（Skills Constitution）
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
+>
+> **v2.14.0** — 假查漏洞修复：constitution-gate.py 回归（WorkBuddy 钩子实现），PreToolUse 新鲜度校验（防旧 PASS 永久放行）+ Stop 违规硬记录 + UserPromptSubmit 违规警告注入；hooks 脚本与 frontmatter 去掉 HUAWEI 硬编码（跨机器可用）；安装章节补 WorkBuddy settings.json 三步注册
 >
 > **v2.13.3** — 失败可定位 + 兜底文案动态化：python 分支 stderr 捕获进 debug.pre_hook_stderr（不再被 2>/dev/null 吞掉）；injected-context.json 新增 python_branch_ok / fallback_reason；bash 兜底文案按真实原因区分「无 python」与「python 分支失败」
 >
@@ -441,6 +433,57 @@ cp -r skills-constitution ~/.workbuddy/skills/skills-constitution/
 python scripts/build_skill_tree.py
 ```
 
+**WorkBuddy 钩子注册（v2.14.0 必读）**：WorkBuddy 的钩子注册点在 `~/.workbuddy/settings.json` 的 `hooks` 字段（**不是**技能目录里的 `hooks/hooks.json`——那是 CodeBuddy/Claude Code 插件机制用的）。装完技能后需手动把以下三事件写入 settings.json（路径换成你的实际 python.exe 与技能路径；改完**重启 WorkBuddy 生效**）：
+
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "bash \"<你的技能路径>/hooks/session-start.sh\"",
+        "timeout": 30,
+        "description": "宪法 SessionStart：注入记忆+技能树上下文"
+      }]
+    }],
+    "UserPromptSubmit": [{
+      "hooks": [
+        {
+          "type": "command",
+          "command": "\"<你的python.exe>\" \"<你的技能路径>/scripts/constitution-gate.py\" UserPromptSubmit",
+          "timeout": 15,
+          "description": "宪法 UserPromptSubmit：重置门禁状态 + 记录任务 + 注入上轮违规警告"
+        },
+        {
+          "type": "command",
+          "command": "bash \"<你的技能路径>/hooks/user-prompt-submit.sh\"",
+          "timeout": 20,
+          "description": "宪法 UserPromptSubmit：任务分类（简单→A跳过 | 专业→B强制校验）"
+        }
+      ]
+    }],
+    "PreToolUse": [{
+      "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+      "hooks": [{
+        "type": "command",
+        "command": "\"<你的python.exe>\" \"<你的技能路径>/scripts/constitution-gate.py\" PreToolUse",
+        "timeout": 10,
+        "description": "宪法 PreToolUse：写文件前校验本任务内三查新鲜 PASS（v2.14.0 防旧 PASS 放行）"
+      }]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "\"<你的python.exe>\" \"<你的技能路径>/scripts/constitution-gate.py\" Stop",
+        "timeout": 30,
+        "description": "宪法 Stop：校验最终回复三查+技能名，违规写入 .constitution-violations.json"
+      }]
+    }]
+  }
+}
+```
+> 排坑：① hooks 脚本内的路径已支持环境变量 `CODEBUDDY_PLUGIN_ROOT` 优先 + 脚本自定位兜底，不再写死机器路径；② `bash` 需在 PATH（Windows Git Bash 自带）；③ 旧版 settings.json 若残留 `constitution-gate.py PreToolUse` 之外的重复注册，先删掉再写。CodeBuddy 平台则用 `hooks/hooks.json`（走 `ruler apply` 分发）。
+
 ### Claude Code
 ```bash
 # 项目级
@@ -510,6 +553,7 @@ cat skill_tree.json | jq '.total'
 ### 目录结构
 ```
 scripts/
+├── constitution-gate.py        # v2.14.0 WorkBuddy 宿主钩子（UserPromptSubmit/PreToolUse/Stop 三事件）
 ├── pre-hook.py                 # v2.10.0 输入拦截 + 任务分类器；v2.11.0 任务必需技能映射
 ├── constitution-check          # 主入口（--pre-hook / --classify / --simple / --task）
 ├── retry-wrapper.py            # v2.9.0 Post-hook 重试循环
@@ -561,6 +605,7 @@ python scripts/pre-hook.py --task "推送github代码"
 - **校验输入 = Agent 输出文本 + 状态痕迹**：设计上要求 Agent 每步显式输出产物并调用 check 写状态，脚本才有内容可查
 - **校验失败在软模式下仅警告**，脚本 bug/状态丢失不会卡死任务
 - **分类器是确定性代码**：简单/专业关键词硬编码，不依赖 Agent 自觉判断任务类型，杜绝"把专业任务误判为简单任务"的逃逸
+- **v2.14.0 防"假装查技能"闭环**：① PreToolUse 只认**本任务内新鲜 PASS**（step1 的 ts ≥ UserPromptSubmit 的 reset_ts），旧任务 PASS 不赦免任何 Write/Edit；② Stop 硬记录——最终回复未含三查+任务相关技能名（Layer C）即写入 `.constitution-violations.json` 累计计数；③ 下个任务 UserPromptSubmit 把违规警告注入 Agent 上下文（stdout），"事前拦 + 事后记 + 下次警"。违规记录文件不影响任何平台行为，仅作威慑与审计。
 
 ---
 

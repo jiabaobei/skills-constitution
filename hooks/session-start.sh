@@ -12,7 +12,17 @@
 #   3. 无 python 环境: bash 兜底注入宪法核心条款 + 记忆原文 + 技能树路径，保证最小可执行
 set -uo pipefail
 
-PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT:-/c/Users/HUAWEI/.workbuddy/skills/skills-constitution}"
+# v2.14.0: 去掉 HUAWEI 硬编码——环境变量优先，缺失时按脚本位置自定位；定位失败报错退出（不再静默失效）
+if [[ -n "${CODEBUDDY_PLUGIN_ROOT:-}" ]]; then
+  PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT}"
+else
+  _SK_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  PLUGIN_ROOT="$(dirname "${_SK_SCRIPT_DIR}")"
+fi
+if [[ ! -f "${PLUGIN_ROOT}/SKILL.md" ]]; then
+  echo "【宪法钩子·错误】PLUGIN_ROOT 定位失败（${PLUGIN_ROOT} 下无 SKILL.md）。请设置环境变量 CODEBUDDY_PLUGIN_ROOT 指向 skills-constitution 目录。" >&2
+  exit 1
+fi
 HOOK_DIR="${PLUGIN_ROOT}/hooks"
 OUTPUT="${HOOK_DIR}/injected-context.json"
 mkdir -p "${HOOK_DIR}"
@@ -55,11 +65,13 @@ if [[ -n "${PY_CMD}" && -f "${TREE_FILE}" ]]; then
     # v2.13.3: stderr 捕获到临时文件（不再 2>/dev/null 丢弃），失败原因可定位
     result=$("${PY_CMD}" "${PRE_HOOK_WIN}" --task "${TASK_DESC}" --json --memory "${MEMORY_FILE_WIN}" --tree "${TREE_FILE_WIN}" 2>"${HOOK_DIR}/pre-hook.err" || echo '{}')
     PRE_HOOK_ERR=$(head -c 300 "${HOOK_DIR}/pre-hook.err" 2>/dev/null | tr '\r\n' ' ' | sed 's/"/'"'"'/g')
-    rm -f "${HOOK_DIR}/pre-hook.err"
+    # v2.14.0: 删除临时错误文件容忍失败（部分沙箱拦截 rm，失败不致命）
+    rm -f "${HOOK_DIR}/pre-hook.err" 2>/dev/null || true
     if [[ "${result}" != '{}' && "${result}" != '' ]]; then
-      INJECTION=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; print(json.load(sys.stdin).get('injection',''))" 2>/dev/null || echo "")
-      injected_cats=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); print(','.join(d.get('injected_categories',[])))" 2>/dev/null || echo "")
-      sad_candidates=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); c=d.get('sad_candidates',[]); print(';'.join([x['name'] for x in c[:3]]))" 2>/dev/null || echo "")
+      # v2.14.0: echo 换 printf（result 含反斜杠/横线开头时 echo 不安全）；generator 减少括号嵌套
+      INJECTION=$(printf '%s' "${result}" | "${PY_CMD}" -c "import sys,json; print(json.load(sys.stdin).get('injection',''))" 2>/dev/null || echo "")
+      injected_cats=$(printf '%s' "${result}" | "${PY_CMD}" -c "import sys,json; print(','.join(json.load(sys.stdin).get('injected_categories',[])))" 2>/dev/null || echo "")
+      sad_candidates=$(printf '%s' "${result}" | "${PY_CMD}" -c "import sys,json; print(';'.join(x.get('name','') for x in json.load(sys.stdin).get('sad_candidates',[])[:3]))" 2>/dev/null || echo "")
       [[ -n "${INJECTION}" ]] && python_branch_ok="yes"
     fi
   fi

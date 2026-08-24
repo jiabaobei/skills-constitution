@@ -5,8 +5,8 @@ import sys
 
 
 def read_input(path=None):
-    """读取输入文本:优先文件,缺省读 stdin"""
-    if path:
+    """读取输入文本:优先文件,缺省读 stdin;'-' 表示显式 stdin(v2.14.0: 修复 Stop 钩子传 --input - 报 FileNotFoundError)"""
+    if path and path != "-":
         with open(path, encoding="utf-8") as f:
             return f.read()
     return sys.stdin.read()

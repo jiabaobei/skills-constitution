@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.13.3-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.14.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.13.3
+## Skills 宪法（Skills Constitution）v2.14.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -74,7 +74,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.13.3）
+## 📋 宪法条款（v2.14.0）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
@@ -270,6 +270,14 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.14.0（2026-08-24）— 假查漏洞修复 + 跨机器可用
+- **constitution-gate.py 回归**：作为 WorkBuddy settings.json 钩子的正式实现（UserPromptSubmit / PreToolUse / Stop 三事件），补齐 v2.13.x 缺的 WorkBuddy 宿主钩子
+- **PreToolUse 新鲜度校验**：step1 的 ts 必须 ≥ 本任务 UserPromptSubmit 写入的 reset_ts，旧任务 PASS 不再赦免任何 Write/Edit（修复"一次 PASS 永久放行"）
+- **Stop 违规硬记录**：最终回复未含【宪法三查】+ 任务相关技能名（Layer C）→ 写入 `.constitution-violations.json` 累计计数 + stderr 警告
+- **UserPromptSubmit 违规警告注入**：有违规记录时输出到 stdout（平台注入 Agent 上下文），下个任务开头 Agent 即见警告，形成"事前拦 + 事后记 + 下次警"闭环
+- **去掉 HUAWEI 硬编码**：`hooks/session-start.sh`、`hooks/user-prompt-submit.sh`、SKILL.md frontmatter 三处改为环境变量 `CODEBUDDY_PLUGIN_ROOT` 优先 + 脚本自定位兜底（定位失败报错/放行），跨机器不再静默失效
+- **WorkBuddy 注册文档**：SKILL.md 安装章节新增 settings.json 三步注册示例（SessionStart / UserPromptSubmit / PreToolUse / Stop）
 
 ### v2.13.3（2026-08-21）— 失败可定位 + 兜底文案动态化
 - **python 分支 stderr 不再被丢弃**：捕获进 `debug.pre_hook_stderr`（injected-context.json），失败原因可定位
