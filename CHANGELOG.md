@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.15.0] - 2026-08-24
+
+### 修复：推荐板块把本地已装技能列入推荐（第五条缺口 + Layer E 硬校验）
+**背景**：2026-08-24 复盘——交付推荐板块时把**本地已装（24/24）的 addyosmani/agent-skills** 列入 GitHub 推荐。根因：第五条只禁"以本地已装清单替代搜索"，未防"搜索结果恰好命中已装仓库"；step5 门禁只校验"有链接+star+获取方式"，不校验"是否已装"。与 v2.14.0 假查漏洞同构：条文有缺口 + 门禁不拦。
+
+#### 修复
+- **第五条补硬性条款（SKILL.md / AGENTS.md / 快速注入模板 / README 模板四处同步）**："推荐候选必须排除本地已装技能——推荐前先核对本地已装清单（如 `ls ~/.workbuddy/skills/`），已装项一律不推，包括'搜索结果恰好命中已装仓库'的情况；仅可作背景说明"
+- **`step5-check.py` 新增 Layer E 本地已装排除校验**：
+  - E1：推荐仓库 repo 名 与 本地技能目录名（去 `__skillhub` 等后缀）完全匹配 → FAIL
+  - E2：本地存在 `_<name>-references` 已装框架标记目录，推荐 repo 名与该框架名匹配（如本地 `_agent-skills-references` 存在 → 推荐 agent-skills FAIL）→ FAIL
+  - 支持 `--skills-dir` 参数指定本地技能目录（默认 `~/.workbuddy/skills`）
+- **违规判定新增**："推荐了本地已装技能（Layer E 校验 FAIL）"
+
+#### 验证（本机实测）
+- [x] Layer E：推荐 `github.com/addyosmani/agent-skills`（本地已装）→ FAIL（E2 框架标记命中）
+- [x] Layer E：推荐 `github.com/xxx/test-driven-development`（本地已装同名技能）→ FAIL（E1）
+- [x] Layer E：推荐未装仓库（如 rjmurillo/ai-agents）→ PASS
+- [x] 版本全文件核查：SKILL.md / README / CHANGELOG / skill_tree.json 均 2.15.0
+
 ## [2.14.0] - 2026-08-24
 
 ### 修复："假装查技能"漏洞闭环（WorkBuddy 宿主钩子）
@@ -348,9 +367,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.13.3...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.14.0...HEAD
+[2.15.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.15.0
 [2.14.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.14.0
-[2.13.3]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.13.3
 [2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0

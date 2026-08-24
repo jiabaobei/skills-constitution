@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
-description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"；v2.12.0 SkillWeaver 启发改版：任务同义词扩展（口语表达如"把代码传上去"也能命中 git 必需分类）+ SAD 宽松语义检索注入 top-K 候选（零依赖 token 重叠打分）+ Layer D 语义相关性校验（防引用与任务无关技能蒙混）+ 多技能编排兼容性检查（registry.json input/output schema）+ 可选语义向量索引（semantic_index.py，sentence-transformers 可选依赖）+ 修复分类子串误杀（code 不再命中 encode）；v2.13.0 强制拦截上线：hooks.json 注册 SessionStart/UserPromptSubmit 钩子，ruler apply 一键分发到 10 个平台，pre-hook --task 参数修复 + Windows 路径转换。v2.13.2 版本号修正 + 改版说明补齐（v2.13.1 三大 hooks 修复：无 python3 技能树归零 / 注入块未输出 stdout / || exit 0 中和拦截）。v2.13.3 失败可定位：python 分支 stderr 不再被丢弃，捕获进 debug.pre_hook_stderr；兜底文案按真实原因动态化（fallback_reason 区分无 python / python 分支失败），injected-context.json 增加 python_branch_ok 字段。v2.14.0 假查漏洞修复 + 跨机器可用：constitution-gate.py 正式回归仓库（WorkBuddy settings.json 钩子实现），新增 PreToolUse 新鲜度校验（step1 必须在本任务内 PASS，防旧 PASS 永久放行）、Stop 违规硬记录（.constitution-violations.json 累计）+ UserPromptSubmit 违规警告注入，形成"事前拦+事后记+下次警"闭环；hooks/ 两个 .sh 与 frontmatter 去掉 HUAWEI 硬编码（环境变量+自定位）；安装章节补 WorkBuddy settings.json 三步注册。"
-version: 2.14.0
+description: "Skills 宪法 —— 凌驾于全部技能/工具之上的元规则。强制 Agent 在执行任何任务前先查记忆、查技能索引，有匹配必用、无匹配必搜、答复时自动推荐。解决 Agent 不调用已装 Skill、调用幻觉、能力误判三大痛点。跨平台通用：WorkBuddy / Claude Code / ChatGPT / Codex / Gemini / Cursor / Windsurf / Cline 等 20+ 框架。v2.5.0 技能树纳入已装 Python 库/工具（🧩 分类）、第一条升级为"查技能树无条件第一步 + 宪法三查汇报"执行强化；v2.6.0 新增门禁自检脚本 constitution-check（5 个 step 独立校验，默认软校验 + --strict 可选阻断 + 状态文件链式依赖），把"靠 Agent 自觉"变成"可校验、可拦截"；v2.7.0 技能树索引定位修正：索引为作者快照/示例，使用者应生成自己的技能树（平台能力注册表）；v2.8.0 新增精选技能注册表 registry.json（技能名+来源仓库+描述，按需安装）；v2.9.0 重大改版：引入「三明治架构」两层校验（软校验+硬校验），Pre-hook强制验证实际引用MEMORY.md/skill_tree.json内容，Post-hook实现重试循环自动修复不合规输出，解决Agent空头汇报问题；v2.10.0 输入拦截：新增 pre-hook.py 任务开始前强制注入记忆+技能树，constitution-check 增加 --pre-hook/--classify 双通道分流，简单任务零号条款豁免直接通用能力，专业任务强制注入校验；v2.11.0 任务相关硬校验：新增 Layer C —— 任务含"代码/git/部署/爬虫/文档"等关键词时，输出必须引用 skill_tree.json 对应分类下的实际技能名（如 git-workflow-and-versioning），杜绝"查了宪法就算查了技能"的空头汇报；三查汇报强制列出命中技能清单；第五条推荐修正为"本地技能不足→GitHub 搜索高星技能推荐给用户，由用户决定是否安装"；v2.12.0 SkillWeaver 启发改版：任务同义词扩展（口语表达如"把代码传上去"也能命中 git 必需分类）+ SAD 宽松语义检索注入 top-K 候选（零依赖 token 重叠打分）+ Layer D 语义相关性校验（防引用与任务无关技能蒙混）+ 多技能编排兼容性检查（registry.json input/output schema）+ 可选语义向量索引（semantic_index.py，sentence-transformers 可选依赖）+ 修复分类子串误杀（code 不再命中 encode）；v2.13.0 强制拦截上线：hooks.json 注册 SessionStart/UserPromptSubmit 钩子，ruler apply 一键分发到 10 个平台，pre-hook --task 参数修复 + Windows 路径转换。v2.13.2 版本号修正 + 改版说明补齐（v2.13.1 三大 hooks 修复：无 python3 技能树归零 / 注入块未输出 stdout / || exit 0 中和拦截）。v2.13.3 失败可定位：python 分支 stderr 不再被丢弃，捕获进 debug.pre_hook_stderr；兜底文案按真实原因动态化（fallback_reason 区分无 python / python 分支失败），injected-context.json 增加 python_branch_ok 字段。v2.14.0 假查漏洞修复 + 跨机器可用：constitution-gate.py 正式回归仓库（WorkBuddy settings.json 钩子实现），新增 PreToolUse 新鲜度校验（step1 必须在本任务内 PASS，防旧 PASS 永久放行）、Stop 违规硬记录（.constitution-violations.json 累计）+ UserPromptSubmit 违规警告注入，形成"事前拦+事后记+下次警"闭环；hooks/ 两个 .sh 与 frontmatter 去掉 HUAWEI 硬编码（环境变量+自定位）；安装章节补 WorkBuddy settings.json 三步注册。v2.15.0 推荐排除已装：第五条补"推荐候选必须排除本地已装技能"硬性动作（先核对本地已装清单）；step5-check.py 新增 Layer E 本地已装排除校验（推荐仓库名与本地技能目录同名 / 与本地 _<name>-references 已装框架标记匹配 → FAIL），杜绝"搜索结果恰好命中已装仓库仍被推荐"（如 addyosmani/agent-skills 已装仍被推）。"
+version: 2.15.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -19,6 +19,8 @@ agent_created: true
 # Skills 宪法（Skills Constitution）
 
 > **一句话定位**：这是凌驾于全部技能/工具/插件之上的**元规则**。无论用什么 Agent 框架，所有能力调用都必须先过这一关。
+>
+> **v2.15.0** — 推荐排除已装：第五条补"推荐候选必须排除本地已装技能"（推荐前核对本地已装清单）；step5-check.py 新增 Layer E 本地已装排除校验（仓库名与本地技能目录同名 / 与 `_<name>-references` 已装框架标记匹配 → FAIL），杜绝"搜索结果恰好命中已装仓库仍被推荐"
 >
 > **v2.14.0** — 假查漏洞修复：constitution-gate.py 回归（WorkBuddy 钩子实现），PreToolUse 新鲜度校验（防旧 PASS 永久放行）+ Stop 违规硬记录 + UserPromptSubmit 违规警告注入；hooks 脚本与 frontmatter 去掉 HUAWEI 硬编码（跨机器可用）；安装章节补 WorkBuddy settings.json 三步注册
 >
@@ -194,7 +196,7 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 
 ### 第五条：答复时自动推荐（Auto-Discovery）
 
-任务完成后（答复阶段）→ **若本地已装技能未能完美解决任务，必须去 GitHub / 全网能力库搜索更优能力推荐给用户**，由用户自行决定是否安装。本地技能不足时"不搜索、不推荐"是违规。
+任务完成后（答复阶段）→ **若本地已装技能未能完美解决任务，必须去 GitHub / 全网能力库搜索更优能力推荐给用户**，由用户自行决定是否安装。本地技能不足时"不搜索、不推荐"是违规。**v2.15.0：推荐候选必须排除本地已装技能**（推荐的是"你没装过的更强能力"，已装项一律不推）。
 
 **触发场景**（满足其一即必须执行）：
 - 本地技能树查了，但没有完全匹配的技能
@@ -212,11 +214,12 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 （最多 3 个，避免刷屏）
 ```
 
-**执行细则（v2.6.0 强化；v2.11.0 修正定位）**：
+**执行细则（v2.6.0 强化；v2.11.0 修正定位；v2.15.0 排除已装）**：
 - **推荐核心**：必须是 WebSearch/WebFetch 搜索到的 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式）——这是用户决定是否安装的依据
 - **允许**在推荐前简要说明"本地已查过哪些技能、为何不足"（如"本地已装 `git-workflow-and-versioning` 但网络受阻"），帮助用户理解为什么需要新技能
 - **禁止**以"本地已装技能清单"替代 GitHub 搜索推荐（本地技能仅作背景说明）
-- 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式）
+- **v2.15.0 排除已装（硬性动作）**：推荐前必须先核对本地已装清单（如 `ls ~/.workbuddy/skills/`），**候选仓库若与本地已装技能同名/同源，一律不推**——包括"搜索结果恰好命中已装仓库"的情况（如 addyosmani/agent-skills 已装时不得再推荐）。仅可作背景说明（"本地已有 X，若需更强可看 Y"）。
+- 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式 + **v2.15.0 Layer E 本地已装排除校验**）
 
 ---
 
@@ -364,9 +367,9 @@ flowchart TD
 3. 匹配必用：有匹配则无条件优先使用该能力
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
-6. 答复推荐：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 能力推荐给用户（含链接+star+获取方式），由用户决定是否安装
+6. 答复推荐：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 能力推荐给用户（含链接+star+获取方式），由用户决定是否安装；**v2.15.0 推荐候选必须排除本地已装技能（先核对本地已装清单，已装项一律不推）**
 
-违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树但未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐
+违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树但未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐 / **推荐了本地已装技能（v2.15.0，Layer E 校验 FAIL）**
 ```
 
 ---

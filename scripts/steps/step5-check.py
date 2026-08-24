@@ -3,6 +3,7 @@
 
 文章"三明治架构"延伸:推荐不是幻觉,必须有证据支撑。
 本 Step 硬校验:验证 GitHub 链接是否真实存在且可访问。
+v2.15.0: 新增 Layer E 本地已装排除校验(推荐候选不得是本地已装技能)。
 """
 import argparse
 import os
@@ -15,6 +16,7 @@ from lib import text as T
 
 NAME = "step5"
 DESC = "推荐板块(GitHub 高星,软+硬两层校验)"
+DEFAULT_SKILLS_DIR = os.path.expanduser("~/.workbuddy/skills")
 
 
 def layer_b_hard_check(text):
@@ -39,8 +41,65 @@ def layer_b_hard_check(text):
     return False, "硬校验未通过:GitHub 链接格式无效", "FAIL"
 
 
-def check(text):
-    """主校验函数:两层校验"""
+def layer_e_installed_check(text, skills_dir=None):
+    """Layer E(v2.15.0):本地已装排除校验 — 推荐候选不得是本地已装技能
+
+    防的漏洞:搜索结果恰好命中本地已装仓库仍被推荐
+      (如 addyosmani/agent-skills 已装 24 技能, 旧版仍会把它列为推荐)。
+    E1: 推荐仓库 repo 名 与 本地技能目录名(去 __xxx 后缀)完全匹配 → FAIL
+    E2: 本地存在 `_<name>-references` 已装框架标记目录, 且推荐 repo 名与该框架名
+        匹配(如本地 `_agent-skills-references` 存在, 推荐 agent-skills) → FAIL
+    """
+    if not skills_dir:
+        skills_dir = DEFAULT_SKILLS_DIR
+    if not os.path.isdir(skills_dir):
+        return True, "无本地技能目录,跳过排除校验", "PASS"
+
+    links = T.github_links(text)
+    if not links:
+        return True, "无 GitHub 链接,跳过排除校验", "PASS"
+
+    try:
+        local_dirs = [d for d in os.listdir(skills_dir)]
+    except OSError:
+        return True, "无法读取本地技能目录,跳过排除校验", "PASS"
+
+    # E1: 本地技能目录名集合(去 __skillhub 等后缀)
+    local_base = set()
+    for d in local_dirs:
+        if d.startswith("_"):
+            continue
+        local_base.add(re.sub(r"__[a-z0-9_]+$", "", d).lower())
+
+    # E2: 已装框架标记目录(_<name>-references → 框架名 <name>)
+    installed_frameworks = set()
+    for d in local_dirs:
+        if d.startswith("_") and d.endswith("-references"):
+            installed_frameworks.add(d[1:].replace("-references", "").lower())
+
+    for link in links:
+        m = re.search(r"github\.com/([^/]+)/([^/]+)", link)
+        if not m:
+            continue
+        owner, repo = m.groups()
+        repo_l = repo.lower()
+        # E1: 仓库名与本地技能目录名匹配
+        if repo_l in local_base:
+            return False, (
+                f"LayerE FAIL: 推荐仓库 {owner}/{repo} 与本地已装技能同名"
+                f"(目录 {repo}),宪法第五条禁止推荐已装项"
+            ), "FAIL"
+        # E2: 仓库名与本地已装框架标记匹配
+        if repo_l in installed_frameworks:
+            return False, (
+                f"LayerE FAIL: 推荐仓库 {owner}/{repo} 对应技能框架已装"
+                f"(本地 {repo_l}-references 标记存在),宪法第五条禁止推荐已装项"
+            ), "FAIL"
+    return True, "LayerE 通过: 推荐候选均非本地已装", "PASS"
+
+
+def check(text, skills_dir=None):
+    """主校验函数:两层校验 + v2.15.0 Layer E 已装排除"""
     if not text or not text.strip():
         return False, "无输入文本", "FAIL"
 
@@ -61,10 +120,15 @@ def check(text):
                      "git clone", "npm"):
         return False, "推荐板块缺获取方式", "FAIL"
 
+    # v2.15.0 Layer E:本地已装排除校验(硬伤,FAIL 即整体 FAIL)
+    e_passed, e_msg, e_level = layer_e_installed_check(text, skills_dir)
+    if not e_passed:
+        return False, e_msg, "FAIL"
+
     # Layer A 通过,检查 Layer B
     hard_passed, hard_msg, hard_level = layer_b_hard_check(text)
     if hard_passed:
-        return True, f"软+硬校验均通过。{hard_msg}", "PASS"
+        return True, f"软+硬校验均通过; {e_msg}", "PASS"
 
     # Layer A 通过但 Layer B 未通过,降级为 WARN
     return False, f"软校验通过但硬校验未通过。{hard_msg}", "FAIL"
@@ -74,9 +138,11 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=DESC)
     ap.add_argument("--input", help="输入文本文件")
     ap.add_argument("--state", help="状态文件路径")
+    ap.add_argument("--skills-dir", default=DEFAULT_SKILLS_DIR,
+                    help=f"本地技能目录(默认 {DEFAULT_SKILLS_DIR})")
     a = ap.parse_args()
     text = T.read_input(a.input)
-    passed, msg, level = check(text)
+    passed, msg, level = check(text, a.skills_dir)
     S.set_step(NAME, passed, msg, level, a.state)
     print(f"[{level}] {NAME} - {DESC}: {msg}")
     sys.exit(0 if passed else 1)
