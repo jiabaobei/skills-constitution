@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.16.0
+version: 2.17.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,9 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.16.0（当前）** — Token 瘦身：description 只留触发条件（省 ~1.8K token/会话）；SKILL.md 渐进式披露（平台映射/安装/门禁详解拆 `reference/`，主文件 42KB→~20KB）；修复 injected-context.json JSON 转义。
+> **v2.17.0（当前）** — 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身（任务相关片段，42K→~1K）+ semantic_index 可选标注。
+>
+> **v2.16.0** — Token 瘦身：description 只留触发条件（省 ~1.8K token/会话）；SKILL.md 渐进式披露（平台映射/安装/门禁详解拆 `reference/`，主文件 42KB→~20KB）；修复 injected-context.json JSON 转义。
 >
 > 版本史：见 `CHANGELOG.md`。
 
@@ -291,7 +293,9 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 
 ## 技术边界说明
 
-"无条件启用全部能力"不可行（撑爆上下文）。正确设计是**按描述匹配触发**，本宪法强制该匹配机制不被跳过。技能树索引将全量扫描缩小到目标分支（省 80%+ token）；索引由 `build_skill_tree.py` 生成，**禁止手写**。
+"无条件启用全部能力"不可行（撑爆上下文）。正确设计是**按描述匹配触发**，本宪法强制该匹配机制不被跳过。技能树索引将全量扫描缩小到目标分支（省 80%+ token）；索引由 `build_skill_tree.py` 生成，**禁止手写**（v2.17.0：使用者应在本机运行 `SKILLS_DIR=<技能目录> python scripts/build_skill_tree.py` 生成自己的树，替换作者快照）。
+
+**可选增强（默认未启用）**：`scripts/semantic_index.py` 向量语义检索需 `pip install sentence-transformers faiss-cpu`（约 90MB）并 `python scripts/semantic_index.py build` 构建索引；SAD 宽松语义检索（零依赖）已覆盖日常检索，不启用不影响任何主链路功能。
 
 ---
 

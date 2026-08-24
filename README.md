@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.16.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.17.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 ## 🚀 快速开始
@@ -13,7 +13,7 @@
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.16.0
+## Skills 宪法（Skills Constitution）v2.17.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -74,7 +74,7 @@ cp SKILL.md .clinerules
 
 ---
 
-## 📋 宪法条款（v2.16.0）
+## 📋 宪法条款（v2.17.0）
 
 ### 第零条：任务分类（零号条款）
 前置过滤：简单问答（翻译/润色/解释）→ 跳过查技能；专业任务（编码/爬虫/API）→ 必须查；模糊任务 → 查一下（宁可不放过）。v2.10.0 由 `pre-hook.py --classify` 确定性分类器执行，不依赖 Agent 自觉。
@@ -271,6 +271,11 @@ python scripts/constitution-check --step 5 --input output.txt
 
 ## 📝 改版说明（CHANGELOG 摘要）
 
+### v2.17.0（2026-08-24）— 技能树重建 + 注入记忆瘦身
+- **技能树重建**：本机跑 `build_skill_tree.py`，**402 → 757 技能全入库**（替换 HUAWEI 快照，`skills_dir` 指向本机），修"查树即无匹配"
+- **注入块记忆瘦身**：`extract_memory_relevant` 按任务相关性注入（铁律+top2 相关 section），**MEMORY.md 42KB → 注入 ~1KB**
+- **semantic_index 明确可选（默认未启用）**：三处文档标注启用方式（sentence-transformers + faiss-cpu，约 90MB）
+
 ### v2.16.0（2026-08-24）— Token 瘦身
 - **description 瘦身**：2069 字符 → ~415 字符，版本历史移出（放 CHANGELOG），只留触发条件——每次对话省 ~1.8K token
 - **SKILL.md 渐进式披露**：平台映射表/安装验证/门禁详解拆 `reference/` 三文件，主文件 682 行/42KB → 327 行/8.4KB（省 80%），契约式引用按需加载
@@ -315,7 +320,7 @@ python scripts/constitution-check --step 5 --input output.txt
 - **SAD 宽松语义检索**：SkillWeaver 反馈循环的确定性实现——pre-hook 按 token 重叠度（零依赖）检索 top-K 候选技能注入，Agent 起草方案时带着候选完成用词对齐，token 再降一档
 - **Layer D 语义相关性校验**（step3）：引用的技能必须与任务语义相关（overlap ≥ 0.10），杜绝"引用真实存在但与任务无关的技能"蒙混过关
 - **多技能编排兼容性检查**（step4 + registry.json schema）：识别技能链 `A → B`，校验相邻技能 output→input 兼容
-- **可选语义向量索引**（`scripts/semantic_index.py`）：sentence-transformers + FAISS 的完整实现作为可选增强层；缺依赖明确提示，主链路永远零依赖
+- **可选语义向量索引**（`scripts/semantic_index.py`）：sentence-transformers + FAISS 的完整实现作为可选增强层；缺依赖明确提示，主链路永远零依赖。**⚠️ v2.17.0 明确标注：默认未启用**——需要者自行 `pip install sentence-transformers faiss-cpu`（约 90MB）后运行 `python scripts/semantic_index.py build`；不启用不影响任何主链路功能（SAD 宽松语义检索为零依赖确定性实现，已覆盖检索需求）
 - **分类子串误杀修复**：英文关键词改词边界匹配，`code` 不再误杀 `encode`、`search` 不再误杀 `research`
 - 顺手修复 4 个已核实 Bug（正文版本号残留/CHANGELOG 链接/CI 死代码/badge 失真）
 - 完整细节见 [CHANGELOG.md](CHANGELOG.md)

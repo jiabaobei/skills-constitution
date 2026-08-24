@@ -5,6 +5,22 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.17.0] - 2026-08-24
+
+### 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身 + semantic_index 可选标注
+**背景**：核查发现省 token 机制三处失效——① skill_tree.json 是作者 HUAWEI 机器快照（402 技能 vs 本地 757，覆盖不到一半，查树即"无匹配"）；② 注入块记忆层按固定 marker 取前 4 段或前 800 字符，与任务相关性低，把技能树省下的 token 又吃回去；③ semantic_index.py 依赖未装、向量文件不存在，是"死机制"却无标注。
+
+#### 修复
+- **技能树重建**：本机运行 `SKILLS_DIR=~/.workbuddy/skills python scripts/build_skill_tree.py`，**402 → 757 技能全入库**（15 分类，含 binaries 库 3 个），`skills_dir` 改为本机路径，`generated_at` 更新；SKILL_TREE.md 同步。技术边界章节补充"使用者应在本机生成自己的树，替换作者快照"
+- **注入块记忆瘦身（`pre-hook.py` 新增 `extract_memory_relevant`）**：按 `## ` 切分 MEMORY.md → ①铁律/偏好类 section 总是注入（≤2 个×300 字）②其余按任务扩展文本重叠打分取 top2（各 400 字）③兜底前 400 字。**MEMORY.md 42KB 全文 → 注入 0.8-1.1K 字符（任务相关片段）**，且"推送代码到github"实测命中"GitHub 网页建仓排坑""抖音推广 GitHub 项目"等相关 section
+- **semantic_index.py 明确标注可选（默认未启用）**：README / reference/gate-details.md / SKILL.md 技术边界三处标注启用方式（`pip install sentence-transformers faiss-cpu` 约 90MB + `python scripts/semantic_index.py build`），避免"死机制"误导
+
+#### 验证（本机实测）
+- [x] build_skill_tree 自检通过（分类 860 >= total 757）；顶层 version 2.17.0
+- [x] extract_memory_relevant：爬虫/github/周报/翻译 4 任务注入 788-1104 字符（全文 42K 的 ~2.5%），含铁律+任务相关 section
+- [x] pre-hook.py 编译通过、injected-context.json 生成仍合法
+- [x] 版本全文件核查 2.17.0
+
 ## [2.16.0] - 2026-08-24
 
 ### Token 瘦身：description 只留触发条件 + SKILL.md 渐进式披露 + 注入 JSON 修复
@@ -386,9 +402,9 @@
 - `MINOR`（次版本号）：向后兼容的功能性新增
 - `PATCH`（修订版本号）：向后兼容的问题修正
 
-[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.15.0...HEAD
+[Unreleased]: https://github.com/jiabaobei/skills-constitution/compare/v2.16.0...HEAD
+[2.17.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.17.0
 [2.16.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.16.0
-[2.15.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.15.0
 [2.12.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.12.0
 [2.11.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.11.0
 [2.10.0]: https://github.com/jiabaobei/skills-constitution/releases/tag/v2.10.0

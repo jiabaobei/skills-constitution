@@ -116,6 +116,8 @@ python scripts/pre-hook.py --task "推送github代码"
   无 schema 覆盖的相邻对跳过（保守，不误杀）
 
 ### ⑤ 可选语义向量索引（`scripts/semantic_index.py`，启发一完整实现）
+> **⚠️ v2.17.0 明确标注：默认未启用（需手动安装依赖 + 构建索引）**。SAD 宽松语义检索（零依赖确定性实现）已覆盖日常检索需求；本模块是锦上添花的可选增强，不启用不影响主链路任何功能。
+- 启用方式：`pip install sentence-transformers faiss-cpu`（约 90MB）→ `python scripts/semantic_index.py build` → 生成 `skill_vectors.npz`
 - `build`：sentence-transformers（all-MiniLM-L6-v2，本地免费）为全量技能描述生成 embedding，存 `skill_vectors.npz`
 - `query`：任务文本语义检索 top-K；装了 faiss-cpu 走 FAISS，没装走 numpy 余弦（功能等价）
 - **缺依赖时明确提示安装并退出（exit 2）**——这是功能开关不是兜底；不装不影响主链路任何功能

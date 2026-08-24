@@ -372,37 +372,76 @@ def filter_tree_by_task(tree, task):
     return result
 
 
+def extract_memory_relevant(memory_text, task, max_total=1200):
+    """v2.17.0 注入块记忆瘦身：只注入任务相关片段 + 关键铁律
+
+    背景:旧逻辑按固定 marker 取前 4 个 section(各 500 字)或兜底 memory_text[:800],
+    内容与任务相关性低,把技能树省下的 token 又吃回去。
+    新策略:
+      1. 按 '## ' 切分 MEMORY.md 为 sections
+      2. 铁律优先: 标题含 死规则/铁律/宪法/偏好 → 总是注入(最多2个,各300字)
+      3. 任务相关: 其余 section 按任务扩展文本重叠打分,取 top2(各400字)
+      4. 兜底: 无 section 或任务无匹配 → 取前 400 字
+    返回注入用文本块(不含代码围栏),总长 ≤ max_total。
+    """
+    if not memory_text:
+        return "_（MEMORY.md 未找到）_"
+    import re as _re
+    sections = _re.split(r"(?m)^## ", memory_text)
+    parts = []
+    budget = 0
+    rule_keywords = ["死规则", "铁律", "宪法", "偏好"]
+    task_lower = expand_task_text(task).lower() if task else ""
+
+    # 1) 铁律/偏好类 section 总是注入(最多 2 个,各 300 字)
+    rules = []
+    for s in sections[1:]:
+        title = s.splitlines()[0][:40] if s.splitlines() else ""
+        if any(k in title for k in rule_keywords):
+            rules.append(s.strip()[:300])
+    for r in rules[:2]:
+        parts.append(r)
+        budget += len(r)
+
+    # 2) 任务相关 section top2(各 400 字)
+    scored = []
+    for s in sections[1:]:
+        title = s.splitlines()[0][:40] if s.splitlines() else ""
+        if any(k in title for k in rule_keywords):
+            continue
+        hay = (title + " " + s[:200]).lower()
+        sc = overlap_score(task_lower, hay)
+        if sc > 0:
+            scored.append((sc, s.strip()))
+    scored.sort(key=lambda x: -x[0])
+    for _sc, s in scored[:2]:
+        if budget < max_total:
+            seg = s[:400]
+            parts.append(seg)
+            budget += len(seg)
+
+    # 3) 兜底
+    if not parts:
+        return memory_text[:400]
+    return "\n\n".join(parts)[:max_total]
+
+
 def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None):
     """生成注入块 Markdown
-    v2.12.0:新增 sad_candidates(SAD 宽松语义检索 top-K 候选)渲染段落。"""
+    v2.12.0:新增 sad_candidates(SAD 宽松语义检索 top-K 候选)渲染段落。
+    v2.17.0:记忆层改用 extract_memory_relevant(任务相关+铁律,瘦身)。"""
     lines = []
     lines.append("## ⚡ 宪法 Pre-hook 注入（任务开始前强制注入，禁止跳过）")
     lines.append("")
     lines.append(f"> 任务: {task or '(未指定)'} — 以下内容由代码强制注入，Agent 无需自行检索。")
     lines.append("")
 
-    # 记忆层注入
+    # 记忆层注入（v2.17.0: 只注入任务相关片段+铁律,避免记忆吃掉技能树省下的 token）
     lines.append("### 📜 记忆层（MEMORY.md 关键规则，必须遵循）")
-    if memory_text:
-        # 提取关键部分：铁律、宪法、GitHub 仓库等
-        key_sections = []
-        for marker in ["## ⚠️ 铁律", "## ⚠️ 铁律（宪法级）", "## skills-constitution",
-                       "## 用户的 GitHub 仓库", "## 已装技能记录"]:
-            idx = memory_text.find(marker)
-            if idx >= 0:
-                end = memory_text.find("\n## ", idx + 5)
-                key_sections.append(memory_text[idx: end if end > 0 else None].strip()[:600])
-        if key_sections:
-            for section in key_sections[:4]:
-                lines.append("```")
-                lines.append(section[:500])
-                lines.append("```")
-        else:
-            lines.append("```")
-            lines.append(memory_text[:800])
-            lines.append("```")
-    else:
-        lines.append("_（MEMORY.md 未找到）_")
+    mem_block = extract_memory_relevant(memory_text, task)
+    lines.append("```")
+    lines.append(mem_block)
+    lines.append("```")
     lines.append("")
 
     # 技能树注入
