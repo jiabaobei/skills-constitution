@@ -292,6 +292,14 @@ python scripts/constitution-check --step 5 --input output.txt
 
 ## 📝 改版说明（CHANGELOG 摘要）
 
+### v2.20.0（2026-08-26）— 安装全平台分流 + 钩子自动注册
+- **install.sh 按平台机制分流**：技能目录型自动重建树 / 规则文件型（Cursor/Windsurf/Cline）写入规则文件 / 注入型自动提取模板；新增 Windows 版 `install.ps1`
+- **`register_hooks.py` 一条命令注册双平台钩子**：带备份/回滚/幂等/卸载，50 行手工配置成为历史
+
+### v2.19.0（2026-08-26）— 校验层防伪造升级
+- **词边界匹配 + 废除分类名兜底 + 证据白名单**：一个 `"encoded"` 子串打穿 Layer C 的漏洞被堵死，糊弄向量固化进 CI 对抗测试
+- **修复新装用户死锁/崩溃**，gate 拦 Bash 写文件，retry-wrapper 废除无效自我重试
+
 ### v2.18.0（2026-08-24）— 使用者建技能树指南
 - **新增 `reference/skill-tree-guide.md`**：为什么必须重建 / 完整命令（SKILLS_DIR+BINARIES_DIR，四平台）/ 3 步自检 / 5 条 FAQ
 - **重建命令统一带 SKILLS_DIR**（README / installation 原裸命令会扫默认目录），SKILL.md 技能树章节改"安装后必须重建"
