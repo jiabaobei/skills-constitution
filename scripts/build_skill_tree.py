@@ -105,6 +105,12 @@ def scan_binary_libs(binaries_dir: str) -> list[dict]:
         if not venv_py.exists():
             venv_py = entry / ".venv" / "Scripts" / "python.exe"  # 兼容 .venv 命名
         if not venv_py.exists():
+            # v2.19.0:补 POSIX venv 路径(旧版只查 Windows, Linux/macOS 永远扫不到,
+            # 而 CI 恰好跑在 ubuntu 上)
+            venv_py = entry / "venv" / "bin" / "python"
+        if not venv_py.exists():
+            venv_py = entry / ".venv" / "bin" / "python"
+        if not venv_py.exists():
             continue
         description = "已装 Python 库/工具（独立 venv）"
         version = ""
