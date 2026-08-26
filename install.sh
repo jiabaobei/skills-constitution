@@ -191,7 +191,7 @@ PYEOF
   if [[ "$REGISTER_HOOKS" == "1" ]]; then
     say ""
     say "注册宿主钩子(强制拦截)..."
-    "$PY" "$DEST/scripts/register_hooks.py" --platform "$PLATFORM" || \
+    "$PY" "$DEST/scripts/register_hooks.py" --platform "$PLATFORM" --skills-dir "$DEST" || \
       warn "钩子注册未完成,可按 reference/installation.md 手工注册"
   fi
 
