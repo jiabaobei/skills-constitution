@@ -5,6 +5,38 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.20.0] - 2026-08-26
+
+### 安装全平台分流 + 钩子自动注册 + Windows 支持
+**背景**：外部测评指出安装脚本只覆盖"两个有技能目录的主力平台"，而文档宣称支持 17 个平台——规则文件型（Cursor/Windsurf/Cline）装不上、注入型平台没入口、钩子注册仍是 50 行手工配置、Windows 没有原生脚本、记忆层平台差异无提示。本版本把 5 个缺口一次补齐。
+
+#### 新增
+- **install.sh 按平台机制三分支**：
+  - 技能目录型（workbuddy/claude）：复制 + 自动重建技能树 + 自检（原有流程）
+  - 规则文件型（cursor/windsurf/cline）：宪法正文写入对应规则文件（`.cursor/rules/`；windsurf/cline 单文件用 BEGIN/END 标记块追加，幂等替换旧块），并如实声明"建议级，无钩子/技能树"
+  - 纯注入型（`--platform prompt`）：自动从 README 提取【快速注入模板】输出/落盘，附各平台粘贴位置指引
+- **`scripts/register_hooks.py` 钩子自动注册**（WorkBuddy + Claude Code 双平台同源格式，依据 reference/installation.md 官方样例）：
+  - 注册四事件：UserPromptSubmit / PreToolUse / Stop（python 跨平台）+ SessionStart（检测到 bash 才装）
+  - PreToolUse matcher 含 Bash（配合 v2.19.0 的 Bash 写文件检测）
+  - 安全设计：写前带时间戳备份 / 原 JSON 损坏拒写不动用户配置 / 写后重载校验失败自动回滚 / 幂等（重复执行只替换宪法自己的条目）/ `--uninstall` 干净移除 / `--dry-run` 预览
+- **`install.ps1` Windows PowerShell 版**：与 bash 版技能目录型流程对齐（探测→复制→重建→自检→可选 `-RegisterHooks`→记忆层指引）；如实标注本环境无 Windows 未实测，首次真机运行需用户回看结果
+- **记忆层平台对照**：安装收尾输出各平台记忆文件位置与 `--memory` 指向方式（零号条款查记忆不再找错文件）
+- `install.sh` 新增 `--target-dir`（规则文件型装入目标项目）与 `--register-hooks`（装完联动注册）
+
+#### 修复
+- install.sh `--register-hooks` 自定义技能目录时的路径传递（旧逻辑按平台默认目录找宪法导致注册失败）
+
+#### 文档
+- README / README_EN 快速开始改为平台分流表；reference/installation.md 钩子章节改"推荐自动注册"，手工格式降级为等价参考
+- 英文 README 目录结构补 install.ps1 / register_hooks.py
+
+#### 验证（本机实测）
+- [x] cursor / windsurf（首次+幂等）/ prompt / 技能目录型四种安装模式全过；windsurf 已有规则内容保留
+- [x] register_hooks 六场景全过：全新安装 / 用户钩子合并保留 / 幂等 / 损坏 JSON 拒写 / 卸载零残留 / 备份生成
+- [x] `install.sh --register-hooks` 沙箱联动通过；修复路径传递后复测通过
+- [ ] install.ps1 无 Windows 环境未实测（已如实标注，待真机首验）
+- [x] 原 39 条测试无回归；版本全文件核查 2.20.0
+
 ## [2.19.0] - 2026-08-26
 
 ### 校验层防伪造升级 + 一键安装 + 对抗性测试进 CI + 英文 README

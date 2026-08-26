@@ -3,28 +3,38 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.19.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.20.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
 
 ## 🚀 快速开始
 
-### 一键安装（推荐，v2.19.0）
+### 一键安装（推荐，v2.20.0 全平台分流）
 
 ```bash
 git clone https://github.com/jiabaobei/skills-constitution.git
-bash skills-constitution/install.sh
+bash skills-constitution/install.sh                 # 自动探测平台，装完自动重建技能树
 ```
 
-脚本自动完成：探测平台 → 复制到技能目录 → **自动重建你自己的技能树**（手工安装最容易漏的一步）→ 自检 → 输出下一步指引。
+脚本按平台机制自动分流（v2.20.0）：
+
+| 平台形态 | 命令 | 效果 |
+|---------|------|------|
+| 技能目录型（WorkBuddy / Claude Code） | `bash install.sh` | 复制 + **自动重建技能树** + 自检 |
+| 同上 + 强制拦截 | `bash install.sh --register-hooks` | 装完自动注册四个宿主钩子（带备份/回滚/幂等） |
+| 规则文件型（Cursor / Windsurf / Cline） | `bash install.sh --platform cursor --target-dir <项目>` | 宪法写入规则文件（建议级） |
+| 纯注入型（ChatGPT / Gemini / 扣子等） | `bash install.sh --platform prompt` | 自动提取注入模板供粘贴 |
+| Windows | `powershell -File install.ps1` | 同技能目录型流程（需真机首验） |
+
+钩子注册也可以单独跑：`python skills-constitution/scripts/register_hooks.py`（`--dry-run` 预览 / `--uninstall` 移除）。
 
 ### 一键注入（任何平台）
 
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.19.0
+## Skills 宪法（Skills Constitution）v2.20.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

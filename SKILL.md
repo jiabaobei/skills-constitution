@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.19.0
+version: 2.20.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,9 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.19.0（当前）** — 校验层防伪造升级：词边界匹配全面替代裸子串（`"encoded"` 不再误命中 `"code"`）；废除"分类名出现即算命中"兜底（只认实际技能名）；证据白名单（单短词技能名不算证据）；记忆证据动态提取 + 缺文件降级放行（修新装用户死锁）；分类器专业词优先 + 词表统一；gate 拦 Bash 写文件；retry-wrapper 废除无效自我重试；第 7 组对抗性测试（15 条糊弄向量固化为必须失败）真正接入 CI；新增 `install.sh` 一键安装（自动重建技能树）与英文 README。
+> **v2.20.0（当前）** — 安装全平台分流：`install.sh` 按平台机制三分支（技能目录型自动重建技能树 / 规则文件型写入规则文件并声明建议级 / 纯注入型自动提取模板）；新增 `scripts/register_hooks.py` 钩子自动注册（WorkBuddy + Claude Code，带备份/回滚/幂等/卸载）；新增 `install.ps1` Windows 版（待真机首验）；安装收尾输出记忆层平台对照。
+>
+> **v2.19.0** — 校验层防伪造升级：词边界匹配全面替代裸子串（`"encoded"` 不再误命中 `"code"`）；废除"分类名出现即算命中"兜底（只认实际技能名）；证据白名单（单短词技能名不算证据）；记忆证据动态提取 + 缺文件降级放行（修新装用户死锁）；分类器专业词优先 + 词表统一；gate 拦 Bash 写文件；retry-wrapper 废除无效自我重试；第 7 组对抗性测试（15 条糊弄向量固化为必须失败）真正接入 CI；新增 `install.sh` 一键安装（自动重建技能树）与英文 README。
 >
 > **v2.18.0** — 新增使用者建技能树指南（reference/skill-tree-guide.md：完整命令含 SKILLS_DIR / 平台差异 / 自检 / FAQ）；README/installation 重建命令统一带 SKILLS_DIR 并指向指南
 >

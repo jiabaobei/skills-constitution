@@ -14,7 +14,17 @@ SKILLS_DIR="$HOME/.workbuddy/skills" python scripts/build_skill_tree.py
 # 完整命令/平台差异/自检/FAQ 见 reference/skill-tree-guide.md
 ```
 
-**WorkBuddy 钩子注册（v2.14.0 必读）**：WorkBuddy 的钩子注册点在 `~/.workbuddy/settings.json` 的 `hooks` 字段（**不是**技能目录里的 `hooks/hooks.json`——那是 CodeBuddy/Claude Code 插件机制用的）。装完技能后需手动把以下三事件写入 settings.json（路径换成你的实际 python.exe 与技能路径；改完**重启 WorkBuddy 生效**）：
+**WorkBuddy 钩子注册（v2.14.0 必读）**：WorkBuddy 的钩子注册点在 `~/.workbuddy/settings.json` 的 `hooks` 字段（**不是**技能目录里的 `hooks/hooks.json`——那是 CodeBuddy/Claude Code 插件机制用的）。
+
+**v2.20.0 起推荐自动注册**（一条命令，带备份/校验/回滚/幂等，WorkBuddy 与 Claude Code 通用）：
+
+```bash
+python scripts/register_hooks.py              # 自动探测平台
+python scripts/register_hooks.py --dry-run    # 只预览不落盘
+python scripts/register_hooks.py --uninstall  # 移除宪法钩子(保留你的其它配置)
+```
+
+或安装时直接 `bash install.sh --register-hooks`。以下是自动注册的等价手工格式（路径换成你的实际 python.exe 与技能路径；改完**重启宿主生效**）：
 
 ```json
 {

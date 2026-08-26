@@ -92,7 +92,11 @@ _append_marker_block() {
 # 分支 2: 纯注入型平台(打印模板)
 # ============================================================
 install_as_prompt() {
-  local out="${TARGET_DIR:+$TARGET_DIR/constitution-injection-template.md}"
+  local out=""
+  if [[ -n "$TARGET_DIR" ]]; then
+    mkdir -p "$TARGET_DIR"
+    out="$TARGET_DIR/constitution-injection-template.md"
+  fi
   say "提取【快速注入模板】..."
   local tpl
   tpl="$(awk '/^````markdown$/{f=1;next} /^````$/{if(f){exit}} f{print}' "$REPO_DIR/README.md")"

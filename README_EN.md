@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.19.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.20.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -48,12 +48,21 @@ Design principles: **default soft checks** (`--strict` to block), **fail-open** 
 
 ```bash
 git clone https://github.com/jiabaobei/skills-constitution.git
-bash skills-constitution/install.sh
+bash skills-constitution/install.sh                 # auto-detects platform
 ```
 
-`install.sh` auto-detects your platform (WorkBuddy → Claude Code), copies the
-constitution into your skills directory, **rebuilds the skill tree for your
-machine** (the step everyone forgets), and self-checks the result.
+`install.sh` routes by platform mechanism (v2.20.0):
+
+| Platform kind | Command | What happens |
+|---------------|---------|--------------|
+| Skills-dir hosts (WorkBuddy / Claude Code) | `bash install.sh` | copy + **auto-rebuild your skill tree** + self-check |
+| Same + enforcement | `bash install.sh --register-hooks` | plus auto-registers the 4 host hooks (backup/rollback/idempotent) |
+| Rules-file hosts (Cursor / Windsurf / Cline) | `bash install.sh --platform cursor --target-dir <project>` | constitution written into the rules file (advisory level) |
+| Prompt-only (ChatGPT / Gemini / Coze ...) | `bash install.sh --platform prompt` | extracts the injection template for pasting |
+| Windows | `powershell -File install.ps1` | same skills-dir flow (first-run check on a real machine appreciated) |
+
+Hook registration also runs standalone: `python skills-constitution/scripts/register_hooks.py`
+(`--dry-run` to preview, `--uninstall` to remove).
 
 ### Manual install
 
@@ -75,9 +84,16 @@ cp skills-constitution/SKILL.md .cursor/rules/skills-constitution.md
 ### Enforcement (optional)
 
 Without host hooks the constitution is advisory. On hosts with hook support
-(WorkBuddy/CodeBuddy; Claude Code hooks compatible) register
-`scripts/constitution-gate.py` for `UserPromptSubmit` / `PreToolUse` / `Stop`
-to get real blocking. See `reference/gate-details.md`.
+(WorkBuddy/CodeBuddy; Claude Code hooks compatible) run:
+
+```bash
+python skills-constitution/scripts/register_hooks.py   # or: bash install.sh --register-hooks
+```
+
+It registers `scripts/constitution-gate.py` for `UserPromptSubmit` /
+`PreToolUse` / `Stop` (plus the bash `SessionStart` injector when bash is
+present), backing up your settings file first and rolling back on any error.
+See `reference/gate-details.md` for the event semantics.
 
 ## The articles
 
@@ -94,12 +110,14 @@ to get real blocking. See `reference/gate-details.md`.
 
 ```
 SKILL.md                    # the constitution (main rule file)
-install.sh                  # one-click installer (auto tree rebuild + self-check)
+install.sh                  # one-click installer, routes by platform mechanism
+install.ps1                 # Windows PowerShell installer
 skill_tree.json             # author's snapshot — rebuild for your machine
 registry.json               # curated open-source skill registry
 scripts/
   constitution-check        # gate entry point (5 steps, soft/strict)
   constitution-gate.py      # host-level hook (pre-block + audit + warn-next)
+  register_hooks.py         # auto-register/unregister host hooks (backup+rollback)
   pre-hook.py               # forced context injection + task classifier
   build_skill_tree.py       # rebuild YOUR skill tree index
   steps/                    # the 5 independent check scripts
