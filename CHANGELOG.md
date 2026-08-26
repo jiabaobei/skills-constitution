@@ -5,6 +5,35 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.19.0] - 2026-08-26
+
+### 校验层防伪造升级 + 一键安装 + 对抗性测试进 CI + 英文 README
+**背景**：外部深度测评（含实测复现）发现项目核心矛盾——"防糊弄"的校验器本身最容易被糊弄：一个 `"encoded"` 子串打穿 Layer C、一段含假链接的套话五步 `--strict` 全过、推荐链接里的 `github` 被当成"调用过技能"、新装用户无 MEMORY.md 时 step1 恒 FAIL 死锁、`check_injection` 缺树即崩溃、retry-wrapper 的"重试"是把错误报告喂给自己的检查器。本版本全部修复并把糊弄向量固化为自动化对抗测试。
+
+#### 修复（校验层防伪造，P0）
+- **词边界匹配全面替代裸子串**：Layer B/C 与分类器全部改用 `lib.text.keyword_in`——`"encoded"` 不再误命中 `"code"`、`"hi"` 不再命中 `"this"`、`"rapid"` 不再误命中 `"api"`
+- **废除 Layer C "分类名出现即算命中"兜底**（step1/2/3 + check_injection）：`code`/`doc` 等常见短词不构成证据，必需技能校验只认**实际技能名**
+- **证据白名单**（`lib/text.py` `GENERIC_EVIDENCE_BLOCKLIST` + `is_meaningful_evidence_name`）：名为 github/code/data 的单短词技能不再被误判为"调用过技能"（修复推荐链接即命中的漏洞）
+- **记忆证据动态化**：Layer B 记忆标记改从 MEMORY.md 实际内容提取指纹（`extract_memory_markers`），废除硬编码作者私货（旧实现对其他用户恒 FAIL）
+- **分类器双修**（零号条款）：简单词词边界 + **专业词优先**——"帮我解释这个报错然后修复代码并部署"不再被"解释"整体豁免；专业词保持宽松子串（误报只多查一次，符合"宁可不放过"）
+- **统一执法口径**：gate 的 `is_simple` 委托 `pre-hook.classify_task`（单一词表），修复两套词表不同步（如"介绍一下"）
+- **崩溃与死锁**：修 `check_injection` UnboundLocalError（树缺失+`--task` 时）；MEMORY.md / skill_tree.json 缺失时各硬校验**降级放行记 WARN**（新装用户不再恒 FAIL）
+- **gate 拦 Bash 写文件**：重定向/tee/heredoc/cp/mv/touch/mkdir 视同 Write/Edit 进门禁（`>/dev/null` 不误报），堵住最大绕行通道
+- **retry-wrapper 重做**：废除"把错误报告拼进输入再校验"的无效自我重试，改单次真实校验+结构化错误报告；补传 `--task`（旧版 Layer C 被静默跳过）
+
+#### 新增（P1）
+- **第 7 组对抗性防伪造测试**（15 条）：实测过的糊弄向量全部固化为"必须失败"；`ci.yml` 新增测试步骤（此前套件从未在 CI 执行）；移除从未 import 的 pyyaml 死依赖
+- **`install.sh` 一键安装**：探测平台 → 复制 → 自动重建本机技能树（最易漏的一步）→ 自检 → 下一步指引
+- **`README_EN.md` 英文 README**：面向英语社区（Claude Code 主用户群）；中文 README 顶部加入口 + 一键安装小节
+- **`docs/release-notes-v2.19.0.md`**：首个正式 Release 的说明文案
+- `build_skill_tree.py` venv 探测补 POSIX 路径（旧版只查 Windows，Linux/macOS 永远扫不到）
+
+#### 验证（本机实测）
+- [x] 原 24 条回归用例全过 + 15 条新对抗用例全过（**39/39**）
+- [x] 伪造向量实测：`"encoded"` 打穿向量 → FAIL；全套伪造套话 → step1 FAIL；假链接冒充调用 → FAIL；混合任务豁免逃逸 → professional
+- [x] `bash install.sh` 全流程实测（安装+重建+自检）；Bash 写文件检测 8 组边界用例全过
+- [x] 版本全文件核查 2.19.0（SKILL.md frontmatter / skill_tree.json / README badge / 注入模板）
+
 ## [2.18.0] - 2026-08-24
 
 ### 新增：使用者建技能树指南（skill-tree-guide.md）+ 重建命令统一
