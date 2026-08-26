@@ -15,6 +15,7 @@ Layer B/C 是文章说的"确定性代码包夹概率LLM"的具体实现:
 import argparse
 import json
 import os
+import re
 import sys
 import importlib.util
 
@@ -26,37 +27,70 @@ NAME = "step1"
 DESC = "宪法三查汇报(软+硬两层校验)"
 
 
+def extract_memory_markers(memory_content, limit=8):
+    """v2.19.0:从 MEMORY.md 实际内容动态提取独特标记(替代硬编码作者私货)
+
+    旧实现硬编码 ["铁律","jiabaobei","xiaozhao-radar","389"...] 等作者个人标记,
+    其他用户的记忆文件几乎永远不命中 → 硬校验对其他用户恒 FAIL(新用户死锁)。
+    新实现:取记忆内容里高频、有辨识度的 ASCII 词(≥4 字符,去停用词)与
+    中文规则类固定词(铁律/宪法/死规则),作为该用户自己的记忆指纹。
+    """
+    from collections import Counter
+    stop = {"this", "that", "with", "from", "have", "will", "must", "should",
+            "your", "the", "and", "for", "not", "are", "all", "can", "but",
+            "how", "use", "using", "when", "what", "which", "into", "about",
+            "more", "other", "some", "them", "then", "also", "only", "very"}
+    words = re.findall(r"[A-Za-z][A-Za-z0-9_\-]{3,}", memory_content or "")
+    cnt = Counter(w.lower() for w in words if w.lower() not in stop)
+    markers = [w for w, _ in cnt.most_common(limit)]
+    for fixed in ("铁律", "宪法", "死规则"):
+        if fixed in (memory_content or "") and fixed not in markers:
+            markers.append(fixed)
+    return markers
+
+
 def layer_b_hard_check(text, memory_path, tree_path):
     """Layer B:硬校验 — 检查是否真实引用了记忆和技能树内容
 
     文章核心:确定性代码不信任概率模型的自觉。
     这里用文件存在性 + 内容特征作为硬证据:
-    - 如果回复中出现了 MEMORY.md 里的独特关键词(如技能数量、平台名等)
+    - 如果回复中出现了 MEMORY.md 里的独特关键词(技能数量、平台名等)
     - 如果回复中出现了 skill_tree.json 里的分类(如 browser/code/data 等)
     则视为真正执行了查记忆和查技能树的动作,而非仅汇报。
+
+    v2.19.0 修复:
+    - 记忆标记改从 MEMORY.md 实际内容动态提取(不再硬编码作者私货)
+    - 匹配改词边界;"encoded" 不再误命中 "code" 等单短词
+    - 文件缺失/无标记时降级放行(记 WARN)——修复新装用户恒 FAIL 死锁
     """
     if not text or not text.strip():
-        return False, "无输入文本", "FAIL"
+        return False, "无输入文本"
 
     has_memory_evidence = False
     has_tree_evidence = False
+    notes = []
 
     # 检查 MEMORY.md 内容证据
     if memory_path and os.path.exists(memory_path):
         try:
             with open(memory_path, encoding="utf-8") as f:
                 memory_content = f.read()
-            # 独特关键词:语义标记优先(Agent 实际会引用铁律/仓库名/目录名),
-            # 数字标记兜底(技能数量等)。v2.11.0 修正顺序,避免只匹配到数字。
-            unique_markers = ["铁律", "MEMORY", "jiabaobei", "skills-disabled",
-                              "skills-backup", "xiaozhao-radar", "agnes-video",
-                              "389", "388", "385", "384", "386",
-                              "Ju-You-Hui", "ju-you-hui"]
-            found = [m for m in unique_markers if m.lower() in memory_content.lower()]
-            if found and T.has_any(text, *found[:3]):
+            markers = extract_memory_markers(memory_content)
+            if markers:
+                found = [m for m in markers if T.keyword_in(text, m)]
+                if found:
+                    has_memory_evidence = True
+            else:
+                # 记忆文件存在但提取不到任何标记 → 无法证伪,降级放行
                 has_memory_evidence = True
+                notes.append("记忆无可用标记,降级放行")
         except Exception:
-            pass
+            has_memory_evidence = True
+            notes.append("记忆读取失败,降级放行")
+    else:
+        # MEMORY.md 不存在(新装用户)→ 无记忆可查,降级放行而非恒 FAIL
+        has_memory_evidence = True
+        notes.append("MEMORY.md 不存在,记忆校验降级放行")
 
     # 检查 skill_tree.json 内容证据
     if tree_path and os.path.exists(tree_path):
@@ -84,18 +118,27 @@ def layer_b_hard_check(text, memory_path, tree_path):
                     if name:
                         skill_names.add(name)
 
-            # 检查回复中是否出现了分类名或技能名
-            # v2.11.0:全量匹配(不用 [:5]/[:10] 切片——set 无序导致切片不稳定)
-            has_cat_match = any(T.has_any(text, c) for c in categories)
-            has_skill_match = any(T.has_any(text, s) for s in skill_names)
+            # v2.19.0:词边界匹配 + 证据白名单过滤(单短词分类/技能名不算证据)
+            has_cat_match = any(
+                T.is_meaningful_evidence_name(c) and T.keyword_in(text, c)
+                for c in categories)
+            has_skill_match = any(
+                T.is_meaningful_evidence_name(s) and T.keyword_in(text, s)
+                for s in skill_names)
 
             if has_cat_match or has_skill_match:
                 has_tree_evidence = True
         except Exception:
-            pass
+            has_tree_evidence = True
+            notes.append("技能树读取失败,降级放行")
+    else:
+        # skill_tree.json 不存在(未重建技能树的新装用户)→ 降级放行
+        has_tree_evidence = True
+        notes.append("skill_tree.json 不存在,技能树校验降级放行")
 
     return has_memory_evidence and has_tree_evidence, (
         f"memory={has_memory_evidence},tree={has_tree_evidence}"
+        + (f"({';'.join(notes)})" if notes else "")
     )
 
 
@@ -106,12 +149,18 @@ def layer_c_task_hard_check(text, tree_path, task):
     回复必须引用 skill_tree.json 对应分类下的**实际技能名**(如 git-workflow-and-versioning),
     否则判定 FAIL —— 防止 Agent 用"查了 skills-constitution 就算查了技能"糊弄。
 
+    v2.19.0 修复:
+    - 技能名匹配改词边界 —— "encoded" 不再误命中分类名 "code" 打穿校验
+    - 废除"分类名出现即算命中"兜底 —— 分类名是常见英文单词,出现在任意
+      技术文本里的概率极高,不构成证据;只认实际技能名
+    - 技能树缺失时降级放行(记 WARN),不再恒 FAIL 阻断新装用户
+
     返回 (passed, msg, level)
     """
     if not task or not task.strip():
         return True, "无任务描述,跳过任务相关校验", "PASS"
     if not tree_path or not os.path.exists(tree_path):
-        return False, f"skill_tree.json 不存在:{tree_path}", "FAIL"
+        return True, "skill_tree.json 不存在,任务相关校验降级放行", "PASS"
 
     try:
         # 复用 pre-hook 的确定性映射
@@ -126,18 +175,15 @@ def layer_c_task_hard_check(text, tree_path, task):
         if not required_skills:
             return True, f"任务无强相关分类(必需分类:{required_cats or '无'})", "PASS"
 
-        # 输出中必须出现至少一个必需技能名或分类名
-        text_lower = (text or "").lower()
-        found_skills = [s for s in required_skills if s.lower() in text_lower]
-        found_cats = [c for c in required_cats if c.lower() in text_lower]
-        if not found_skills and not found_cats:
+        # v2.19.0:只认实际技能名(词边界匹配),分类名不再算证据
+        found_skills = [s for s in required_skills if T.keyword_in(text, s)]
+        if not found_skills:
             return False, (
-                f"任务含'{task}'相关关键词,但输出未引用对应分类技能"
+                f"任务含'{task}'相关关键词,但输出未引用对应分类的实际技能名"
                 f"(必需分类:{required_cats}, 候选技能如:{required_skills[:5]})"
             ), "FAIL"
         return True, (
-            f"任务相关技能命中: 分类={found_cats or required_cats}, "
-            f"技能={found_skills[:3] or required_skills[:3]}"
+            f"任务相关技能命中: 分类={required_cats}, 技能={found_skills[:3]}"
         ), "PASS"
     except Exception as e:
         return False, f"任务相关校验异常:{e}", "SKIP"

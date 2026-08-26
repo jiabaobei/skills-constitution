@@ -54,6 +54,25 @@ def is_ascii_keyword(kw):
     return all(ord(c) < 128 for c in kw)
 
 
+# v2.19.0:证据白名单过滤 —— 单短词技能名/分类名不能作为"已调用技能"的硬证据。
+# 漏洞背景:技能树里存在名为 github/code/data 的单短词技能,输出文本里随便出现
+# 这些词(甚至推荐链接)就被误判为"调用过技能",与立法意图(引用实际技能名)不符。
+GENERIC_EVIDENCE_BLOCKLIST = {
+    "git", "github", "code", "file", "data", "web", "api", "doc",
+    "ppt", "pdf", "url", "cli", "app", "sql", "css", "pdf",
+}
+
+
+def is_meaningful_evidence_name(name):
+    """技能名/分类名是否够格作为硬校验证据(v2.19.0)
+
+    规则:长度 >= 4 且不在通用短词黑名单。短词在任意技术文本里出现频率过高,
+    命中不构成"真的引用了该技能"的证据。
+    """
+    n = (name or "").lower().strip()
+    return len(n) >= 4 and n not in GENERIC_EVIDENCE_BLOCKLIST
+
+
 def keyword_in(text, kw):
     """关键词命中判断(v2.12.0 修复子串误杀)
 

@@ -22,11 +22,16 @@ DESC = "匹配技能调用(软+硬两层校验)"
 
 
 def layer_b_hard_check(text, tree_path):
-    """Layer B:硬校验 — 检查是否真实引用了技能内容"""
+    """Layer B:硬校验 — 检查是否真实引用了技能内容
+
+    v2.19.0:词边界匹配 + 证据白名单过滤 —— 名为 github/code 的单短词技能
+    不再被误判为"调用过技能"(推荐链接里出现 github 即命中的漏洞);
+    技能树缺失时降级放行。
+    """
     if not text or not text.strip():
         return False, "无输入文本", "FAIL"
     if not tree_path or not os.path.exists(tree_path):
-        return False, f"skill_tree.json 不存在:{tree_path}", "FAIL"
+        return True, "skill_tree.json 不存在,技能校验降级放行", "PASS"
 
     try:
         with open(tree_path, encoding="utf-8") as f:
@@ -48,21 +53,27 @@ def layer_b_hard_check(text, tree_path):
                 if name:
                     skills.append((name, desc))
 
-        # 检查回复中是否出现了技能名
-        found_skills = [s for s, _ in skills if T.has_any(text, s)]
+        # v2.19.0:词边界 + 白名单过滤(单短词技能名不构成证据)
+        found_skills = [
+            s for s, _ in skills
+            if T.is_meaningful_evidence_name(s) and T.keyword_in(text, s)
+        ]
         if found_skills:
             return True, f"硬校验通过:引用了技能名={found_skills[:3]}", "PASS"
         return False, "硬校验未通过:未引用实际技能名", "FAIL"
     except Exception as e:
-        return False, f"读取技能树失败:{e}", "SKIP"
+        return True, f"读取技能树失败(降级放行):{e}", "PASS"
 
 
 def layer_c_task_hard_check(text, tree_path, task):
-    """Layer C(v2.11.0):任务相关技能调用硬校验(与 step1/2 共用逻辑)"""
+    """Layer C(v2.11.0):任务相关技能调用硬校验(与 step1/2 共用逻辑)
+
+    v2.19.0:词边界匹配 + 废除分类名兜底(只认实际技能名);树缺失降级放行。
+    """
     if not task or not task.strip():
         return True, "无任务描述,跳过任务相关校验", "PASS"
     if not tree_path or not os.path.exists(tree_path):
-        return False, f"skill_tree.json 不存在:{tree_path}", "FAIL"
+        return True, "skill_tree.json 不存在,任务相关校验降级放行", "PASS"
 
     try:
         pre_hook_path = os.path.join(
@@ -76,17 +87,14 @@ def layer_c_task_hard_check(text, tree_path, task):
         if not required_skills:
             return True, f"任务无强相关分类(必需分类:{required_cats or '无'})", "PASS"
 
-        text_lower = (text or "").lower()
-        found_skills = [s for s in required_skills if s.lower() in text_lower]
-        found_cats = [c for c in required_cats if c.lower() in text_lower]
-        if not found_skills and not found_cats:
+        found_skills = [s for s in required_skills if T.keyword_in(text, s)]
+        if not found_skills:
             return False, (
-                f"任务含'{task}'相关关键词,但输出未引用对应分类技能"
+                f"任务含'{task}'相关关键词,但输出未引用对应分类的实际技能名"
                 f"(必需分类:{required_cats}, 候选技能如:{required_skills[:5]})"
             ), "FAIL"
         return True, (
-            f"任务相关技能命中: 分类={found_cats or required_cats}, "
-            f"技能={found_skills[:3] or required_skills[:3]}"
+            f"任务相关技能命中: 分类={required_cats}, 技能={found_skills[:3]}"
         ), "PASS"
     except Exception as e:
         return False, f"任务相关校验异常:{e}", "SKIP"
@@ -126,8 +134,11 @@ def layer_d_relevance_check(text, tree_path, task):
             expanded_task = ph.expand_task_text(task)
         except Exception:
             pass
-        # Agent 输出中引用的真实技能
-        claimed = [(n, d) for n, d in skills.items() if T.has_any(text, n)]
+        # Agent 输出中引用的真实技能(v2.19.0:词边界 + 白名单过滤)
+        claimed = [
+            (n, d) for n, d in skills.items()
+            if T.is_meaningful_evidence_name(n) and T.keyword_in(text, n)
+        ]
         if not claimed:
             return True, "未引用具体技能名,相关性校验不适用", "SKIP"
         # 相关判定(满足其一即相关):

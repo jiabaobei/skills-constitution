@@ -33,8 +33,16 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
-    from lib.text import overlap_score
+    from lib.text import overlap_score, keyword_in
 except ImportError:
+    def keyword_in(text, kw):  # 兜底:与 lib.text 同逻辑(英文词边界,中文子串)
+        t, k = (text or "").lower(), (kw or "").lower()
+        if not k:
+            return False
+        if all(ord(c) < 128 for c in k):
+            return re.search(r"(?<![a-z0-9])" + re.escape(k) + r"(?![a-z0-9])", t) is not None
+        return k in t
+
     def overlap_score(text_a, text_b):  # 兜底:与 lib.text 同逻辑(零依赖轻语义)
         word_re = re.compile(r"[a-z0-9][a-z0-9_\-\.]*")
         cjk_re = re.compile(r"[一-鿿]")
@@ -159,6 +167,8 @@ def expand_task_text(task):
 def required_categories_for_task(task):
     """v2.11.0:按任务关键词返回必需技能分类(确定性,非 Agent 自觉)
     v2.12.0:先经同义词扩展(TASK_SYNONYM_MAP)再匹配,口语表达不再漏判。
+    v2.19.0:英文关键词改词边界匹配 —— 修复 "rapid" 误命中 "api"、
+    "research" 误命中 "search" 等子串碰撞导致的误强制。
 
     返回 list[str],如 ["code"] / ["browser","data"] / [] (无强相关)
     这是硬校验的依据:任务含"代码/git/部署"关键词 → 输出必须命中 code 分类技能。
@@ -168,7 +178,7 @@ def required_categories_for_task(task):
     task_lower = expand_task_text(task).lower()
     matched = []
     for kw, cats in REQUIRED_CATEGORY_KEYWORDS:
-        if kw.lower() in task_lower:
+        if keyword_in(task_lower, kw):
             for c in cats:
                 if c not in matched:
                     matched.append(c)
@@ -206,15 +216,19 @@ def required_skills_for_task(tree, task):
     return required_cats, result
 
 # 零号条款：简单任务关键词（命中任一 → 判定简单，走通道A，不拦截）
+# v2.19.0:匹配改词边界(英文) + 专业词优先(见 classify_task),
+# 修复 "hi"⊂"this"、"explain"⊂"explain this bug and fix" 等碰撞导致的整体豁免逃逸。
 SIMPLE_TASK_MARKERS = [
     "翻译", "润色", "改写", "解释", "解释一下", "概念", "是什么意思",
     "知识问答", "科普", "闲聊", "你好", "谢谢", "再见", "打招呼",
-    "简单说明", "一句话", "概括", "总结一下这篇文章",
+    "简单说明", "一句话", "概括", "总结一下这篇文章", "介绍一下",
     "translate", "paraphrase", "explain", "meaning", "greeting",
     "thank", "hi", "hello", "what is", "what's",
 ]
 
 # 零号条款：专业任务关键词（命中任一 → 判定专业，走通道B，强制拦截）
+# 注意:专业词保持子串匹配(宽松) —— 专业词的误报只会"多查一次",符合零号条款
+# "模糊任务宁可不放过"的精神;危险方向是简单词误报导致豁免逃逸,那边用词边界收紧。
 PROFESSIONAL_TASK_MARKERS = [
     "编码", "代码", "编程", "开发", "写一个", "实现", "部署", "推送",
     "文件", "脚本", "爬虫", "抓取", "API", "接口", "数据库", "查询",
@@ -234,16 +248,23 @@ def classify_task(text):
     - simple: 命中简单关键词 → 通道A（跳过门禁，直接通用能力）
     - professional: 命中专业关键词 → 通道B（强制 pre-hook + 五步校验）
     - ambiguous: 无命中 → 宁可不放过，按专业处理（宪法:模糊任务 ✅ 查一下）
+
+    v2.19.0 两处修复:
+    1. 简单词用词边界匹配 —— "hi" 不再命中 "this/shift"、"explain" 不再
+       豁免 "explain this bug and fix the code" 这类混合任务中的专业部分。
+    2. 专业词优先 —— 同时命中简单词和专业词时判 professional
+       ("帮我解释这个报错然后修复代码并部署" 不再被整体豁免)。
+       专业词保持子串匹配:误报只会多查一次,符合"宁可不放过"。
     """
     if not text:
         return "ambiguous"
     text_lower = expand_task_text(text).lower()  # v2.12.0:同义词扩展后分类
-    for marker in SIMPLE_TASK_MARKERS:
-        if marker.lower() in text_lower:
-            return "simple"
-    for marker in PROFESSIONAL_TASK_MARKERS:
-        if marker.lower() in text_lower:
-            return "professional"
+    has_simple = any(keyword_in(text_lower, m) for m in SIMPLE_TASK_MARKERS)
+    has_pro = any(m.lower() in text_lower for m in PROFESSIONAL_TASK_MARKERS)
+    if has_pro:
+        return "professional"
+    if has_simple:
+        return "simple"
     return "ambiguous"
 
 
@@ -488,6 +509,10 @@ def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE, ta
     v2.11.0 增强:传入 task 后,若任务含"代码/git/部署"等关键词,
     输出文本必须引用对应分类下的实际技能名(从 skill_tree.json 读取),
     否则视为"查了技能树但未命中任务相关技能" → FAIL。
+
+    v2.19.0 修复:
+    - tree 未初始化导致 UnboundLocalError(skill_tree.json 缺失且传 --task 时崩溃)
+    - 全部匹配改词边界;废除"分类名出现即算命中"兜底 —— 必需技能校验只认实际技能名
     """
     if not text:
         return False, "无输入文本"
@@ -498,14 +523,14 @@ def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE, ta
     memory_text = load_memory(memory_path)
     if memory_text:
         memory_markers = ["铁律", "MEMORY", "技能", "宪法", "GitHub", "仓库"]
-        found_mem = [m for m in memory_markers if m in text]
+        found_mem = [m for m in memory_markers if keyword_in(text, m)]
         if len(found_mem) < 2:
             return False, f"记忆引用不足(仅命中:{found_mem})"
-    # 必须包含技能树标记
-    if os.path.exists(tree_path):
-        tree = load_tree(tree_path)
+    # 必须包含技能树标记(树缺失时跳过该项,不再因缺文件崩溃/误拦)
+    tree = load_tree(tree_path)
+    if tree:
         all_cats = list(tree.keys())
-        found_cat = [c for c in all_cats[:10] if c.lower() in text.lower()]
+        found_cat = [c for c in all_cats[:10] if keyword_in(text, c)]
         if not found_cat:
             return False, "缺技能树分类引用"
 
@@ -513,10 +538,9 @@ def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE, ta
     if task:
         required_cats, required_skills = required_skills_for_task(tree, task)
         if required_skills:
-            # 输出中必须出现至少一个必需技能名(或对应分类名)
-            found_skills = [s for s in required_skills if s.lower() in (text or "").lower()]
-            found_cats = [c for c in required_cats if c.lower() in (text or "").lower()]
-            if not found_skills and not found_cats:
+            # v2.19.0:只认实际技能名(词边界);分类名出现不再算证据
+            found_skills = [s for s in required_skills if keyword_in(text, s)]
+            if not found_skills:
                 return False, (
                     f"任务含必需关键词但输出未引用任务相关技能"
                     f"(必需分类:{required_cats}, 候选技能示例:{required_skills[:5]})"

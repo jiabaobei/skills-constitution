@@ -49,6 +49,8 @@ VIOLATIONS = os.path.join(BASE, ".constitution-violations.json")
 CHECK = os.path.join(BASE, "scripts", "constitution-check")
 
 # 简单任务关键词(零号条款:翻译/润色/概念解释/一般知识问答)
+# v2.19.0:仅作兜底 —— 正常路径统一走 pre-hook.classify_task(单一词表),
+# 修复 gate 与 --classify 两套词表不同步(如"介绍一下")的问题。
 SIMPLE_KW = [
     "翻译", "润色", "解释", "概念", "什么意思", "是什么意思", "怎么理解",
     "translate", "paraphrase", "explain", "meaning", "什么是", "介绍一下",
@@ -56,6 +58,34 @@ SIMPLE_KW = [
 
 # 需要"先查技能"的执行型工具(写代码/写文件)
 EXEC_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
+
+# v2.19.0:Bash 写文件模式检测 —— 旧版只拦 Write/Edit,Agent 用
+# `cat > file <<EOF` / 重定向 / tee 写文件完全绕过门禁,
+# 而"推送代码/跑爬虫"这类专业任务恰恰主要走 Bash。
+import re as _re
+_BASH_WRITE_RE = _re.compile(
+    r"(?<![<>])>\s*[^\s|&;]+\s*$"          # cmd > file(行尾)
+    r"|>>\s*[^\s|&;]+"                      # cmd >> file
+    r"|\btee\s+[^\s|&;]+"                   # cmd | tee file
+    r"|\bcat\s+<<\s*['\"]?\w+"              # heredoc: cat <<EOF
+    r"|\b(?:cp|mv|touch|mkdir|install)\s+"  # 文件操作命令
+)
+
+
+def classify_via_pre_hook(text):
+    """复用 pre-hook.classify_task(单一词表,零号条款确定性分类器)。
+
+    加载失败时返回 None,调用方走本地兜底(保持 fail-open)。
+    """
+    try:
+        import importlib.util as _ilu
+        ph_path = os.path.join(BASE, "scripts", "pre-hook.py")
+        spec = _ilu.spec_from_file_location("pre_hook_gate_mod", ph_path)
+        ph = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+        return ph.classify_task(text)
+    except Exception:
+        return None
 
 
 def now_ts():
@@ -95,8 +125,26 @@ def save_violations(data):
 
 
 def is_simple(text):
+    """零号条款简单任务判定。
+
+    v2.19.0:优先走 pre-hook.classify_task(与 --classify 单一词表,含词边界
+    匹配与"专业词优先"规则);加载失败退回本地词表兜底。
+    """
+    verdict = classify_via_pre_hook(text)
+    if verdict is not None:
+        return verdict == "simple"
     low = (text or "").lower()
     return any(k.lower() in low for k in SIMPLE_KW)
+
+
+def is_bash_file_write(tool, tool_input):
+    """v2.19.0:Bash 是否在写文件(重定向/tee/heredoc/文件操作命令)"""
+    if tool != "Bash":
+        return False
+    cmd = ""
+    if isinstance(tool_input, dict):
+        cmd = tool_input.get("command", "") or ""
+    return bool(_BASH_WRITE_RE.search(cmd or ""))
 
 
 def is_check_command(text):
@@ -145,10 +193,12 @@ def main():
     # ---------- PreToolUse ----------
     if EVENT == "PreToolUse":
         tool = payload.get("tool_name", "") or ""
-        if tool not in EXEC_TOOLS:
+        tool_input = payload.get("tool_input", {})
+        # v2.19.0:Bash 写文件(重定向/tee/heredoc)视同 Write/Edit 一并拦截
+        if tool not in EXEC_TOOLS and not is_bash_file_write(tool, tool_input):
             sys.exit(0)
         # 跑门禁自身不拦(防死锁)
-        tinput = json.dumps(payload.get("tool_input", {}), ensure_ascii=False)
+        tinput = json.dumps(tool_input, ensure_ascii=False)
         if is_check_command(tinput):
             sys.exit(0)
         # 简单任务豁免
