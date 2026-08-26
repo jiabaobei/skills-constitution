@@ -19,8 +19,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install pyyaml
+      # v2.19.0:回归+对抗性测试套件真正接入 CI(此前只跑索引数据校验)
+      - name: Run regression & adversarial tests
+        run: python scripts/tests/run_tests.py
 
       # 若显式传入 SKILLS_DIR 且目录存在，则重新生成索引并校验；
       # 否则（GitHub runner 无本机技能目录）只校验已提交的索引文件。

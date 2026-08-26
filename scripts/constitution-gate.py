@@ -62,13 +62,13 @@ EXEC_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 # v2.19.0:Bash 写文件模式检测 —— 旧版只拦 Write/Edit,Agent 用
 # `cat > file <<EOF` / 重定向 / tee 写文件完全绕过门禁,
 # 而"推送代码/跑爬虫"这类专业任务恰恰主要走 Bash。
+# 注意排除 >/dev/null(丢弃输出,不产生文件)。
 import re as _re
 _BASH_WRITE_RE = _re.compile(
-    r"(?<![<>])>\s*[^\s|&;]+\s*$"          # cmd > file(行尾)
-    r"|>>\s*[^\s|&;]+"                      # cmd >> file
-    r"|\btee\s+[^\s|&;]+"                   # cmd | tee file
-    r"|\bcat\s+<<\s*['\"]?\w+"              # heredoc: cat <<EOF
-    r"|\b(?:cp|mv|touch|mkdir|install)\s+"  # 文件操作命令
+    r">>?\s*(?!/dev/null)[\w\.\-/~][^\s|&;]*"   # cmd > file / cmd >> file
+    r"|\btee\s+(?:-a\s+)?[\w\.\-/~]"            # cmd | tee file
+    r"|\bcat\s+<<"                               # heredoc: cat <<EOF
+    r"|\b(?:cp|mv|touch|mkdir)\s+"              # 文件操作命令
 )
 
 

@@ -13,6 +13,7 @@
   4. Layer D 语义相关性校验(无关技能 FAIL / 相关技能 PASS)
   5. 多技能编排兼容性检查(不兼容链 FAIL / 兼容链 PASS)
   6. 可选语义索引缺依赖行为(exit 2 + 安装指引;已装依赖则跳过)
+  7. 对抗性防伪造用例(v2.19.0):实测可打穿旧校验的糊弄向量,全部固化为"必须失败"
 
 用法: python scripts/tests/run_tests.py
 返回码: 0=全部通过, 1=有失败
@@ -41,8 +42,11 @@ def load_module(name, path):
 
 ph = load_module("pre_hook_under_test", os.path.join(SCRIPTS_DIR, "pre-hook.py"))
 bst = load_module("build_skill_tree_under_test", os.path.join(SCRIPTS_DIR, "build_skill_tree.py"))
+step1 = load_module("step1_under_test", os.path.join(SCRIPTS_DIR, "steps", "step1-check.py"))
 step3 = load_module("step3_under_test", os.path.join(SCRIPTS_DIR, "steps", "step3-check.py"))
 step4 = load_module("step4_under_test", os.path.join(SCRIPTS_DIR, "steps", "step4-check.py"))
+gate = load_module("gate_under_test", os.path.join(SCRIPTS_DIR, "constitution-gate.py"))
+rw = load_module("retry_wrapper_under_test", os.path.join(SCRIPTS_DIR, "retry-wrapper.py"))
 from lib import text as T  # noqa: E402
 
 RESULTS = []
@@ -57,7 +61,7 @@ def check(case, actual, expect=True):
 
 def main():
     print("=" * 60)
-    print("Skills Constitution 回归测试 (v2.12.0)")
+    print("Skills Constitution 回归测试 (v2.19.0)")
     print("=" * 60)
 
     # ---- 1. 同义词扩展:口语任务命中必需分类 ----
@@ -146,6 +150,66 @@ def main():
             capture_output=True, text=True)
         check("缺依赖 exit 2", r.returncode == 2)
         check("缺依赖提示安装指引", "pip install" in (r.stderr or ""))
+
+    # ---- 7. 对抗性防伪造用例（v2.19.0：实测打穿旧校验的糊弄向量，必须全被拦下） ----
+    print("\n[7] 对抗性防伪造(伪造文本必须失败)")
+
+    # 7.1 分类器逃逸：混合任务不再被简单词整体豁免
+    check("混合任务'解释报错并修复部署'判 professional",
+          ph.classify_task("帮我解释这个报错然后修复代码并部署") == "professional")
+    check("混合任务(英文)判 professional",
+          ph.classify_task("please explain how to fix this bug and commit the code")
+          == "professional")
+    check("'hi'⊂'this' 碰撞不再豁免",
+          ph.classify_task("help with this deployment") == "professional")
+    check("'介绍一下'+专业词 不再整体豁免",
+          ph.classify_task("介绍一下这个仓库然后帮我部署") == "professional")
+    check("纯简单任务仍豁免(不误伤)",
+          ph.classify_task("帮我翻译这段话") == "simple")
+    check("gate 与 classify 口径一致(介绍一下+爬虫)",
+          gate.is_simple("介绍一下如何用 python 写爬虫抓取数据") is False)
+
+    # 7.2 Layer C 打穿：'encoded' 含 'code' 子串不再蒙混
+    _, _, lv = step1.layer_c_task_hard_check(
+        "totally unrelated encoded output", TREE_PATH, "帮我写代码")
+    check("LayerC: 'encoded' 不再误命中分类名 'code'", lv == "FAIL")
+    _, _, lv = step1.layer_c_task_hard_check(
+        "【宪法三查】命中技能 git-workflow-and-versioning", TREE_PATH, "帮我写代码")
+    check("LayerC: 真实引用技能名仍通过", lv == "PASS")
+
+    # 7.3 伪造全套文本：只写「铁律」+ 假链接，未查记忆/技能树 → step1 必须 FAIL
+    forged = ("【宪法三查】\n铁律铭记于心。\n"
+              "推荐仓库: https://github.com/fake/nonexistent-repo 12k★")
+    passed, _, _ = step1.check(forged, "/nonexistent/MEMORY.md", TREE_PATH, "帮我写代码")
+    check("伪造套话(无真实技能名) → step1 FAIL", passed is False)
+
+    # 7.4 假链接冒充技能调用：推荐链接里的 'github' 不算"调用过技能"
+    _, _, lv = step3.layer_b_hard_check(
+        "推荐 https://github.com/fake/repo 12k★", TREE_PATH)
+    check("假链接不再被误判为技能调用证据", lv == "FAIL")
+
+    # 7.5 崩溃回归：skill_tree.json 缺失且传 --task 时不再 UnboundLocalError
+    try:
+        ok, msg = ph.check_injection(
+            "【宪法三查】", tree_path="/nonexistent/tree.json", task="帮我写代码")
+        check("check_injection 缺树不崩溃", True)
+    except UnboundLocalError as e:
+        check(f"check_injection 缺树不崩溃(实际:{e})", False)
+
+    # 7.6 Bash 写文件绕行：重定向/tee/heredoc 必须进入门禁视野
+    check("Bash 'cat > file.py' 被识别为写文件",
+          gate.is_bash_file_write("Bash", {"command": "cat > x.py <<EOF\nprint(1)\nEOF"}) is True)
+    check("Bash 'grep xxx' 不误报",
+          gate.is_bash_file_write("Bash", {"command": "grep -r TODO src"}) is False)
+    check("非 Bash 工具不受该检测影响",
+          gate.is_bash_file_write("Read", {"command": "cat > x.py"}) is False)
+
+    # 7.7 retry-wrapper：task 已透传(含必需关键词的任务,无技能名 → step1 失败)
+    results, all_ok = rw.run_checks(
+        "【宪法三查】已完成任务。", "/nonexistent/MEMORY.md", TREE_PATH, task="帮我写代码")
+    s1_res = next(r for r in results if r["step"] == "step1")
+    check("retry-wrapper 透传 task 后 LayerC 生效(step1 FAIL)",
+          s1_res["passed"] is False)
 
     # ---- 汇总 ----
     total = len(RESULTS)
