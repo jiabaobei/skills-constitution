@@ -6,7 +6,18 @@
 [![Version](https://img.shields.io/badge/version-2.18.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
+**English**: [README_EN.md](README_EN.md)
+
 ## 🚀 快速开始
+
+### 一键安装（推荐，v2.19.0）
+
+```bash
+git clone https://github.com/jiabaobei/skills-constitution.git
+bash skills-constitution/install.sh
+```
+
+脚本自动完成：探测平台 → 复制到技能目录 → **自动重建你自己的技能树**（手工安装最容易漏的一步）→ 自检 → 输出下一步指引。
 
 ### 一键注入（任何平台）
 
