@@ -5,6 +5,44 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.21.0] - 2026-08-30
+
+### 双机制平台覆盖：能力注册表 = 独立技能 ∪ 插件技能
+**背景**：ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力来自两条平行机制——技能目录下的独立技能与插件包内置的插件技能（ZCode 实测：插件缓存含 2286 个 SKILL.md，其中大量位于已停用市场目录下）。宪法原"查技能库"只覆盖独立技能，会漏掉 document-skills / computer-use 等插件通道的能力；且双机制平台上插件技能需按完整调用名（`插件名:技能名`）调用，裸技能名可能无法被 Skill 机制加载。
+
+#### 新增
+- **`build_skill_tree.py` 布局无关插件技能扫描**（核心能力）：
+  - 已知平台路径自动发现（`KNOWN_PLUGIN_CACHE_LAYOUTS`：ZCode / Claude Code），存在才扫、缺谁跳谁
+  - 任意新 agent 免改代码接入：`PLUGIN_CACHE_DIRS` 环境变量（系统路径分隔符分隔）或仓库根 `plugin_roots.json`（`{"cache_dirs": [...]}`）；`PLUGIN_SCAN=0` 整体关闭
+  - 插件条目带 `source="plugin"` / `plugin` / `plugin_version` / `qualified_name`（完整调用名）/ `marketplace` / `agent` 字段；同插件多版本共存去重取最高
+  - ZCode 侧自动读取其 config 的插件启用表（`plugins.enabledPlugins`）：停用插件不入树；`.DISABLED` 停用市场整棵子树跳过
+- **`pre-hook.py` 完整调用名注入**：新增 `load_skill_aliases()`（`{技能名: 插件名:技能名}` 映射）；注入块分类清单与 SAD 候选渲染完整调用名并标注（插件），`--json` 输出含 `plugin_skills` 数与候选 `qualified_name`
+- **install.sh / install.ps1 技能目录型新增 `zcode` 平台**：自动探测顺序 WorkBuddy > ZCode > Claude Code；zcode 记忆层提示 AGENTS.md；自检口径改"独立 + 插件"双机制计数
+
+#### 修复（真实案例驱动）
+- **插件名推导被打包层干扰**：`mimosa/1.0.3/payload/skills/...` 的打包层 `payload` 曾被误当插件名，导致停用插件 mimosa 的技能漏过 ZCode 启用表过滤——改为优先取市场段后第一个非版本目录（`_GENERIC_SEGMENTS` 排除 payload/bundle/dist 等通用打包层），且停用检查覆盖路径上全部插件名候选段
+
+#### 宪法正文（SKILL.md）
+- 新增**第一条补充：双机制平台覆盖**四条款：插件技能与独立技能同权重（禁止以"它是插件"为由绕过）/ 命中按完整调用名调用 / 技能树自动编入 / 插件附带命令与 MCP 工具同规则
+- 快速注入模板同步（版本标注 v2.21.0；违规判定新增"命中插件技能却绕过"）；技术边界说明新增插件扫描章节
+
+#### 文档
+- README / README_EN：平台分流表加 ZCode、双机制覆盖说明、改版说明、项目结构、支持框架加"双机制平台"行
+- reference/platform-mapping.md：加 ZCode / DeepSeek Harness(dsh) 平台行，完全支持级加 ZCode，新增"双机制平台"说明块
+- reference/skill-tree-guide.md：SKILLS_DIR 表加 ZCode；新增"插件技能扫描"章节（四种接入方式对照表）+ FAQ Q6
+- docs/release-notes-v2.21.0.md
+
+#### 测试
+- run_tests.py 新增第 8 组"插件技能扫描"（19 条）：布局无关扫描 / qualified_name / source 标记 / 多版本去重 / `.DISABLED` 跳过 / 启用表过滤 / 打包层不漏过停用过滤 / 入树集成 / 别名提取 / 注入渲染 / `PLUGIN_CACHE_DIRS` 接入
+- "SAD top-K 含 git 相关技能"断言改为机器无关的确定性信号（top-K 含任务必需分类技能）——技能树内容随机器与插件而异，绑定具体技能名的断言不再成立
+- 全量 58 条零回归
+
+#### 验证（本机实测）
+- [x] 真机 ZCode 插件缓存扫描：启用插件技能 15 个全部入树（`document-skills:docx` / `computer-use:computer-use` / `zcode-guide:diagnosing-*` 等），停用插件（mimosa / cloudbase-skills 等）零残留，`.DISABLED` 市场整棵跳过
+- [x] 技能树重建：独立 447 + 插件 15，自检通过（注：旧快照 757 为作者另一台机器 `C:/Users/user` 的产物，本次快照如实反映当前机器）
+- [x] `install.sh --platform zcode` 沙箱全流程（探测 → 复制 → 重建含插件技能 → 自检）通过
+- [x] 58/58 测试通过；版本号全文件核查对齐 2.21.0
+
 ## [2.20.0] - 2026-08-26
 
 ### 安装全平台分流 + 钩子自动注册 + Windows 支持

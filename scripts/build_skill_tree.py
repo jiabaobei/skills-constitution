@@ -2,6 +2,11 @@
 """
 技能树构建器 — 扫描所有 SKILL.md，按 description 分类生成索引
 通用适配：支持环境变量 SKILLS_DIR 指定技能目录
+
+v2.21.0：双机制平台覆盖 —— 能力注册表 = 独立技能 ∪ 插件技能。
+在扫描独立技能目录之外，自动扫描插件缓存里的插件技能
+（ZCode / Claude Code 已知路径自动发现；其他双机制平台如 DeepSeek Harness
+用 PLUGIN_CACHE_DIRS 环境变量或仓库根 plugin_roots.json 接入，无需改代码）。
 """
 
 import json
@@ -137,7 +142,173 @@ def scan_binary_libs(binaries_dir: str) -> list[dict]:
     return libs
 
 
-def build_skill_tree(skills_dir: str, binaries_dir: str = "") -> dict:
+# ============================================================
+# v2.21.0: 插件技能扫描 —— 双机制平台（技能 + 插件两条平行机制）全覆盖
+# ============================================================
+# ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的"能力"来自两条平行通道:
+#   ① 独立技能: 平台技能目录下的 SKILL.md(~/.zcode/skills 等)
+#   ② 插件内置技能: 插件包缓存里的 SKILL.md(调用名通常为 `插件名:技能名`)
+# 宪法"查技能库"两条通道同权重,本扫描器把 ② 也编入技能树。
+#
+# 布局无关设计(不锁定任何一家的目录规范,新 agent 免改代码接入):
+#   - KNOWN_PLUGIN_CACHE_LAYOUTS: 已核实的平台缓存路径(存在才扫,缺谁跳谁)
+#   - 环境变量 PLUGIN_CACHE_DIRS(os.pathsep 分隔): 任何新 agent 的插件缓存目录
+#     (DeepSeek Harness v0.1 插件路径未定型,推荐用此方式接入)
+#   - 仓库根 plugin_roots.json: {"cache_dirs": ["..."]} 持久化自定义目录
+#   - 环境变量 PLUGIN_SCAN=0: 整体关闭插件扫描
+# 扫描只依赖一个共同形态: 插件包内含 skills/ 或 bundled-skills/ 技能目录;
+# 路径任一段以 .DISABLED 结尾(停用的市场/插件)整棵子树跳过。
+KNOWN_PLUGIN_CACHE_LAYOUTS = {
+    "zcode": {
+        "cache": ["~/.zcode/cli/plugins/cache"],
+        # ZCode 插件启用表: config.json plugins.enabledPlugins 中值为 false 的插件不入树
+        "enabled_map": ("~/.zcode/cli/config.json", "plugins.enabledPlugins"),
+    },
+    "claude": {"cache": ["~/.claude/plugins/cache"]},
+}
+# 注: DeepSeek Harness "一切皆插件"(Cordis 架构),技能随插件(Bundle)分发,
+#     其"技能 = 目录 + 装载器"形态与本扫描器假设兼容;插件目录规范在 v0.1
+#     预览期尚未定型,路径稳定后加入本表,当前用 PLUGIN_CACHE_DIRS 接入。
+SKILL_DIR_MARKERS = {"skills", "bundled-skills"}  # 插件包内技能目录惯用名
+# 插件包内常见的非插件名中间目录(payload 打包层/marketplace 元数据层等)
+_GENERIC_SEGMENTS = {"plugins", "skills", "bundled-skills", "marketplace", "cache",
+                     "repos", "payload", "bundle", "bundles", "dist", "build"}
+_VERSION_SEG_RE = re.compile(r"[vV]?\d+(\.\d+){1,3}")
+
+
+def _is_version_segment(seg: str) -> bool:
+    """目录段是否形如版本号(0.2.0 / v1.0 / 1.15.0-beta)"""
+    return bool(_VERSION_SEG_RE.fullmatch(seg or ""))
+
+
+def _version_key(v) -> tuple:
+    m = re.search(r"\d+(\.\d+)*", str(v or ""))
+    return tuple(int(x) for x in m.group(0).split(".")) if m else (0,)
+
+
+def _load_enabled_map(spec) -> dict | None:
+    """读取平台插件启用表;读不到/格式不符 → None(全部视为启用,降级不误杀)"""
+    try:
+        path, dotted = spec
+        p = Path(path).expanduser()
+        if not p.exists():
+            return None
+        node = json.loads(p.read_text(encoding="utf-8"))
+        for part in dotted.split("."):
+            node = node[part]
+        return node if isinstance(node, dict) else None
+    except Exception:
+        return None
+
+
+def resolve_plugin_cache_dirs() -> list[tuple[str, Path]]:
+    """汇总插件缓存目录: 已知平台表 + PLUGIN_CACHE_DIRS + plugin_roots.json
+
+    返回 [(来源标记, 目录)];目录不存在直接丢弃,重复路径去重。
+    """
+    items: list[tuple[str, str]] = []
+    for agent, spec in KNOWN_PLUGIN_CACHE_LAYOUTS.items():
+        for cache in spec.get("cache", []):
+            items.append((agent, cache))
+    env_val = os.environ.get("PLUGIN_CACHE_DIRS", "")
+    for cache in env_val.split(os.pathsep):
+        if cache.strip():
+            items.append(("custom", cache.strip()))
+    cfg = Path(__file__).resolve().parent.parent / "plugin_roots.json"
+    if cfg.exists():
+        try:
+            data = json.loads(cfg.read_text(encoding="utf-8"))
+            for cache in (data.get("cache_dirs") or []):
+                items.append(("custom", str(cache)))
+        except Exception as e:
+            print(f"警告: plugin_roots.json 解析失败(忽略): {e}", file=sys.stderr)
+    seen, out = set(), []
+    for agent, cache in items:
+        p = Path(cache).expanduser()
+        if not p.exists():
+            continue
+        key = str(p.resolve())
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append((agent, p))
+    return out
+
+
+def scan_plugin_skills(cache_root, agent: str = "", enabled_map: dict | None = None) -> list[dict]:
+    """扫描一个插件缓存根目录，返回插件技能条目（布局无关）
+
+    形态假设(各双机制平台通用): .../插件缓存/<...>/<skills|bundled-skills>/<技能名>/SKILL.md
+    - 插件名 = skills 段之前、跳过版本号段的最近目录名(无版本段则取相邻目录名)
+    - enabled_map={"插件@市场": bool}(可选): 值为 False 的插件跳过;未提供 → 全算启用
+    - 同一插件同名技能多版本共存 → 保留插件版本号最高的那份
+    """
+    found: dict[tuple[str, str], tuple[tuple, dict]] = {}
+    root = Path(cache_root).expanduser()
+    for dirpath, dirnames, filenames in os.walk(root):
+        # 剪枝: 隐藏目录 / node_modules / .DISABLED 停用子树
+        dirnames[:] = [d for d in dirnames
+                       if not d.startswith(".") and d != "node_modules"
+                       and not d.upper().endswith(".DISABLED")]
+        if "SKILL.md" not in filenames:
+            continue
+        skill_md = Path(dirpath) / "SKILL.md"
+        parts = skill_md.parent.relative_to(root).parts
+        if len(parts) < 2 or parts[-2].lower() not in SKILL_DIR_MARKERS:
+            continue  # 不在技能目录形态下的 SKILL.md 不认(避免把插件说明文档当技能)
+        skill_name = parts[-1]
+        marker_idx = len(parts) - 2
+        marketplace = parts[0] if len(parts) >= 3 else ""
+        # 插件名推导: 优先取市场段后第一个"非版本号、非通用中间目录"的段
+        # (真实案例 v2.21.0: mimosa/1.0.3/payload/skills/... 的打包层 payload
+        #  曾被误当插件名,导致停用插件 mimosa 的技能漏过启用表过滤)
+        plugin = None
+        if marker_idx >= 2 and not _is_version_segment(parts[1]) \
+                and parts[1].lower() not in _GENERIC_SEGMENTS:
+            plugin = parts[1]
+        else:
+            for seg in reversed(parts[:marker_idx]):
+                if not _is_version_segment(seg) and seg.lower() not in _GENERIC_SEGMENTS:
+                    plugin = seg
+                    break
+        plugin = plugin or (parts[0] if marker_idx >= 1 else skill_name)
+        plugin_version = parts[marker_idx - 1] if marker_idx >= 1 and _is_version_segment(parts[marker_idx - 1]) else ""
+        if enabled_map is not None:
+            # 停用检查覆盖路径上所有插件名候选段(防打包层导致漏匹配)
+            if any(enabled_map.get(f"{seg}@{marketplace}") is False
+                   for seg in parts[1:marker_idx]):
+                continue
+            if enabled_map.get(f"{plugin}@{marketplace}", enabled_map.get(plugin, True)) is False:
+                continue
+        try:
+            content = skill_md.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"读取插件技能 {skill_md} 失败: {e}", file=sys.stderr)
+            continue
+        fm = parse_frontmatter(content)
+        description = fm.get("description", "") or fm.get("description_zh", "")
+        entry = {
+            "name": skill_name,
+            "description": description[:200],  # 截断到 200 字符,与独立技能一致
+            "version": fm.get("version", "0.0.0"),
+            "categories": classify_skill(skill_name, description),
+            "source": "plugin",
+            "plugin": plugin,
+            "plugin_version": plugin_version,
+            "qualified_name": f"{plugin}:{skill_name}",  # 完整调用名(双机制平台 Skill 机制认它)
+            "marketplace": marketplace,
+            "agent": agent,
+            "path": str(skill_md),
+        }
+        key = (plugin, skill_name)
+        rank = _version_key(plugin_version)
+        if key not in found or rank > found[key][0]:
+            found[key] = (rank, entry)
+    return [e for _, e in found.values()]
+
+
+def build_skill_tree(skills_dir: str, binaries_dir: str = "",
+                     plugin_cache_dirs: list[tuple[str, Path]] | None = None) -> dict:
     """扫描所有技能，生成树形索引；可选扫描已装 Python 库/工具"""
     tree = {
         "categories": {},
@@ -189,6 +360,27 @@ def build_skill_tree(skills_dir: str, binaries_dir: str = "") -> dict:
                 tree["categories"][cat] = []
             tree["categories"][cat].append(skill_info)
 
+    # v2.21.0: 追加插件技能（双机制平台；PLUGIN_SCAN=0 可关闭）
+    # 独立技能与插件技能同权重进分类,插件条目额外带 source/plugin/qualified_name
+    plugin_count = 0
+    if os.environ.get("PLUGIN_SCAN", "1") != "0":
+        if plugin_cache_dirs is None:
+            plugin_cache_dirs = resolve_plugin_cache_dirs()
+        seen_qualified = set()
+        for agent, cache_dir in plugin_cache_dirs:
+            spec = KNOWN_PLUGIN_CACHE_LAYOUTS.get(agent, {})
+            emap = _load_enabled_map(spec["enabled_map"]) if spec.get("enabled_map") else None
+            for entry in scan_plugin_skills(cache_dir, agent=agent, enabled_map=emap):
+                if entry["qualified_name"] in seen_qualified:
+                    continue  # 多缓存根重复插件,只入树一次
+                seen_qualified.add(entry["qualified_name"])
+                plugin_count += 1
+                for cat in entry["categories"]:
+                    tree["categories"].setdefault(cat, []).append(entry)
+    tree["plugin_skills_count"] = plugin_count
+    if plugin_cache_dirs is not None:
+        tree["plugin_cache_dirs"] = [str(p) for _, p in plugin_cache_dirs]
+
     # 追加已装 Python 库/工具（binaries 扫描）
     if binaries_dir:
         libs = scan_binary_libs(binaries_dir)
@@ -203,13 +395,15 @@ def build_skill_tree(skills_dir: str, binaries_dir: str = "") -> dict:
 def generate_markdown(tree: dict) -> str:
     """生成人类可读的 Markdown 索引"""
     libs_count = tree.get("libs_count", 0)
+    plugin_count = tree.get("plugin_skills_count", 0)
     lines = [
         "# 技能树索引",
         "",
         f"**生成时间**: {tree['generated_at']}",
-        f"**总技能数**: {tree['total']}",
+        f"**独立技能数**: {tree['total']}" + (f"（+ 插件技能 {plugin_count} = 技能总数 {tree['total'] + plugin_count}）" if plugin_count else ""),
+        f"**插件技能数**: {plugin_count}" + ("（v2.21.0 双机制覆盖：插件技能以完整调用名 `插件名:技能名` 调用）" if plugin_count else ""),
         f"**已装库/工具数**: {libs_count}",
-        f"**总条目数**: {tree.get('total_entries', tree['total'])}",
+        f"**总条目数**: {tree.get('total_entries', tree['total'] + plugin_count)}",
         f"**技能目录**: `{tree['skills_dir']}`",
         "",
         "---",
@@ -245,6 +439,9 @@ def generate_markdown(tree: dict) -> str:
             if cat == "libs":
                 desc = s["description"][:60] + "..." if len(s["description"]) > 60 else s["description"]
                 lines.append(f"- `{s['name']}` ({s.get('type','python_lib')} v{s.get('version','?')}): {desc} — `{s['path']}`")
+            elif s.get("source") == "plugin":
+                desc = s["description"][:80] + "..." if len(s["description"]) > 80 else s["description"]
+                lines.append(f"- `{s.get('qualified_name', s['name'])}`（插件 v{s.get('plugin_version', '?')}，技能 v{s['version']}）: {desc}")
             else:
                 desc = s["description"][:80] + "..." if len(s["description"]) > 80 else s["description"]
                 lines.append(f"- `{s['name']}` (v{s['version']}): {desc}")
@@ -269,16 +466,18 @@ def main():
         json.dump(tree, f, ensure_ascii=False, indent=2)
     print(f"✓ 生成索引: {json_path}")
 
-    # 自检：技能分类条数和应 >= 技能 total（libs 分类是库，单独统计）
+    # 自检：技能分类条数和应 >= 独立技能 total + 插件技能数（libs 分类是库，单独统计）
     cat_sum_skills = sum(len(v) for k, v in tree["categories"].items() if k != "libs")
-    if cat_sum_skills < tree["total"]:
+    total_all = tree["total"] + tree.get("plugin_skills_count", 0)
+    if cat_sum_skills < total_all:
         print(
-            f"✗ 自检失败: 技能分类条数和({cat_sum_skills}) < total({tree['total']})，索引数据不一致！",
+            f"✗ 自检失败: 技能分类条数和({cat_sum_skills}) < 独立+插件总数({total_all})，索引数据不一致！",
             file=sys.stderr,
         )
         sys.exit(1)
     cat_sum = sum(len(v) for v in tree["categories"].values())
-    print(f"✓ 自检通过: 技能分类 {cat_sum_skills} >= total {tree['total']}；含库共 {cat_sum} 条")
+    plugin_note = f"；插件技能 {tree.get('plugin_skills_count', 0)}" if tree.get("plugin_skills_count") else ""
+    print(f"✓ 自检通过: 技能分类 {cat_sum_skills} >= 独立+插件 {total_all}；含库共 {cat_sum} 条{plugin_note}")
 
     # 输出 Markdown
     md_path = output_dir / "SKILL_TREE.md"
@@ -289,7 +488,8 @@ def main():
 
     # 打印统计
     print(f"\n统计:")
-    print(f"  - 总技能数: {tree['total']}")
+    print(f"  - 独立技能数: {tree['total']}")
+    print(f"  - 插件技能数: {tree.get('plugin_skills_count', 0)}")
     print(f"  - 已装库/工具数: {tree.get('libs_count', 0)}")
     print(f"  - 分类数: {len(tree['categories'])}")
     for cat, skills in sorted(tree["categories"].items()):

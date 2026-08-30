@@ -18,6 +18,8 @@
 | **Gemini** (Google) | Gems + Extensions | Extensions Gallery | Gem Instructions | 将宪法写入 Gem Instructions；Extensions 即"能力" |
 | **Cursor** | .cursor/rules/ + MCP | MCP Registry | .cursorrules | 将宪法写入 `.cursor/rules/skills-constitution.md` |
 | **Windsurf** | .windsurfrules + MCP | MCP Registry | .windsurfrules | 将宪法写入 `.windsurfrules` |
+| **ZCode** | 用户技能 `~/.zcode/skills` + **插件技能**（插件缓存，调用名 `插件名:技能名`） | 插件市场 + 技能目录 | AGENTS.md（用户级/项目根） | 复制到 `~/.zcode/skills/`（`install.sh --platform zcode`）；技能树自动编入插件技能（v2.21.0） |
+| **DeepSeek Harness (dsh)** | **一切皆插件**（Cordis：技能/工具/模型均为插件） | GitHub `dsh-plugin` 生态（700+ 仓库） | AGENTS.md / Harness 主目录配置 | 宪法写入 AGENTS.md；技能随插件分发，`PLUGIN_CACHE_DIRS` 指向其插件目录即可入树（v0.1 路径未定型，如实标注） |
 | **Cline** | .clinerules + MCP | MCP Registry | .clinerules | 将宪法写入 `.clinerules` |
 | **GitHub Copilot** | Agent Mode + MCP | GitHub Marketplace | .github/copilot/instructions.md | 将宪法写入 Copilot 指令文件 |
 
@@ -39,8 +41,10 @@
 
 | 级别 | 含义 | 平台 |
 |------|------|------|
-| ✅ **完全支持** | 有本地文件系统 + 可访问的能力注册表/技能文件，宪法可真正执行"查索引→加载技能→执行" | WorkBuddy / Claude Code / Cursor / Windsurf / Cline / Codex |
+| ✅ **完全支持** | 有本地文件系统 + 可访问的能力注册表/技能文件，宪法可真正执行"查索引→加载技能→执行" | WorkBuddy / Claude Code / ZCode / Cursor / Windsurf / Cline / Codex |
 | ⚠️ **建议型** | 无本地文件系统、无技能文件机制，只能将宪法条款注入提示词/人设，作为行为建议执行，无法真正加载技能文件 | ChatGPT / Kimi / 豆包 / 文心一言 / 通义千问 / 智谱清言 / 月之暗面 / Dify / 扣子 |
+
+**双机制平台（v2.21.0 新增）**：ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力注册表 = **独立技能 ∪ 插件技能**（两条平行机制）。查技能树时两条通道同权重；插件技能按完整调用名（`插件名:技能名`，如 `document-skills:docx`）调用；`build_skill_tree.py` 已自动扫描插件缓存（ZCode / Claude Code 内置已知路径，ZCode 侧还会按其 config 的插件启用表排除停用项、`.DISABLED` 市场整棵跳过），其他平台用 `PLUGIN_CACHE_DIRS` 环境变量或仓库根 `plugin_roots.json` 接入。
 
 > 说明：对"建议型"平台，请勿期待 file-ops / find-skills 等本地技能机制生效；宪法在这些平台上以提示词约束的形式工作，效果取决于平台对系统提示词的遵循程度。
 

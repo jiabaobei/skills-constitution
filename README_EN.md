@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.20.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.21.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -51,15 +51,24 @@ git clone https://github.com/jiabaobei/skills-constitution.git
 bash skills-constitution/install.sh                 # auto-detects platform
 ```
 
-`install.sh` routes by platform mechanism (v2.20.0):
+`install.sh` routes by platform mechanism (v2.21.0):
 
 | Platform kind | Command | What happens |
 |---------------|---------|--------------|
-| Skills-dir hosts (WorkBuddy / Claude Code) | `bash install.sh` | copy + **auto-rebuild your skill tree** + self-check |
+| Skills-dir hosts (WorkBuddy / Claude Code / ZCode) | `bash install.sh` | copy + **auto-rebuild your skill tree (incl. plugin skills)** + self-check |
 | Same + enforcement | `bash install.sh --register-hooks` | plus auto-registers the 4 host hooks (backup/rollback/idempotent) |
 | Rules-file hosts (Cursor / Windsurf / Cline) | `bash install.sh --platform cursor --target-dir <project>` | constitution written into the rules file (advisory level) |
 | Prompt-only (ChatGPT / Gemini / Coze ...) | `bash install.sh --platform prompt` | extracts the injection template for pasting |
 | Windows | `powershell -File install.ps1` | same skills-dir flow (first-run check on a real machine appreciated) |
+
+**Dual-mechanism coverage (v2.21.0)**: on hosts where capabilities come from two
+parallel channels — standalone skills *and* plugin-bundled skills (ZCode, Claude
+Code, DeepSeek Harness, ...) — the skill tree now indexes **both**. Known plugin
+cache paths are discovered automatically (disabled plugins excluded); any other
+host plugs in via the `PLUGIN_CACHE_DIRS` env var or a `plugin_roots.json` file.
+Plugin skills are recorded with their fully qualified invocation name
+(`plugin:skill`, e.g. `document-skills:docx`) and the constitution treats a
+plugin-skill match as binding, same as a standalone skill.
 
 Hook registration also runs standalone: `python skills-constitution/scripts/register_hooks.py`
 (`--dry-run` to preview, `--uninstall` to remove).
@@ -113,13 +122,14 @@ SKILL.md                    # the constitution (main rule file)
 install.sh                  # one-click installer, routes by platform mechanism
 install.ps1                 # Windows PowerShell installer
 skill_tree.json             # author's snapshot — rebuild for your machine
+plugin_roots.json           # optional: extra plugin cache dirs for dual-mechanism hosts
 registry.json               # curated open-source skill registry
 scripts/
   constitution-check        # gate entry point (5 steps, soft/strict)
   constitution-gate.py      # host-level hook (pre-block + audit + warn-next)
   register_hooks.py         # auto-register/unregister host hooks (backup+rollback)
   pre-hook.py               # forced context injection + task classifier
-  build_skill_tree.py       # rebuild YOUR skill tree index
+  build_skill_tree.py       # rebuild YOUR skill tree (standalone + plugin skills)
   steps/                    # the 5 independent check scripts
   tests/run_tests.py        # regression + adversarial anti-forgery tests
 reference/                  # platform mapping, install guide, gate details

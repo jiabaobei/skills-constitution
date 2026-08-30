@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # ============================================================
-# skills-constitution 一键安装脚本 (v2.20.0)
+# skills-constitution 一键安装脚本 (v2.21.0)
 # ============================================================
 # 平台机制不一样,安装方式也不一样 —— 本脚本按平台形态分流:
 #
 #   技能目录型(完整体验: 技能树+门禁可注册)
-#     workbuddy / claude     → 复制到技能目录 + 自动重建技能树 + 自检
+#     workbuddy / claude / zcode → 复制到技能目录 + 自动重建技能树 + 自检
+#     (v2.21.0: 技能树重建自动编入插件缓存里的插件技能 —— 双机制平台覆盖)
 #   规则文件型(建议级: 宪法作为项目规则,无技能树/无钩子)
 #     cursor / windsurf / cline → 宪法正文写入对应规则文件
 #   纯注入型(建议级: 复制模板到系统提示词)
 #     prompt                  → 打印【快速注入模板】供手工粘贴
 #
 # 用法:
-#   bash install.sh                              # 自动探测 (WorkBuddy > Claude Code)
+#   bash install.sh                              # 自动探测 (WorkBuddy > ZCode > Claude Code)
 #   bash install.sh --platform claude            # 指定技能目录型平台
 #   bash install.sh --platform cursor --target-dir /path/to/project
 #   bash install.sh --platform prompt
@@ -50,7 +51,7 @@ die()  { printf '\033[1;31m%s\033[0m\n' "$*" >&2; exit 1; }
 install_as_rules() {
   local target="${TARGET_DIR:-$PWD}"
   [[ -d "$target" ]] || die "目标项目目录不存在: $target"
-  local header="<!-- skills-constitution v2.20.0 (advisory level: 规则文件型平台无钩子机制,
+  local header="<!-- skills-constitution v2.21.0 (advisory level: 规则文件型平台无钩子机制,
 #  技能树/门禁不可用, 宪法以行为建议生效) -->
 "
   case "$PLATFORM" in
@@ -130,13 +131,16 @@ install_as_skill() {
     case "$PLATFORM" in
       claude)    SKILLS_DIR="$HOME/.claude/skills" ;;
       workbuddy) SKILLS_DIR="$HOME/.workbuddy/skills" ;;
+      zcode)     SKILLS_DIR="$HOME/.zcode/skills" ;;
       "")
         if [[ -d "$HOME/.workbuddy/skills" ]]; then
           SKILLS_DIR="$HOME/.workbuddy/skills"; PLATFORM="workbuddy"
+        elif [[ -d "$HOME/.zcode/skills" ]]; then
+          SKILLS_DIR="$HOME/.zcode/skills"; PLATFORM="zcode"
         else
           SKILLS_DIR="$HOME/.claude/skills"; PLATFORM="claude"
         fi ;;
-      *) die "未知平台: $PLATFORM(支持 workbuddy/claude/cursor/windsurf/cline/prompt)" ;;
+      *) die "未知平台: $PLATFORM(支持 workbuddy/claude/zcode/cursor/windsurf/cline/prompt)" ;;
     esac
   else
     PLATFORM="${PLATFORM:-claude}"
@@ -173,7 +177,8 @@ tree_path, skills_dir = sys.argv[1], sys.argv[2]
 if not os.path.exists(tree_path):
     print("  ✗ skill_tree.json 不存在"); sys.exit(1)
 tree = json.load(open(tree_path, encoding="utf-8"))
-total = tree.get("total", 0)
+# v2.21.0: 双机制口径 = 独立技能 + 插件技能
+total = tree.get("total", 0) + tree.get("plugin_skills_count", 0)
 sd = tree.get("skills_dir", "")
 if total <= 0:
     print(f"  ✗ 技能树为空(扫描到 0 个技能) —— 请确认 {skills_dir} 下有带 SKILL.md 的技能目录")
@@ -181,7 +186,7 @@ if total <= 0:
 if sd and os.path.normpath(sd) != os.path.normpath(skills_dir):
     print(f"  ⚠ 技能树指向 {sd},与当前技能目录不一致(可能未重建成功)")
     sys.exit(1)
-print(f"  ✓ 技能树正常: {total} 个技能,{len(tree.get('categories', {}))} 个分类,指向本机目录")
+print(f"  ✓ 技能树正常: 独立 {tree.get('total', 0)} + 插件 {tree.get('plugin_skills_count', 0)} 个技能,{len(tree.get('categories', {}))} 个分类")
 PYEOF
   then
     say ""
@@ -204,6 +209,7 @@ PYEOF
   case "$PLATFORM" in
     workbuddy) mem_hint="~/.workbuddy/MEMORY.md(默认,门禁直接认)" ;;
     claude)    mem_hint="CLAUDE.md(用户级 ~/.claude/CLAUDE.md 或项目级);门禁校验时传 --memory <路径> 指向它" ;;
+    zcode)     mem_hint="AGENTS.md(用户级 ~/.zcode/AGENTS.md 或项目根);门禁校验时传 --memory <路径> 指向它" ;;
     *)         mem_hint="按平台记忆层约定放置,门禁校验时传 --memory <路径>" ;;
   esac
   cat <<EOF

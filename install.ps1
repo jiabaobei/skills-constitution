@@ -1,10 +1,11 @@
 # ============================================================
-# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.20.0)
+# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.21.0)
 # ============================================================
 # 用法(在 PowerShell 里,进入本脚本所在目录):
-#   .\install.ps1                        # 自动探测 (WorkBuddy > Claude Code)
+#   .\install.ps1                        # 自动探测 (WorkBuddy > ZCode > Claude Code)
 #   .\install.ps1 -Platform claude
 #   .\install.ps1 -Platform workbuddy
+#   .\install.ps1 -Platform zcode
 #   .\install.ps1 -SkillsDir D:\my-skills
 #   .\install.ps1 -RegisterHooks         # 装完自动注册钩子
 #
@@ -39,9 +40,12 @@ if (-not $SkillsDir) {
     switch ($Platform) {
         "claude"    { $SkillsDir = Join-Path $HOME ".claude\skills" }
         "workbuddy" { $SkillsDir = Join-Path $HOME ".workbuddy\skills" }
+        "zcode"     { $SkillsDir = Join-Path $HOME ".zcode\skills" }
         default {
             if (Test-Path (Join-Path $HOME ".workbuddy\skills")) {
                 $SkillsDir = Join-Path $HOME ".workbuddy\skills"; $Platform = "workbuddy"
+            } elseif (Test-Path (Join-Path $HOME ".zcode\skills")) {
+                $SkillsDir = Join-Path $HOME ".zcode\skills"; $Platform = "zcode"
             } else {
                 $SkillsDir = Join-Path $HOME ".claude\skills"; $Platform = "claude"
             }
@@ -80,13 +84,14 @@ tree_path, skills_dir = sys.argv[1], sys.argv[2]
 if not os.path.exists(tree_path):
     print("  X skill_tree.json 不存在"); sys.exit(1)
 tree = json.load(open(tree_path, encoding="utf-8"))
-total = tree.get("total", 0)
+# v2.21.0: 双机制口径 = 独立技能 + 插件技能
+total = tree.get("total", 0) + tree.get("plugin_skills_count", 0)
 sd = tree.get("skills_dir", "")
 if total <= 0:
     print(f"  X 技能树为空(扫描到 0 个技能)"); sys.exit(1)
 if sd and os.path.normpath(sd) != os.path.normpath(skills_dir):
     print(f"  ! 技能树指向 {sd},与当前技能目录不一致"); sys.exit(1)
-print(f"  OK 技能树正常: {total} 个技能,{len(tree.get('categories', {}))} 个分类")
+print(f"  OK 技能树正常: 独立 {tree.get('total', 0)} + 插件 {tree.get('plugin_skills_count', 0)} 个技能,{len(tree.get('categories', {}))} 个分类")
 '@
 $check | & $Py - (Join-Path $Dest "skill_tree.json") $SkillsDir
 if ($LASTEXITCODE -eq 0) { Say "`n[OK] 安装完成!" } else { Warn "`n[!] 安装完成,但自检有问题" }
@@ -100,6 +105,7 @@ if ($RegisterHooks) {
 
 # ---- 7. 下一步指引 ----
 $MemHint = if ($Platform -eq "workbuddy") { "~\.workbuddy\MEMORY.md(默认,门禁直接认)" }
+           elseif ($Platform -eq "zcode") { "AGENTS.md(用户级 ~\.zcode\AGENTS.md 或项目根);门禁校验时传 --memory <路径>" }
            else { "CLAUDE.md(用户级 ~\.claude\CLAUDE.md 或项目级);门禁校验时传 --memory <路径>" }
 Write-Host @"
 

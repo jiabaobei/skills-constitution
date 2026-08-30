@@ -22,6 +22,11 @@ v2.12.0:
   - 任务同义词扩展(TASK_SYNONYM_MAP):"把代码传上去"等口语表达也能命中 git/push 必需分类
   - SAD 宽松语义检索(loose_retrieve_skills):零依赖 token 重叠打分,注入 top-K 候选技能
 
+v2.21.0:
+  - 双机制平台覆盖:技能树 = 独立技能 ∪ 插件技能(插件缓存扫描见 build_skill_tree.py);
+    注入块与 SAD 候选展示插件技能的完整调用名(插件名:技能名,如 document-skills:docx),
+    命中插件技能后按完整调用名调用 —— 在 ZCode 等双机制平台上裸技能名可能无法被 Skill 机制加载
+
 返回码:
   --check 模式: 0=注入合规, 1=缺注入(宿主 hook 应阻断任务)
 """
@@ -299,6 +304,7 @@ def load_tree_full(tree_path=DEFAULT_TREE):
     """v2.12.0:读取 skill_tree.json 完整条目(含描述),供宽松语义检索使用
 
     返回 [{name, description, categories}],按技能名去重、跨分类合并。
+    v2.21.0:插件技能条目额外携带 qualified_name(完整调用名 插件名:技能名)。
     """
     if not os.path.exists(tree_path):
         return []
@@ -314,6 +320,8 @@ def load_tree_full(tree_path=DEFAULT_TREE):
                     "name": item["name"], "description": "", "categories": []})
                 if item.get("description") and not e["description"]:
                     e["description"] = item["description"]
+                if item.get("qualified_name") and "qualified_name" not in e:
+                    e["qualified_name"] = item["qualified_name"]
                 if cat not in e["categories"]:
                     e["categories"].append(cat)
             elif isinstance(item, str):
@@ -321,6 +329,28 @@ def load_tree_full(tree_path=DEFAULT_TREE):
                 if cat not in e["categories"]:
                     e["categories"].append(cat)
     return list(skills.values())
+
+
+def load_skill_aliases(tree_path=DEFAULT_TREE):
+    """v2.21.0:插件技能调用名映射 {技能名: 完整调用名}
+
+    双机制平台(ZCode 等)上,插件技能要用完整调用名(插件名:技能名)才能被
+    Skill 机制加载 —— 独立技能与插件技能可能同名,命中后必须按完整名调用。
+    树中没有插件技能时返回 {}。
+    """
+    if not os.path.exists(tree_path):
+        return {}
+    with open(tree_path, encoding="utf-8") as f:
+        tree = json.load(f)
+    aliases = {}
+    for items in tree.get("categories", {}).values():
+        if not isinstance(items, list):
+            continue
+        for item in items:
+            if (isinstance(item, dict) and item.get("name")
+                    and item.get("qualified_name")):
+                aliases.setdefault(item["name"], item["qualified_name"])
+    return aliases
 
 
 def loose_retrieve_skills(skills, task, top_k=6, min_score=0.08,
@@ -447,10 +477,18 @@ def extract_memory_relevant(memory_text, task, max_total=1200):
     return "\n\n".join(parts)[:max_total]
 
 
-def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None):
+def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, aliases=None):
     """生成注入块 Markdown
     v2.12.0:新增 sad_candidates(SAD 宽松语义检索 top-K 候选)渲染段落。
-    v2.17.0:记忆层改用 extract_memory_relevant(任务相关+铁律,瘦身)。"""
+    v2.17.0:记忆层改用 extract_memory_relevant(任务相关+铁律,瘦身)。
+    v2.21.0:新增 aliases(插件技能调用名映射)—— 双机制平台上插件技能
+    以完整调用名(插件名:技能名)渲染,命中后按完整名调用。"""
+    aliases = aliases or {}
+
+    def disp(name):
+        q = aliases.get(name)
+        return f"{name}(调用名 `{q}`)" if q else name
+
     lines = []
     lines.append("## ⚡ 宪法 Pre-hook 注入（任务开始前强制注入，禁止跳过）")
     lines.append("")
@@ -467,10 +505,14 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None):
 
     # 技能树注入
     lines.append("### 🗂️ 技能树（相关分类，Agent 应先查此处再动手）")
+    if aliases:
+        example = next(iter(aliases.values()))
+        lines.append(f"> 双机制平台（v2.21.0）：技能树含 {len(aliases)} 个插件技能，"
+                     f"命中插件技能时按完整调用名调用（如 `{example}`）。")
     for cat in matched_cats:
         skills = tree.get(cat, [])
         if skills:
-            lines.append(f"- **{cat}** ({len(skills)}): {', '.join(skills[:12])}{'...' if len(skills) > 12 else ''}")
+            lines.append(f"- **{cat}** ({len(skills)}): {', '.join(disp(n) for n in skills[:12])}{'...' if len(skills) > 12 else ''}")
     lines.append("")
 
     # v2.11.0 必需技能清单注入（硬校验依据）
@@ -484,12 +526,15 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None):
         lines.append("")
 
     # v2.12.0 SAD 候选技能注入（宽松语义检索 top-K，起草方案时对齐用词）
+    # v2.21.0:插件技能以完整调用名渲染(双机制平台按完整名调用)
     if sad_candidates:
         lines.append("### 🧠 SAD 候选技能（v2.12.0 宽松语义检索 top-K，按相关度排序）")
         for score, s in sad_candidates:
             desc = (s.get("description") or "")[:60]
             cats = "/".join(s.get("categories", [])[:3])
-            lines.append(f"- `{s['name']}` ({cats}, 相关度 {score}): {desc}")
+            qname = s.get("qualified_name")
+            label = f"`{qname}`（插件）" if qname else f"`{s['name']}`"
+            lines.append(f"- {label} ({cats}, 相关度 {score}): {desc}")
         lines.append("")
         lines.append("> **SAD 流程**：先草拟执行方案 → 对照以上候选技能修订用词与粒度 → 再输出【宪法三查】。"
                      "候选均不相关时才允许声明\"技能树无匹配\"。")
@@ -611,7 +656,9 @@ def main():
     matched_cats = filter_tree_by_task(tree, a.task)
     # v2.12.0:SAD 宽松语义检索候选(top-K)
     sad_candidates = loose_retrieve_skills(load_tree_full(a.tree), a.task) if a.task else []
-    injection = build_injection(memory_text, tree, matched_cats, a.task, sad_candidates)
+    # v2.21.0:插件技能调用名映射(双机制平台按完整名调用)
+    aliases = load_skill_aliases(a.tree)
+    injection = build_injection(memory_text, tree, matched_cats, a.task, sad_candidates, aliases)
 
     if a.output:
         with open(a.output, "w", encoding="utf-8") as f:
@@ -627,9 +674,11 @@ def main():
             "tree_categories": len(tree),
             "injected_categories": matched_cats,
             "sad_candidates": [
-                {"name": s["name"], "score": sc, "categories": s.get("categories", [])}
+                {"name": s["name"], "score": sc, "categories": s.get("categories", []),
+                 "qualified_name": s.get("qualified_name", "")}
                 for sc, s in sad_candidates
             ],
+            "plugin_skills": len(aliases),
             "injection": injection,
         }, ensure_ascii=False, indent=2))
     else:

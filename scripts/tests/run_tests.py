@@ -14,6 +14,8 @@
   5. 多技能编排兼容性检查(不兼容链 FAIL / 兼容链 PASS)
   6. 可选语义索引缺依赖行为(exit 2 + 安装指引;已装依赖则跳过)
   7. 对抗性防伪造用例(v2.19.0):实测可打穿旧校验的糊弄向量,全部固化为"必须失败"
+  8. 插件技能扫描(v2.21.0):双机制平台 技能+插件 全覆盖 —— 布局无关扫描 /
+     版本去重 / .DISABLED 停用跳过 / 启用表过滤 / 入树集成 / 完整调用名渲染
 
 用法: python scripts/tests/run_tests.py
 返回码: 0=全部通过, 1=有失败
@@ -61,7 +63,7 @@ def check(case, actual, expect=True):
 
 def main():
     print("=" * 60)
-    print("Skills Constitution 回归测试 (v2.19.0)")
+    print("Skills Constitution 回归测试 (v2.21.0)")
     print("=" * 60)
 
     # ---- 1. 同义词扩展:口语任务命中必需分类 ----
@@ -101,8 +103,10 @@ def main():
     if results:
         top_names = [s["name"] for _, s in results]
         print(f"       top 候选: {top_names}")
-        check("SAD top-K 含 git 相关技能",
-              any("git" in n for n in top_names))
+        # v2.21.0:技能树内容随机器/插件而异,"top-K 含 git 命名技能"的断言不再
+        # 机器无关;改断言确定性信号 —— 分类加成保证任务必需分类的技能必进前排
+        check("SAD top-K 含任务必需分类(code)技能",
+              any("code" in s.get("categories", []) for _, s in results))
     check("SAD 空任务返回空", ph.loose_retrieve_skills(skills, "") == [])
 
     # ---- 4. Layer D 语义相关性校验 ----
@@ -210,6 +214,109 @@ def main():
     s1_res = next(r for r in results if r["step"] == "step1")
     check("retry-wrapper 透传 task 后 LayerC 生效(step1 FAIL)",
           s1_res["passed"] is False)
+
+    # ---- 8. 插件技能扫描（v2.21.0：双机制平台 技能+插件 全覆盖） ----
+    print("\n[8] 插件技能扫描(build_skill_tree 双机制覆盖)")
+    import tempfile
+    from pathlib import Path as _P
+    with tempfile.TemporaryDirectory() as td:
+        td = _P(td)
+        cache = td / "cache" / "mktofficial" / "myplug" / "0.2.0" / "skills" / "doc-helper"
+        cache.mkdir(parents=True)
+        (cache / "SKILL.md").write_text(
+            "---\nname: doc-helper\ndescription: 文档处理助手 docx 文档\nversion: 1.0\n---\nbody",
+            encoding="utf-8")
+        # 同插件旧版本共存 → 应去重取最高插件版本
+        old = td / "cache" / "mktofficial" / "myplug" / "0.1.0" / "skills" / "doc-helper"
+        old.mkdir(parents=True)
+        (old / "SKILL.md").write_text(
+            "---\nname: doc-helper\ndescription: 旧版文档助手 docx\nversion: 0.9\n---\nbody",
+            encoding="utf-8")
+        # 停用市场(.DISABLED) → 整棵子树跳过
+        dis = td / "cache" / "dead-mkt.DISABLED" / "deadplug" / "1.0" / "skills" / "nope"
+        dis.mkdir(parents=True)
+        (dis / "SKILL.md").write_text("---\nname: nope\ndescription: 不应入树\n---\n", encoding="utf-8")
+
+        entries = bst.scan_plugin_skills(td / "cache", agent="custom")
+        e0 = next((e for e in entries if e["name"] == "doc-helper"), None)
+        check("插件技能被扫描到", e0 is not None)
+        if e0:
+            check("qualified_name = 插件名:技能名", e0["qualified_name"] == "myplug:doc-helper")
+            check("source 标记为 plugin", e0["source"] == "plugin")
+            check("多版本去重取最高插件版本 0.2.0", e0["plugin_version"] == "0.2.0")
+            check("插件技能正确分类(doc)", "doc" in e0["categories"])
+        check(".DISABLED 停用市场整棵跳过", not any(e["plugin"] == "deadplug" for e in entries))
+
+        # 启用表: 值为 False 的插件跳过(ZCode config.json enabledPlugins 形态)
+        entries_off = bst.scan_plugin_skills(
+            td / "cache", agent="custom", enabled_map={"myplug@mktofficial": False})
+        check("启用表 false 的插件被跳过", not any(e["name"] == "doc-helper" for e in entries_off))
+
+        # 集成: build_skill_tree 把插件技能与独立技能同权重编入分类
+        skills_dir = td / "skills"
+        skills_dir.mkdir()
+        (skills_dir / "local-only").mkdir()
+        (skills_dir / "local-only" / "SKILL.md").write_text(
+            "---\nname: local-only\ndescription: 本地独立技能 excel 表格处理\nversion: 1.0\n---\n",
+            encoding="utf-8")
+        tree = bst.build_skill_tree(str(skills_dir), "", plugin_cache_dirs=[("custom", td / "cache")])
+        doc_names = [e["name"] for e in tree["categories"].get("doc", [])]
+        check("插件技能入树(doc 分类)", "doc-helper" in doc_names)
+        check("独立技能与插件技能同树共存", "local-only" in doc_names)
+        check("plugin_skills_count 统计正确", tree.get("plugin_skills_count") == 1)
+        check("插件条目带 qualified_name 字段",
+              any(e.get("qualified_name") == "myplug:doc-helper"
+                  for e in tree["categories"].get("doc", [])))
+
+        # pre-hook 侧: 完整调用名进注入块与 SAD 候选
+        tmp_tree = td / "tree.json"
+        tmp_tree.write_text(json.dumps(tree, ensure_ascii=False), encoding="utf-8")
+        aliases = ph.load_skill_aliases(str(tmp_tree))
+        check("load_skill_aliases 提取插件调用名", aliases.get("doc-helper") == "myplug:doc-helper")
+        full = ph.load_tree_full(str(tmp_tree))
+        check("load_tree_full 携带 qualified_name",
+              any(s.get("qualified_name") == "myplug:doc-helper" for s in full))
+        inj = ph.build_injection("铁律:测试", ph.load_tree(str(tmp_tree)), ["doc"],
+                                 "处理文档", aliases=aliases)
+        check("注入块渲染完整调用名", "myplug:doc-helper" in inj)
+        check("注入块含双机制提示", "双机制平台" in inj)
+
+        # 打包层布局(真实案例: mimosa/1.0.3/payload/skills/...):
+        # 插件名应取市场段后的第一个非版本目录,停用检查覆盖全部路径段
+        nested = td / "cache" / "mktofficial" / "sleepyplug" / "2.0.0" / "payload" / "skills" / "sec-scan"
+        nested.mkdir(parents=True)
+        (nested / "SKILL.md").write_text(
+            "---\nname: sec-scan\ndescription: 安全扫描 docx\nversion: 1.0\n---\n", encoding="utf-8")
+        entries_n = bst.scan_plugin_skills(td / "cache", agent="custom",
+                                           enabled_map={"sleepyplug@mktofficial": False})
+        check("打包层不漏过停用过滤(全路径段检查)",
+              not any(e["plugin"] == "sleepyplug" for e in entries_n))
+        entries_p = bst.scan_plugin_skills(td / "cache", agent="custom")
+        e_n = next((e for e in entries_p if e["name"] == "sec-scan"), None)
+        check("打包层下插件名正确推导",
+              e_n is not None and e_n["qualified_name"] == "sleepyplug:sec-scan")
+
+    # resolve_plugin_cache_dirs: PLUGIN_CACHE_DIRS 环境变量接入任意新 agent 的缓存
+    with tempfile.TemporaryDirectory() as td2:
+        extra = _P(td2) / "some-new-agent" / "plugins"
+        (extra / "xplug" / "1.0" / "skills" / "x-skill").mkdir(parents=True)
+        (extra / "xplug" / "1.0" / "skills" / "x-skill" / "SKILL.md").write_text(
+            "---\nname: x-skill\ndescription: 新平台插件技能 data 分析\n---\n", encoding="utf-8")
+        old_env = os.environ.get("PLUGIN_CACHE_DIRS")
+        try:
+            os.environ["PLUGIN_CACHE_DIRS"] = str(extra)
+            resolved = bst.resolve_plugin_cache_dirs()
+            check("PLUGIN_CACHE_DIRS 环境变量被接入", any(str(extra) in str(p) for _, p in resolved))
+            entries_x = []
+            for agent, p in resolved:
+                entries_x.extend(bst.scan_plugin_skills(p, agent=agent))
+            check("新 agent 插件技能可扫描(布局无关)",
+                  any(e["qualified_name"] == "xplug:x-skill" for e in entries_x))
+        finally:
+            if old_env is None:
+                os.environ.pop("PLUGIN_CACHE_DIRS", None)
+            else:
+                os.environ["PLUGIN_CACHE_DIRS"] = old_env
 
     # ---- 汇总 ----
     total = len(RESULTS)

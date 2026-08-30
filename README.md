@@ -3,29 +3,31 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.20.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.21.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
 
 ## 🚀 快速开始
 
-### 一键安装（推荐，v2.20.0 全平台分流）
+### 一键安装（推荐，v2.21.0 全平台分流）
 
 ```bash
 git clone https://github.com/jiabaobei/skills-constitution.git
 bash skills-constitution/install.sh                 # 自动探测平台，装完自动重建技能树
 ```
 
-脚本按平台机制自动分流（v2.20.0）：
+脚本按平台机制自动分流（v2.21.0）：
 
 | 平台形态 | 命令 | 效果 |
 |---------|------|------|
-| 技能目录型（WorkBuddy / Claude Code） | `bash install.sh` | 复制 + **自动重建技能树** + 自检 |
+| 技能目录型（WorkBuddy / Claude Code / ZCode） | `bash install.sh` | 复制 + **自动重建技能树（含插件技能）** + 自检 |
 | 同上 + 强制拦截 | `bash install.sh --register-hooks` | 装完自动注册四个宿主钩子（带备份/回滚/幂等） |
 | 规则文件型（Cursor / Windsurf / Cline） | `bash install.sh --platform cursor --target-dir <项目>` | 宪法写入规则文件（建议级） |
 | 纯注入型（ChatGPT / Gemini / 扣子等） | `bash install.sh --platform prompt` | 自动提取注入模板供粘贴 |
 | Windows | `powershell -File install.ps1` | 同技能目录型流程（需真机首验） |
+
+**双机制平台覆盖（v2.21.0）**：ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自「独立技能 + 插件」两条平行通道。技能树重建会自动把**插件缓存里的插件技能**编入索引（ZCode / Claude Code 已知路径自动发现，停用插件自动排除；其他平台用 `PLUGIN_CACHE_DIRS` 环境变量或仓库根 `plugin_roots.json` 接入），插件技能在树中标注完整调用名（如 `document-skills:docx`），宪法条款同步覆盖：**命中插件技能与命中独立技能同权重，必须按完整调用名调用**。
 
 钩子注册也可以单独跑：`python skills-constitution/scripts/register_hooks.py`（`--dry-run` 预览 / `--uninstall` 移除）。
 
@@ -34,13 +36,14 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.20.0
+## Skills 宪法（Skills Constitution）v2.21.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
 执行路径：
 1. 先查记忆：查阅平台记忆层（MEMORY.md/CLAUDE.md 等）确认相关规则
 2. 先查技能：查看技能索引，按任务类型定位功能分支，**输出必须列出命中的技能名清单**
+   （技能索引含独立技能与插件技能（v2.21.0）：命中插件技能按其完整调用名 `插件名:技能名` 调用）
 3. 匹配必用：有匹配则无条件优先使用该能力
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
@@ -52,7 +55,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 任务相关硬校验（v2.11.0）：任务含"代码/git/部署"等关键词时，输出必须引用 skill_tree.json
 对应分类的实际技能名（如 `git-workflow-and-versioning`），只写"已查宪法/已读技能树"而无技能名 → FAIL。
 
-违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐
+违规判定：跳过查记忆/技能清单直接干 / 有匹配但不用 / 未搜索就拒绝 / 查技能树未列出命中技能名（空头汇报）/ 本地技能不足却不去 GitHub 搜索推荐 / **命中插件技能却以"它是插件"为由绕过（v2.21.0）**
 ````
 
 ### WorkBuddy / CodeBuddy
@@ -292,6 +295,14 @@ python scripts/constitution-check --step 5 --input output.txt
 
 ## 📝 改版说明（CHANGELOG 摘要）
 
+### v2.21.0（2026-08-30）— 双机制平台覆盖：技能 + 插件
+- **能力注册表 = 独立技能 ∪ 插件技能**：ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力来自两条平行机制，宪法条款（第一条补充）明确插件技能与独立技能同权重、命中必按完整调用名（`插件名:技能名`）调用，禁止以"它是插件"为由绕过
+- **`build_skill_tree.py` 布局无关插件扫描**：已知平台路径自动发现（ZCode 含启用表过滤——config 里停用的插件不入树，`.DISABLED` 市场整棵跳过，打包层目录如 `payload/` 不干扰插件名推导）；其他平台用 `PLUGIN_CACHE_DIRS` 环境变量或仓库根 `plugin_roots.json` 免改代码接入
+- **pre-hook 注入升级**：注入块与 SAD 候选展示插件技能完整调用名，`load_skill_aliases()` 输出调用名映射
+- **install.sh/ps1 技能目录型新增 ZCode**（自动探测顺序 WorkBuddy > ZCode > Claude Code），自检口径改"独立+插件"
+- **测试组 8**（18 条）：布局无关扫描/版本去重/停用过滤/打包层/入树集成/调用名渲染/环境变量接入，全量 58 条零回归
+- 本机实测：ZCode 插件缓存扫描 15 个启用插件技能入树（`document-skills:docx` 等），沙箱安装 `--platform zcode` 全流程通过
+
 ### v2.20.0（2026-08-26）— 安装全平台分流 + 钩子自动注册
 - **install.sh 按平台机制分流**：技能目录型自动重建树 / 规则文件型（Cursor/Windsurf/Cline）写入规则文件 / 注入型自动提取模板；新增 Windows 版 `install.ps1`
 - **`register_hooks.py` 一条命令注册双平台钩子**：带备份/回滚/幂等/卸载，50 行手工配置成为历史
@@ -390,8 +401,8 @@ skills-constitution/
 ├── SKILL_TREE.md               # 技能树索引（人类可读）
 ├── skill_tree.json             # 技能树索引（机器可读）
 ├── scripts/
-│   ├── build_skill_tree.py     # 分类脚本（v2.12.0 词边界匹配修复子串误杀）
-│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）；同义词扩展+SAD 宽松检索（v2.12.0）
+│   ├── build_skill_tree.py     # 分类脚本（v2.12.0 词边界匹配修复子串误杀；v2.21.0 插件技能扫描——双机制覆盖）
+│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）；同义词扩展+SAD 宽松检索（v2.12.0）；插件技能完整调用名注入（v2.21.0）
 │   ├── semantic_index.py       # 可选语义向量索引（v2.12.0，sentence-transformers 可选依赖）
 │   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook；v2.11.0 支持 --task）
 │   ├── retry-wrapper.py        # Post-hook 重试循环（v2.9.0）
@@ -419,6 +430,7 @@ skills-constitution/
 
 - **国际**：ChatGPT, Claude, Codex, Gemini, Cursor, Windsurf, Cline, GitHub Copilot
 - **国内**：WorkBuddy, 扣子 (Coze), 文心一言, 通义千问, Kimi, 豆包, 智谱, 月之暗面, Dify
+- **双机制平台（技能 + 插件，v2.21.0 完整覆盖）**：ZCode, Claude Code, DeepSeek Harness (dsh)
 
 ---
 
