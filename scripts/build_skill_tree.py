@@ -486,6 +486,21 @@ def main():
         f.write(md_content)
     print(f"✓ 生成文档: {md_path}")
 
+    # v2.23.0: 顺带重建技能图谱(技能树之上的确定性关系图;SKILL_GRAPH=0 可关闭)
+    if os.environ.get("SKILL_GRAPH", "1") != "0":
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            from build_skill_graph import build_graph_payload
+            graph = build_graph_payload(tree, str(output_dir / "registry.json"))
+            graph_path = output_dir / "skill_graph.json"
+            with open(graph_path, "w", encoding="utf-8") as f:
+                json.dump(graph, f, ensure_ascii=False, indent=2)
+            print(f"✓ 生成技能图谱: {graph_path}"
+                  f"(节点 {graph['node_count']} | 边 {graph['edge_count']}"
+                  f" | 簇 {len(graph['clusters'])})")
+        except Exception as e:
+            print(f"⚠ 技能图谱生成失败(不影响技能树): {e}", file=sys.stderr)
+
     # 打印统计
     print(f"\n统计:")
     print(f"  - 独立技能数: {tree['total']}")

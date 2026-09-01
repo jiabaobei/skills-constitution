@@ -66,3 +66,18 @@ jobs:
               f'version mismatch: SKILL.md={mv.group(1)} vs skill_tree.json={tree.get(\"version\")}'
           print(f'✓ SKILL.md frontmatter OK (version {mv.group(1)} matches skill_tree.json)')
           "
+
+      # v2.23.0: 技能图谱自洽校验（节点/边/簇计数一致 + 图谱版本与宪法同源）
+      - name: Validate committed skill graph index
+        run: |
+          python -c "
+          import json
+          g = json.load(open('skill_graph.json'))
+          assert g.get('node_count', 0) > 0, 'skill_graph.json indexed 0 nodes'
+          assert g.get('edge_count', 0) == len(g.get('edges', [])), 'edge_count != len(edges)'
+          assert all(e.get('kind') and e.get('evidence') for e in g['edges']), '每条边必须带类型与证据'
+          import re
+          mv = re.search(r'^version:\s*(\S+)', open('SKILL.md', encoding='utf-8').read(), re.MULTILINE)
+          assert g.get('version') == mv.group(1), f'图谱版本 {g.get(\"version\")} != 宪法 {mv.group(1)}'
+          print(f'✓ Validated skill graph: {g[\"node_count\"]} nodes / {g[\"edge_count\"]} edges / {len(g[\"clusters\"])} clusters')
+          "

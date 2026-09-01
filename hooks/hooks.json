@@ -1,5 +1,5 @@
 {
-  "description": "skills-constitution — 宪法强制拦截钩子（SessionStart 注入 + UserPromptSubmit 校验）v2.22.0；CodeBuddy/Claude Code 插件机制版，WorkBuddy 用 scripts/constitution-gate.py（见 SKILL.md 安装章节）",
+  "description": "skills-constitution — 宪法强制拦截钩子（SessionStart 注入 + UserPromptSubmit 校验）v2.23.0；CodeBuddy/Claude Code 插件机制版，WorkBuddy 用 scripts/constitution-gate.py（见 SKILL.md 安装章节）",
   "hooks": {
     "SessionStart": [
       {

@@ -31,6 +31,11 @@ v2.22.0:
   - 注入块 token 瘦身:SAD 候选 6→4 条、描述截断 60→40 字、每分类技能清单 12→8 个、
     记忆片段上限 1200→900 字、执行要求文案精简(单次注入约省 30% token)
 
+v2.23.0:
+  - 技能图谱注入(借鉴 GitNexus 预计算关系智能):任务锚点技能的同簇成员+一跳邻居
+    带着"为什么相关"的边证据注入,注入面从"整分类清单"收窄到"任务线图谱";
+    图谱缺失时行为与旧版完全一致(只加不删)
+
 返回码:
   --check 模式: 0=注入合规, 1=缺注入(宿主 hook 应阻断任务)
 """
@@ -86,6 +91,16 @@ DEFAULT_MEMORY = os.path.expanduser("~/.workbuddy/MEMORY.md")
 DEFAULT_TREE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skill_tree.json"
 )
+# v2.23.0:技能图谱(由 build_skill_tree.py / build_skill_graph.py 生成)
+DEFAULT_GRAPH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skill_graph.json"
+)
+
+# v2.23.0:图谱模块(缺失/损坏时全部降级为"无图",不影响任何既有链路)
+try:
+    from lib import graph as G
+except ImportError:
+    G = None
 
 # 任务类型 → 技能树分类关键词映射（用于过滤注入哪些技能）
 TASK_CATEGORY_MAP = {
@@ -481,12 +496,58 @@ def extract_memory_relevant(memory_text, task, max_total=900):
     return "\n\n".join(parts)[:max_total]
 
 
-def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, aliases=None):
+def rank_anchors_for_task(tree_path, task, required_skills, top_k=12):
+    """v2.23.0:任务锚点排名 —— 必需技能按 SAD 排名排序(长列表)
+
+    必需分类可能有噪声(分类器不完美,一次命中几十个技能,其中不乏恰好含
+    任务关键词的无关技能)。复用 loose_retrieve_skills 的成熟排名(名称加成
+    + 必需分类加成 + 描述重叠),与必需技能求交集后按相关度降序返回。
+    调用方按需取前几名/序贯尝试 —— 孤立于图谱的锚点自然被跳过。
+    全部落空时退回确定性排序,保证任何情况下有锚点可用。
+    """
+    try:
+        ranked_all = loose_retrieve_skills(load_tree_full(tree_path), task, top_k=12)
+        req_set = set(required_skills)
+        top = [s["name"] for _sc, s in ranked_all if s["name"] in req_set][:top_k]
+        if top:
+            return top
+    except Exception:
+        pass
+    return sorted(required_skills)[:top_k]
+
+
+def graph_candidates_for_task(tree, task, graph_path=DEFAULT_GRAPH, max_neighbors=8,
+                              tree_path=DEFAULT_TREE):
+    """v2.23.0:图谱候选 —— 任务锚点技能的同簇成员+一跳邻居(带边证据)
+
+    借鉴 GitNexus「预计算关系智能」:关系在索引期已固化进 skill_graph.json,
+    注入面从"整分类清单"收窄到"锚点技能的任务线图谱"(更准且更省 token)。
+    锚点 = 任务必需技能里相关度排名前 2 的(必需分类可能有噪声,精选后
+    再扩展邻居);无锚点或无图 → 返回 []。
+    """
+    if G is None or not task:
+        return []
+    graph = G.load_graph(graph_path)
+    if not graph:
+        return []
+    _cats, anchors = required_skills_for_task(tree, task)
+    if not anchors:
+        return []
+    # 锚点排名 + 序贯扩展:按 SAD 排名依次尝试,孤立于图谱的锚点自然跳过,
+    # 直到填满 token 预算(与 Layer F 锚点同源)
+    ranked = rank_anchors_for_task(tree_path, task, anchors, top_k=12)
+    return G.graph_expand(graph, ranked, max_neighbors=max_neighbors)
+
+
+def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
+                    aliases=None, graph_items=None):
     """生成注入块 Markdown
     v2.12.0:新增 sad_candidates(SAD 宽松语义检索 top-K 候选)渲染段落。
     v2.17.0:记忆层改用 extract_memory_relevant(任务相关+铁律,瘦身)。
     v2.21.0:新增 aliases(插件技能调用名映射)—— 双机制平台上插件技能
-    以完整调用名(插件名:技能名)渲染,命中后按完整名调用。"""
+    以完整调用名(插件名:技能名)渲染,命中后按完整名调用。
+    v2.23.0:新增 graph_items(技能图谱候选)—— 锚点技能的同簇/一跳邻居,
+    每条带"为什么相关"的边证据(溯源)。"""
     aliases = aliases or {}
 
     def disp(name):
@@ -527,6 +588,13 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, 
             cat_skills = [s for s in required_skills if s in tree.get(cat, [])]
             if cat_skills:
                 lines.append(f"- **{cat}** 分类命中候选: {', '.join(cat_skills[:10])}")
+        lines.append("")
+
+    # v2.23.0 技能图谱候选注入（锚点技能的任务线：同簇+一跳，带边证据）
+    if graph_items:
+        lines.append("### 🕸️ 技能图谱（v2.23.0：锚点技能的任务线邻居，附相关理由）")
+        for it in graph_items:
+            lines.append(f"- `{disp(it['name'])}` — {it['evidence']}")
         lines.append("")
 
     # v2.12.0 SAD 候选技能注入（宽松语义检索 top-K，起草方案时对齐用词）
@@ -602,6 +670,7 @@ def main():
     ap.add_argument("--task", help="任务描述(用于过滤技能树分类;check模式用于任务必需技能硬校验)")
     ap.add_argument("--memory", default=DEFAULT_MEMORY, help=f"MEMORY.md路径(默认:{DEFAULT_MEMORY})")
     ap.add_argument("--tree", default=DEFAULT_TREE, help=f"skill_tree.json路径(默认:{DEFAULT_TREE})")
+    ap.add_argument("--graph", default=DEFAULT_GRAPH, help=f"skill_graph.json路径(默认:{DEFAULT_GRAPH})")
     ap.add_argument("--output", help="注入块输出到文件(缺省打印到 stdout)")
     ap.add_argument("--json", action="store_true", help="JSON 输出")
     ap.add_argument("--check", action="store_true", help="校验模式:检查文本是否已注入")
@@ -662,7 +731,11 @@ def main():
     sad_candidates = loose_retrieve_skills(load_tree_full(a.tree), a.task) if a.task else []
     # v2.21.0:插件技能调用名映射(双机制平台按完整名调用)
     aliases = load_skill_aliases(a.tree)
-    injection = build_injection(memory_text, tree, matched_cats, a.task, sad_candidates, aliases)
+    # v2.23.0:技能图谱候选(锚点技能的任务线;无图/无锚点时为空,不影响旧行为)
+    graph_items = graph_candidates_for_task(tree, a.task, a.graph,
+                                            tree_path=a.tree) if a.task else []
+    injection = build_injection(memory_text, tree, matched_cats, a.task,
+                                sad_candidates, aliases, graph_items)
 
     if a.output:
         with open(a.output, "w", encoding="utf-8") as f:
@@ -683,6 +756,11 @@ def main():
                 for sc, s in sad_candidates
             ],
             "plugin_skills": len(aliases),
+            "graph_candidates": [
+                {"name": it["name"], "via": it["via"], "kind": it["kind"],
+                 "evidence": it["evidence"]}
+                for it in graph_items
+            ],
             "injection": injection,
         }, ensure_ascii=False, indent=2))
     else:

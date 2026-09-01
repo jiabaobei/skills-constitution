@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.22.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.23.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -41,6 +41,13 @@ task arrives
 ```
 
 Design principles: **default soft checks** (`--strict` to block), **fail-open** (a gate bug never bricks the host), and the rule text never says "you must run the scripts" — so it stays satisfiable on prompt-only platforms.
+
+**What's new in v2.23.0 — the skill graph (deterministic relational intelligence, inspired by GitNexus):**
+
+- A **skill graph** (`skill_graph.json`) now sits on top of the skill tree, rebuilt automatically whenever the tree is rebuilt. Three edge kinds, all extracted deterministically with zero dependencies: `chains_to` (one skill's output schema feeds another's input), `co_anchor` (shared entity anchors — with stopword + document-frequency filtering), and `alternative` (same-category substitutes).
+- **Deterministic label-propagation clustering** groups skills into functional clusters (e.g. a "code publishing" cluster of git workflow + review + deploy skills). Discipline borrowed from GitNexus: only structural edges cluster or grant gate passage — similarity ("alternative") edges do neither.
+- **Injection narrows to the task line (token diet)**: the injected block gains a graph section — the anchor skills' cluster-mates and one-hop neighbors, each annotated with *why* it is relevant (provenance), round-robin filled so one cluster can't eat the budget.
+- **Gate Layer F (step3)**: when the task carries required keywords, quoted skills must be graph-connected to the task anchors (same cluster / structural one-hop); a quoted skill with zero graph connectivity fails with cluster-membership evidence. Missing graph → graceful pass (never bricks new installs).
 
 **What's new in v2.22.0 — evidence-chain gating (anti-bypass + anti-interruption + token diet):**
 

@@ -6,6 +6,8 @@
 v2.11.0 增加 Layer C:任务含代码/git/部署关键词时,必须引用对应分类技能名。
 v2.12.0 增加 Layer D:引用的技能必须与任务语义相关(零依赖 token 重叠),
 防"引用真实存在但与任务无关的技能"蒙混过关。
+v2.23.0 增加 Layer F:技能图谱证据校验(借鉴 GitNexus 预计算关系智能)——
+引用的技能必须与任务锚点技能图谱连通(同簇/一跳),带图证据溯源。
 """
 import argparse
 import json
@@ -160,6 +162,93 @@ def layer_d_relevance_check(text, tree_path, task):
         return True, f"相关性校验异常(放行):{e}", "SKIP"
 
 
+def layer_f_graph_check(text, tree_path, task, graph_path=None):
+    """Layer F(v2.23.0):技能图谱证据校验 —— 引用技能须与任务锚点图谱连通
+
+    借鉴 GitNexus「预计算关系智能」:技能间关系已在索引期固化进
+    skill_graph.json(chains_to/co_anchor/alternative 边 + 连通分量簇),
+    校验时零推理直接用 —— 比 Layer D 的描述重叠打分更硬:
+    引用的技能必须是任务锚点技能(必需分类技能)本身,或与其同簇/一跳可达。
+
+    保守设计(防误杀):图缺失/无任务/无引用/引用不在图中(图陈旧) → 放行或跳过。
+    只在"引用确实在图中、但与任务锚点零连通"时 FAIL,并附簇归属证据(溯源)。
+    """
+    if not task or not str(task).strip():
+        return True, "无任务描述,跳过图谱校验", "PASS"
+    if not graph_path and tree_path:
+        graph_path = os.path.join(os.path.dirname(tree_path), "skill_graph.json")
+    try:
+        from lib import graph as G
+    except ImportError:
+        return True, "图谱模块不可用,跳过", "SKIP"
+    graph = G.load_graph(graph_path) if graph_path else {}
+    if not graph:
+        return True, "skill_graph.json 不存在,图谱校验降级放行", "PASS"
+
+    try:
+        # 任务锚点:必需分类技能(与 Layer C 同源确定性映射)
+        pre_hook_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pre-hook.py")
+        spec = importlib.util.spec_from_file_location("pre_hook_mod_step3_f", pre_hook_path)
+        ph = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+        required_cats, required_skills = ph.required_skills_for_task(
+            ph.load_tree(tree_path), task)
+    except Exception as e:
+        return True, f"锚点解析失败({e}),放行", "SKIP"
+    if not required_skills:
+        return True, "任务无必需分类,图谱校验不适用", "PASS"
+
+    # v2.23.0 锚点排名:必需分类可能有噪声(分类器不完美),复用 pre-hook 的
+    # SAD 排名(名称加成+分类加成+描述重叠)取任务最相关的必需技能当锚点,
+    # 孤立于图谱的锚点自动被排除 —— 锚点越准,连通判断越硬
+    try:
+        ranked = ph.rank_anchors_for_task(tree_path, task, required_skills, top_k=8)
+    except Exception:
+        ranked = sorted(required_skills)[:8]
+
+    # 输出中引用的技能名(只认有意义的名字,与 Layer B 同口径)
+    nodes = G.node_set(graph)
+    try:
+        with open(tree_path, encoding="utf-8") as f:
+            tree = json.load(f)
+        all_names = set()
+        for items in tree.get("categories", {}).values():
+            if not isinstance(items, list):
+                continue
+            for item in items:
+                if isinstance(item, dict) and item.get("name"):
+                    all_names.add(item["name"])
+                elif isinstance(item, str):
+                    all_names.add(item)
+    except Exception:
+        return True, "技能树读取失败,图谱校验放行", "SKIP"
+    claimed = [n for n in all_names
+               if T.is_meaningful_evidence_name(n) and T.keyword_in(text, n)]
+    if not claimed:
+        return True, "未引用具体技能名,图谱校验不适用", "SKIP"
+
+    anchors = [s for s in ranked if s in nodes]
+    if not anchors:
+        return True, "锚点技能不在图谱中(图可能陈旧),降级放行", "PASS"
+
+    relevant = G.graph_relevant_set(graph, anchors)
+    hit = [c for c in claimed if c in relevant]
+    if hit:
+        return True, f"图谱证据通过: 引用技能 {hit[:3]} 在任务锚点 {anchors[:2]} 图谱上", "PASS"
+
+    in_graph = [c for c in claimed if c in nodes]
+    if not in_graph:
+        return True, "引用技能不在图谱中,无法证伪,放行", "SKIP"
+    c0, a0 = in_graph[0], anchors[0]
+    c_cluster = G.cluster_of(graph, c0) or "孤立节点"
+    a_cluster = G.cluster_of(graph, a0) or "孤立节点"
+    return False, (
+        f"引用技能 {in_graph[:3]} 与任务锚点技能 {a0} 图谱零连通"
+        f"(引用侧簇={c_cluster}, 锚点侧簇={a_cluster}),疑似乱引用"
+    ), "FAIL"
+
+
 def check(text, tree_path=None, task=None):
     """主校验函数:两层校验 + v2.11.0 任务相关校验"""
     if not text or not text.strip():
@@ -194,7 +283,12 @@ def check(text, tree_path=None, task=None):
                 d_ok, d_msg, d_level = layer_d_relevance_check(text, tree_path, task)
                 if d_level == "FAIL":
                     return False, f"LayerD FAIL: {d_msg}", "FAIL"
-                return True, f"软+硬校验均通过:{hard_msg}; {task_msg}; {d_msg}", "PASS"
+                # Layer F(v2.23.0):图谱连通性证据(比描述重叠更硬,带溯源)
+                f_ok, f_msg, f_level = layer_f_graph_check(text, tree_path, task)
+                if f_level == "FAIL":
+                    return False, f"LayerF FAIL: {f_msg}", "FAIL"
+                f_note = "" if f_level == "PASS" else f"; 图谱校验跳过({f_msg})"
+                return True, f"软+硬校验均通过:{hard_msg}; {task_msg}; {d_msg}{f_note}", "PASS"
             return False, f"软校验通过但硬校验未通过。{hard_msg}", "FAIL"
         return False, "声明命中但未见调用痕迹(软校验失败)", "FAIL"
 

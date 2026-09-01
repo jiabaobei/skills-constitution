@@ -18,6 +18,8 @@
      版本去重 / .DISABLED 停用跳过 / 启用表过滤 / 入树集成 / 完整调用名渲染
   9. 门禁证据链(v2.22.0):防绕过(门禁文件保护/写检测) + 防干扰(追加式消息/
      证据链放行) + 注入瘦身断言
+  10. 技能图谱(v2.23.0):锚点抽取/三种边/聚类纪律(替代边不并簇)/门禁图证据
+      (LayerF 连通放行/零连通失败/缺图降级)/注入集成/确定性复现
 
 用法: python scripts/tests/run_tests.py
 返回码: 0=全部通过, 1=有失败
@@ -65,7 +67,7 @@ def check(case, actual, expect=True):
 
 def main():
     print("=" * 60)
-    print("Skills Constitution 回归测试 (v2.22.0)")
+    print("Skills Constitution 回归测试 (v2.23.0)")
     print("=" * 60)
 
     # ---- 1. 同义词扩展:口语任务命中必需分类 ----
@@ -381,6 +383,118 @@ def main():
         hooks_cfg = json.load(f)
     ups = hooks_cfg["hooks"]["UserPromptSubmit"][0]
     check("UserPromptSubmit matcher 精简为 '.*'", ups.get("matcher") == ".*")
+
+    # ---- 10. 技能图谱（v2.23.0：GitNexus 启发的预计算关系智能） ----
+    print("\n[10] 技能图谱(lib/graph + step3 LayerF + 注入集成)")
+    graph = load_module("graph_under_test", os.path.join(SCRIPTS_DIR, "lib", "graph.py"))
+    step3_f = step3  # step3 已加载,含 layer_f_graph_check
+    GRAPH_PATH = os.path.join(ROOT_DIR, "skill_graph.json")
+
+    # 10.1 锚点抽取:停用词过滤 + 复数归一
+    anch = graph.extract_anchors("excel-formula-generator",
+                                 "Creates formulas for excel sheets, supports word")
+    check("锚点抽取保留领域词 excel", "excel" in anch)
+    check("锚点抽取滤掉套话动词 creates/supports",
+          "create" not in anch and "support" not in anch)
+    anch2 = graph.extract_anchors("img-tool", "processes images and image files")
+    check("复数归一:images 与 image 算同一锚点", "image" in anch2 and "images" not in anch2)
+
+    # 10.2 三种边:chains_to / co_anchor / alternative(用 fixture 小图,不依赖本机树)
+    fx_skills = [
+        {"name": "spec-dev", "description": "spec driven development code", "categories": ["code"]},
+        {"name": "code-review2", "description": "review code quality code", "categories": ["code"]},
+        {"name": "doc-maker", "description": "docx word document creation", "categories": ["doc"]},
+        {"name": "doc-writer", "description": "docx word document editing", "categories": ["doc"]},
+    ]
+    fx_registry = os.path.join(os.path.dirname(SCRIPTS_DIR), "tests_fx_registry.json")
+    with open(fx_registry, "w", encoding="utf-8") as f:
+        json.dump({"skills": [
+            {"name": "spec-dev", "input_schema": ["text"], "output_schema": ["code"]},
+            {"name": "code-review2", "input_schema": ["code"], "output_schema": ["review"]},
+        ]}, f)
+    try:
+        g = graph.build_graph(fx_skills, fx_registry)
+        kinds = {(e["source"], e["target"], e["kind"]) for e in g["edges"]}
+        check("chains_to 边由 registry schema 交集产生",
+              ("spec-dev", "code-review2", "chains_to") in kinds)
+        check("co_anchor 边由共享锚点产生(docx+word)",
+              ("doc-maker", "doc-writer", "co_anchor") in kinds)
+        check("每条边都带证据(溯源)", all(e["evidence"] for e in g["edges"]))
+        # 10.3 聚类纪律:doc 对经 co_anchor 同簇;跨域不误并
+        cl_members = [set(c["members"]) for c in g["clusters"].values()]
+        check("共享锚点技能同簇", any({"doc-maker", "doc-writer"} <= m for m in cl_members))
+        # 10.4 确定性:重建两次结果完全一致
+        g2 = graph.build_graph(fx_skills, fx_registry)
+        check("建图完全确定性(两次一致)",
+              json.dumps(g, sort_keys=True) == json.dumps(g2, sort_keys=True))
+    finally:
+        os.remove(fx_registry)
+
+    # 10.5 快照图谱质量:无巨簇(防套话词/跨域桥接把全图连成一片)
+    snap = graph.load_graph(GRAPH_PATH)
+    check("快照图谱存在(作者快照已提交)", bool(snap))
+    if snap:
+        max_cluster = max((c["size"] for c in snap["clusters"].values()), default=0)
+        check(f"最大簇 {max_cluster} ≤ 80(无巨簇)", max_cluster <= 80)
+        check("chains_to 边已固化进快照图",
+              any(e["kind"] == "chains_to" for e in snap["edges"]))
+
+    # 10.6 门禁图证据(密封 fixture:code 任务 + git 簇 vs doc 簇):
+    #     相关放行 / 零连通 FAIL / 缺图降级
+    import tempfile as _tf10
+    with _tf10.TemporaryDirectory() as td10:
+        fx_tree10 = os.path.join(td10, "tree.json")
+        fx_graph10 = os.path.join(td10, "graph.json")
+        with open(fx_tree10, "w", encoding="utf-8") as f:
+            json.dump({"categories": {
+                "code": [
+                    {"name": "git-alpha", "description": "git push deploy 推送代码", "categories": ["code"]},
+                    {"name": "git-beta", "description": "git commit version 代码版本", "categories": ["code"]},
+                ],
+                "doc": [
+                    {"name": "doc-skill", "description": "docx word 文档处理", "categories": ["doc"]},
+                    {"name": "doc-skill2", "description": "docx word 文档编辑", "categories": ["doc"]},
+                ]}, "total": 4, "version": "test"}, f, ensure_ascii=False)
+        with open(fx_graph10, "w", encoding="utf-8") as f:
+            json.dump({"version": "test", "edges": [
+                {"source": "git-alpha", "target": "git-beta", "kind": "co_anchor", "evidence": "共享锚点: git"},
+                {"source": "doc-skill", "target": "doc-skill2", "kind": "co_anchor", "evidence": "共享锚点: docx, word"},
+            ], "clusters": {
+                "git": {"members": ["git-alpha", "git-beta"], "size": 2},
+                "docx": {"members": ["doc-skill", "doc-skill2"], "size": 2},
+            }}, f, ensure_ascii=False)
+        ok, msg, lv = step3_f.layer_f_graph_check(
+            "已调用 git-beta 完成推送", fx_tree10, "帮我写代码", graph_path=fx_graph10)
+        check("LayerF: 与任务锚点同簇 → 放行", lv == "PASS")
+        ok, msg, lv = step3_f.layer_f_graph_check(
+            "已调用 doc-skill 完成", fx_tree10, "帮我写代码", graph_path=fx_graph10)
+        check("LayerF: 与任务锚点图谱零连通 → FAIL", lv == "FAIL")
+        check("LayerF FAIL 带簇归属证据(溯源)", "簇" in msg)
+        ok, msg, lv = step3_f.layer_f_graph_check(
+            "已调用 git-beta", fx_tree10, "帮我写代码", graph_path="/nonexistent/g.json")
+        check("LayerF: 图缺失降级放行(不误杀新装用户)", lv == "PASS")
+
+    # 10.7 相关性判断纪律:alternative 边不做门禁放行凭证(密封 fixture)
+    fg = {"edges": [
+        {"source": "skill-a", "target": "skill-b", "kind": "alternative", "evidence": "x"},
+        {"source": "skill-a", "target": "skill-c", "kind": "co_anchor", "evidence": "y"},
+    ], "clusters": {"y": {"members": ["skill-a", "skill-c"], "size": 2}}}
+    rel = graph.graph_relevant_set(fg, ["skill-a"])
+    check("结构边邻居在相关集合(放行凭证)", "skill-c" in rel)
+    check("alternative 邻居不做放行凭证", "skill-b" not in rel)
+
+    # 10.8 注入集成:图谱候选带边证据进注入块
+    inj_tree = ph.load_tree(TREE_PATH)
+    cands = ph.graph_candidates_for_task(inj_tree, "推送代码到github", GRAPH_PATH)
+    check("图谱候选非空(任务有锚点时)", len(cands) > 0)
+    check("图谱候选均带相关理由", all(c["evidence"] for c in cands))
+    check("图谱候选受 token 预算约束(≤8)", len(cands) <= 8)
+    inj = ph.build_injection("铁律:测试", inj_tree, ["code"], "推送代码到github",
+                             graph_items=cands)
+    check("注入块含技能图谱段落", "技能图谱" in inj)
+    check("无图时注入行为不变(候选为空)",
+          ph.graph_candidates_for_task(inj_tree, "推送代码到github",
+                                       "/nonexistent/g.json") == [])
 
     # ---- 汇总 ----
     total = len(RESULTS)

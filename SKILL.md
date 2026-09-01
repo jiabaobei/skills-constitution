@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.22.0
+version: 2.23.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,10 +17,7 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.22.0（当前）** — 门禁双向修正 + 省 token：
-> ① **防绕过**：门禁自身状态文件（三查记录/豁免旗标/违规记录）禁止被 Agent 篡改，Bash 写文件检测补 `sed -i`；
-> ② **防干扰**：门禁认可「平台已注入记忆+技能树 + 本任务内实际调用过技能」为完整三查证据链，不再要求手动跑校验命令；同一任务的追加式消息不再重置门禁；收尾阶段不对已有证据链的任务重复文本校验（消除"任务中途被门禁误拦/误记违规"）；
-> ③ **省 token**：注入块默认瘦身约 30%（SAD 候选 6→4、描述截断 60→40 字、每分类清单 12→8、记忆片段 1200→900 字），SKILL.md 版本史移入 CHANGELOG，hooks matcher 精简。
+> **v2.23.0（当前）** — 技能图谱（借鉴 GitNexus 预计算关系智能）：技能树之上叠加确定性关系图（`skill_graph.json`，随技能树重建自动产出）。三种边全部零依赖确定性抽取——`chains_to`（registry 的输出→输入 schema 交集）/ `co_anchor`（共享实体锚点，含停用词与文档频率过滤）/ `alternative`（同分类高重叠替代方案）；确定性标签传播聚成功能簇。三处落地：① 注入块从"整分类清单"收窄到"锚点技能的任务线图谱"（带"为什么相关"溯源，更省 token）；② 门禁 step3 新增 Layer F 图证据校验——引用的技能必须与任务锚点图谱连通，零连通带簇证据判 FAIL；③ 替代边不做放行凭证、不参与聚簇（纪律同 GitNexus 只对结构边做社区检测）。图缺失时全部链路行为与旧版一致（只加不删）。
 >
 > 完整版本史见 `CHANGELOG.md`。
 
@@ -241,6 +238,8 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 
 **完整索引**：`skill_tree.json` 为作者快照（示例）；**使用者安装后必须重建自己的技能树**（完整命令/平台差异/自检见 → Load `reference/skill-tree-guide.md`）。**精选技能**：`registry.json`。
 
+**技能图谱（v2.23.0）**：树是"行政区划"（人为分类），图谱是"自然聚落"（关系驱动）。`build_skill_tree.py` 重建技能树时自动产出 `skill_graph.json`（也可单独跑 `scripts/build_skill_graph.py` 从现有树重建）：节点=技能，边= `chains_to`（输出→输入 schema 衔接）/ `co_anchor`（共享实体锚点）/ `alternative`（替代方案），确定性标签传播聚成功能簇（如"代码发布"簇 = git 工作流 + 审查 + 部署）。用途：注入按任务线收窄、门禁 Layer F 图证据、推荐时说明技能间关系。
+
 ---
 
 ## 快速注入模板
@@ -248,7 +247,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.22.0
+## Skills 宪法（Skills Constitution）v2.23.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

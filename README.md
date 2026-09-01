@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.22.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.23.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.22.0
+## Skills 宪法（Skills Constitution）v2.23.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -285,7 +285,7 @@ python scripts/constitution-check --step 5 --input output.txt
 | pre-hook | 输入拦截：开场已注入三查？任务必需技能命中？ | 第零/一条 | v2.10.0 / v2.11.0 |
 | 1 | 宪法三查已汇报（软+硬+Layer C 任务相关） | 第零/一条 | v2.9.0 / v2.11.0 |
 | 2 | 技能树已读或无匹配声明（软+硬+Layer C） | 第一条 | v2.9.0 / v2.11.0 |
-| 3 | 命中技能已调用（软+硬+Layer C） | 第二条 | v2.9.0 / v2.11.0 |
+| 3 | 命中技能已调用（软+硬+Layer C+Layer F 图证据） | 第二条 | v2.9.0 / v2.11.0 / v2.23.0 |
 | 4 | 交付自检（非版本类自动跳过） | 全文件核查 | v2.6.0 |
 | 5 | 推荐板块含 GitHub 链接+star 数（软+硬两层） | 第五条 | v2.9.0 |
 
@@ -298,6 +298,14 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.23.0（2026-09-01）— 技能图谱：技能树之上的确定性关系图（GitNexus 启发）
+- **技能图谱 `skill_graph.json`**：重建技能树时自动产出（也可单跑 `scripts/build_skill_graph.py`）。三种边全部零依赖确定性抽取：`chains_to`（registry 输出→输入 schema 交集，原 step4 临时数据固化成图）/ `co_anchor`（共享实体锚点——含套话停用词表 + 文档频率过滤，实测滤掉 268 节点巨簇）/ `alternative`（同分类高重叠替代方案）
+- **确定性标签传播聚类**（GitNexus 社区检测的零依赖简化形）：技能聚成功能簇（如 code/browser/word/email/部署线）；**纪律**：替代边不并簇、不做门禁放行凭证，只有结构边参与聚类和连通判断
+- **注入按任务线收窄（省 token）**：注入块新增「🕸️ 技能图谱」段——任务锚点技能（SAD 排名精选）的同簇+一跳邻居，每条带"为什么相关"的边证据；轮转填充防单簇吃光预算
+- **门禁 Layer F 图证据校验（step3）**：任务含必需关键词时，引用的技能必须与任务锚点图谱连通（同簇/结构边一跳），零连通带簇归属证据判 FAIL（溯源）；图缺失/引用不在图中 → 降级放行不误杀
+- **作者快照图谱**：独立 457 节点 / 737 边 / 25 簇（最大簇 46）
+- **测试组 10**（22 条）：锚点抽取/三种边/聚类纪律/确定性复现/门禁图证据/注入集成，全量 99 条零回归
 
 ### v2.22.0（2026-09-01）— 门禁双向修正：防绕过 + 防干扰 + 省 token
 - **防绕过（门禁被骗）**：门禁自身状态文件（三查记录 / 豁免旗标 / 违规记录 / 注入上下文）禁止被 Agent 经 Write/Edit/Bash（重定向/tee/rm/mv/sed -i）篡改——旧版写一个豁免旗标文件即可全局豁免；Bash 写文件检测补 `sed -i`；step1 只认 `level=PASS` 的真实校验结果
@@ -412,21 +420,23 @@ skills-constitution/
 ├── CHANGELOG.md                # 版本日志
 ├── SKILL_TREE.md               # 技能树索引（人类可读）
 ├── skill_tree.json             # 技能树索引（机器可读）
+├── skill_graph.json            # 技能图谱（v2.23.0：边+簇，随技能树重建）
 ├── scripts/
-│   ├── build_skill_tree.py     # 分类脚本（v2.12.0 词边界匹配修复子串误杀；v2.21.0 插件技能扫描——双机制覆盖）
-│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）；同义词扩展+SAD 宽松检索（v2.12.0）；插件技能完整调用名注入（v2.21.0）
+│   ├── build_skill_tree.py     # 分类脚本（v2.12.0 词边界匹配修复子串误杀；v2.21.0 插件技能扫描；v2.23.0 顺带重建图谱）
+│   ├── build_skill_graph.py    # 技能图谱重建（从现有树+registry，v2.23.0）
+│   ├── pre-hook.py             # 输入拦截+任务分类器（v2.10.0）；任务必需技能映射（v2.11.0）；同义词扩展+SAD 宽松检索（v2.12.0）；插件技能完整调用名注入（v2.21.0）；图谱候选注入（v2.23.0）
 │   ├── semantic_index.py       # 可选语义向量索引（v2.12.0，sentence-transformers 可选依赖）
 │   ├── constitution-check      # 门禁校验主入口（v2.6.0；v2.10.0 支持 --classify/--pre-hook；v2.11.0 支持 --task）
 │   ├── retry-wrapper.py        # Post-hook 重试循环（v2.9.0）
 │   ├── steps/                  # 5 个 step 独立校验脚本
 │   │   ├── step1-check.py      # 三查汇报（软+硬+Layer C 任务相关，v2.11.0）
 │   │   ├── step2-check.py      # 技能树已读（软+硬+Layer C，v2.11.0）
-│   │   ├── step3-check.py      # 技能调用（软+硬+Layer C+Layer D 语义相关，v2.12.0）
+│   │   ├── step3-check.py      # 技能调用（软+硬+Layer C+Layer D 语义相关+Layer F 图证据，v2.23.0）
 │   │   ├── step4-check.py      # 交付自检+多技能编排兼容性（v2.12.0）
 │   │   └── step5-check.py      # 推荐板块（软+硬两层）
 │   ├── tests/
 │   │   └── run_tests.py        # 零依赖回归测试（v2.12.0，CI 可跑）
-│   └── lib/                    # 状态文件 + 文本工具（v2.12.0 轻语义工具）
+│   └── lib/                    # 状态文件 + 文本工具 + 图谱（v2.23.0 graph.py）
 └── .github/
     └── workflows/
         └── build-skill-tree.yml  # 自动更新
