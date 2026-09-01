@@ -75,13 +75,23 @@ case "${task_type}" in
     ;;
   "professional"|"ambiguous")
     # 专业/模糊任务：检查注入上下文
+    status=""
     if [[ -f "${CONTEXT_FILE}" ]]; then
       status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
-      if [[ "${status}" == "ready" ]]; then
-        exit 0
+    fi
+    if [[ "${status}" != "ready" ]]; then
+      # v2.22.0 自愈: 注入上下文缺失/过期时不再直接拦截任务,
+      # 而是现场重跑 SessionStart 注入(幂等),让任务带着上下文继续。
+      # 修复"会话启动注入没跑到 → 每条专业消息都被【宪法拦截】挡住"的干扰。
+      bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
+      if [[ -f "${CONTEXT_FILE}" ]]; then
+        status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
       fi
     fi
-    # 无注入上下文或状态不对：阻断并提示
+    if [[ "${status}" == "ready" ]]; then
+      exit 0
+    fi
+    # 自愈仍失败才拦截(注入链路确实不可用)
     echo "【宪法拦截】专业任务需要先注入记忆+技能树上下文，请确保宪法钩子已生效"
     exit 1
     ;;

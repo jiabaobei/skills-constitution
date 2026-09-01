@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.21.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.22.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.21.0
+## Skills 宪法（Skills Constitution）v2.22.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -228,7 +228,7 @@ gh skill install anthropics/skills docx
 
 ---
 
-## 🔒 门禁自检（v2.6.0 新增；v2.9.0 两层校验；v2.10.0 输入拦截+双通道；v2.11.0 任务相关硬校验）
+## 🔒 门禁自检（v2.6.0 新增；v2.9.0 两层校验；v2.10.0 输入拦截+双通道；v2.11.0 任务相关硬校验；v2.22.0 三查证据链）
 
 把「靠 Agent 自觉」变成「可校验、可拦截」。5 个 step 独立校验，状态文件链式依赖，默认软校验 + `--strict` 可选阻断。
 
@@ -291,9 +291,21 @@ python scripts/constitution-check --step 5 --input output.txt
 
 > ⚠️ 设计边界：脚本是"增强层"，宪法正文永远是行为规则兜底。**禁止**把"必须先跑脚本"写进正文——在跑不了脚本的环境会被 Agent 判为"不可满足"而整体跳过宪法。
 
+### 三查证据链（v2.22.0）
+
+宿主钩子（`constitution-gate.py`）认两种"三查已完成"证据，满足其一即放行写操作、收尾不重复校验：① 本任务内 `constitution-check --step 1` 真实校验通过；② 平台已注入记忆+技能树（注入上下文 ready）且本任务内实际调用过命中技能（Skill 调用自动记录）。同任务追加式消息不重置证据；门禁自身状态/豁免/违规文件禁止被 Agent 篡改（篡改即拦截）。
+
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.22.0（2026-09-01）— 门禁双向修正：防绕过 + 防干扰 + 省 token
+- **防绕过（门禁被骗）**：门禁自身状态文件（三查记录 / 豁免旗标 / 违规记录 / 注入上下文）禁止被 Agent 经 Write/Edit/Bash（重定向/tee/rm/mv/sed -i）篡改——旧版写一个豁免旗标文件即可全局豁免；Bash 写文件检测补 `sed -i`；step1 只认 `level=PASS` 的真实校验结果
+- **防干扰（门禁误拦）**：门禁认可「平台已注入记忆+技能树 + 本任务内实际调用过技能」为完整三查证据链（Skill 调用自动记录），不再强求手动跑校验命令；同一任务的追加式消息（继续/好的/下一步…）不重置门禁；收尾阶段对已有证据链的任务不再重复文本校验、不再误记违规
+- **注入自愈**：`user-prompt-submit.sh` 注入上下文缺失/过期时现场重跑 SessionStart 注入（幂等），不再直接【宪法拦截】挡任务
+- **省 token**：注入块默认瘦身约 30%（SAD 候选 6→4、描述截断 60→40 字、每分类清单 12→8、记忆片段 1200→900 字、执行要求文案精简）；`hooks.json` 约 8KB 关键词 matcher 精简为 `.*`（分类在 hook 脚本内做）；SKILL.md 顶部多版本史压缩为一行移入 CHANGELOG
+- **测试组 9**（19 条）：门禁文件保护 / 写检测 / 追加式消息 / 证据链放行 / 瘦身断言，全量 77 条零回归
+- 端到端实测：无证据写文件被拦、篡改豁免旗标被拦、注入+调用技能后放行、追加消息不重置、收尾不误记违规，全部符合预期
 
 ### v2.21.0（2026-08-30）— 双机制平台覆盖：技能 + 插件
 - **能力注册表 = 独立技能 ∪ 插件技能**：ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力来自两条平行机制，宪法条款（第一条补充）明确插件技能与独立技能同权重、命中必按完整调用名（`插件名:技能名`）调用，禁止以"它是插件"为由绕过

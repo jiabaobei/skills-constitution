@@ -4,6 +4,38 @@
 
 ---
 
+## v2.22.0：三查证据链（防绕过 + 防干扰双向修正）
+
+> 背景（真实使用反馈）：① Agent 仍能骗过门禁直接跑任务；② 任务开始已查记忆/查技能/调用技能，中途门禁又拦截干扰；③ 项目整体要省 token。
+
+### 证据链定义（constitution-gate.py）
+
+「三查已完成」认两种证据，满足其一即放行写操作、收尾不重复校验：
+
+1. **手动路径**：本任务内 `constitution-check --step 1` 真实校验通过（状态新鲜度：step1 的 ts ≥ 本任务 reset_ts，且 level 必须为 PASS——只认脚本真实判定结果）
+2. **注入路径（v2.22.0 新增）**：平台注入上下文就绪（`hooks/injected-context.json` status=ready，24h 内）= 记忆+技能树已由平台强制注入视为已查；再叠加本任务内**实际调用过技能**（PreToolUse 观察到 `Skill` 工具调用自动记录进 state）即证据链完整。注入就绪但任务无必需分类（任务关键词未映射到任何技能分类）时直接放行——无技能可匹配
+
+### 防绕过加固
+
+- **门禁自身文件保护**：`.constitution-state.json` / `.constitution-simple` / `.constitution-violations.json` / `injected-context.json` 禁止被 Agent 经 Write/Edit/MultiEdit/NotebookEdit 或 Bash（重定向/tee/heredoc/rm/mv/cp/sed -i）篡改——旧版写一个豁免旗标文件即可全局豁免
+- **Bash 写文件检测补 `sed -i`**（就地改写也是写文件）
+- 防护只拦"写门禁文件"，读门禁文件与跑 `constitution-check` 不受影响（防死锁）
+
+### 防干扰修正
+
+- **追加式消息不重置**：超短消息（≤8 字符）或以追加标记开头（继续/好的/下一步/ok/continue…）视为同一任务延续，保留既有证据——消除"任务中途每条追加消息都要求重新三查"
+- **Stop 防误记**：本任务内已有证据链时跳过最终回复的重复文本校验——修复"任务开头已查过、收尾回复没复述三查就被误记违规、下任务开头被误注入警告"
+- **注入自愈（hooks/user-prompt-submit.sh）**：注入上下文缺失/过期时现场重跑 SessionStart 注入（幂等），不再直接【宪法拦截】挡任务；自愈仍失败才拦截
+- **阻断文案精简**：提示补救路径（先调技能 / 手动跑 step1），文案约省一半
+
+### Token 瘦身
+
+- 注入块默认参数收紧：SAD 候选 6→4 条、描述截断 60→40 字、每分类技能清单 12→8 个、记忆片段上限 1200→900 字、执行要求文案精简（单次注入约省 30%）
+- `hooks/hooks.json` UserPromptSubmit matcher 由约 8KB 关键词列表改为 `.*`（分类在 hook 脚本内做，简单任务秒级 exit 0，matcher 列表纯属冗余）
+- SKILL.md 顶部多版本史压缩为一行，详情移入 CHANGELOG.md
+
+---
+
 ## 门禁校验机制（v2.6.0 新增；v2.10.0 升级为输入拦截 + 双通道；v2.11.0 升级为任务相关硬校验）
 
 > 目的：把「靠 Agent 自觉」变成「可校验、可拦截」。校验脚本只负责 PASS/FAIL；真正的强制触发依赖宿主 hook（如 WorkBuddy/Claude Code 的钩子），无 hook 环境退化为软校验。
@@ -32,7 +64,7 @@
 ### 目录结构
 ```
 scripts/
-├── constitution-gate.py        # v2.14.0 WorkBuddy 宿主钩子（UserPromptSubmit/PreToolUse/Stop 三事件）
+├── constitution-gate.py        # v2.22.0 WorkBuddy 宿主钩子（三查证据链：注入+技能调用 / 手动 step1 PASS；门禁文件保护）
 ├── pre-hook.py                 # v2.10.0 输入拦截 + 任务分类器；v2.11.0 任务必需技能映射
 ├── constitution-check          # 主入口（--pre-hook / --classify / --simple / --task）
 ├── retry-wrapper.py            # v2.9.0 Post-hook 重试循环

@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.21.0
+version: 2.22.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,19 +17,12 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.21.0（当前）** — 双机制平台覆盖（技能 + 插件）：能力注册表 = 独立技能 ∪ 插件技能。`build_skill_tree.py` 布局无关扫描插件缓存（ZCode / Claude Code 已知路径自动发现，停用插件不入树；其他平台如 DeepSeek Harness 用 `PLUGIN_CACHE_DIRS` / `plugin_roots.json` 接入），插件技能以完整调用名（`插件名:技能名`，如 `document-skills:docx`）入树并在注入块/SAD 候选中标注；新增第一条补充条款：命中插件技能与独立技能同权重，禁止以"它是插件"为由绕过。
+> **v2.22.0（当前）** — 门禁双向修正 + 省 token：
+> ① **防绕过**：门禁自身状态文件（三查记录/豁免旗标/违规记录）禁止被 Agent 篡改，Bash 写文件检测补 `sed -i`；
+> ② **防干扰**：门禁认可「平台已注入记忆+技能树 + 本任务内实际调用过技能」为完整三查证据链，不再要求手动跑校验命令；同一任务的追加式消息不再重置门禁；收尾阶段不对已有证据链的任务重复文本校验（消除"任务中途被门禁误拦/误记违规"）；
+> ③ **省 token**：注入块默认瘦身约 30%（SAD 候选 6→4、描述截断 60→40 字、每分类清单 12→8、记忆片段 1200→900 字），SKILL.md 版本史移入 CHANGELOG，hooks matcher 精简。
 >
-> **v2.20.0** — 安装全平台分流：`install.sh` 按平台机制三分支（技能目录型自动重建技能树 / 规则文件型写入规则文件并声明建议级 / 纯注入型自动提取模板）；新增 `scripts/register_hooks.py` 钩子自动注册（WorkBuddy + Claude Code，带备份/回滚/幂等/卸载）；新增 `install.ps1` Windows 版（待真机首验）；安装收尾输出记忆层平台对照。
->
-> **v2.19.0** — 校验层防伪造升级：词边界匹配全面替代裸子串（`"encoded"` 不再误命中 `"code"`）；废除"分类名出现即算命中"兜底（只认实际技能名）；证据白名单（单短词技能名不算证据）；记忆证据动态提取 + 缺文件降级放行（修新装用户死锁）；分类器专业词优先 + 词表统一；gate 拦 Bash 写文件；retry-wrapper 废除无效自我重试；第 7 组对抗性测试（15 条糊弄向量固化为必须失败）真正接入 CI；新增 `install.sh` 一键安装（自动重建技能树）与英文 README。
->
-> **v2.18.0** — 新增使用者建技能树指南（reference/skill-tree-guide.md：完整命令含 SKILLS_DIR / 平台差异 / 自检 / FAQ）；README/installation 重建命令统一带 SKILLS_DIR 并指向指南
->
-> **v2.17.0** — 技能树重建（本机 757 技能全入库）+ 注入块记忆瘦身（任务相关片段，42K→~1K）+ semantic_index 可选标注。
->
-> **v2.16.0** — Token 瘦身：description 只留触发条件（省 ~1.8K token/会话）；SKILL.md 渐进式披露（平台映射/安装/门禁详解拆 `reference/`，主文件 42KB→~20KB）；修复 injected-context.json JSON 转义。
->
-> 版本史：见 `CHANGELOG.md`。
+> 完整版本史见 `CHANGELOG.md`。
 
 ---
 
@@ -255,7 +248,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.21.0
+## Skills 宪法（Skills Constitution）v2.22.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -312,6 +305,8 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 ## 技术边界说明
 
 "无条件启用全部能力"不可行（撑爆上下文）。正确设计是**按描述匹配触发**，本宪法强制该匹配机制不被跳过。技能树索引将全量扫描缩小到目标分支（省 80%+ token）；索引由 `build_skill_tree.py` 生成，**禁止手写**（v2.17.0：使用者应在本机运行 `SKILLS_DIR=<技能目录> python scripts/build_skill_tree.py` 生成自己的树，替换作者快照）。
+
+**门禁证据链（v2.22.0）**：门禁（constitution-gate）认两种"三查已完成"证据，满足其一即放行写操作、收尾不重复校验：① 本任务内 `constitution-check --step 1` 真实校验通过（手动路径）；② 平台已注入记忆+技能树（注入上下文 ready）**且**本任务内实际调用过命中技能（Skill 调用由门禁自动记录）。同任务内的追加式消息不重置证据；门禁自身的状态/豁免/违规文件禁止被 Agent 篡改（篡改即拦截）。
 
 **插件技能扫描（v2.21.0）**：双机制平台（ZCode / Claude Code / DeepSeek Harness 等）上，技能树同时编入插件缓存里的插件技能——已知平台路径自动发现（ZCode 会进一步按其 config 的插件启用表排除停用项）；其他平台用 `PLUGIN_CACHE_DIRS` 环境变量（多个目录用系统路径分隔符）或仓库根 `plugin_roots.json`（`{"cache_dirs": ["..."]}`）指定缓存目录；`PLUGIN_SCAN=0` 可整体关闭。插件条目带 `qualified_name`（完整调用名）字段，pre-hook 注入时自动标注。
 

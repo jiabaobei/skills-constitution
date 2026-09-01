@@ -27,6 +27,10 @@ v2.21.0:
     注入块与 SAD 候选展示插件技能的完整调用名(插件名:技能名,如 document-skills:docx),
     命中插件技能后按完整调用名调用 —— 在 ZCode 等双机制平台上裸技能名可能无法被 Skill 机制加载
 
+v2.22.0:
+  - 注入块 token 瘦身:SAD 候选 6→4 条、描述截断 60→40 字、每分类技能清单 12→8 个、
+    记忆片段上限 1200→900 字、执行要求文案精简(单次注入约省 30% token)
+
 返回码:
   --check 模式: 0=注入合规, 1=缺注入(宿主 hook 应阻断任务)
 """
@@ -353,7 +357,7 @@ def load_skill_aliases(tree_path=DEFAULT_TREE):
     return aliases
 
 
-def loose_retrieve_skills(skills, task, top_k=6, min_score=0.08,
+def loose_retrieve_skills(skills, task, top_k=4, min_score=0.08,
                           category_boost=0.25, name_boost=0.15):
     """v2.12.0 SAD 第一轮:宽松语义检索(零依赖 token 重叠打分)
 
@@ -423,7 +427,7 @@ def filter_tree_by_task(tree, task):
     return result
 
 
-def extract_memory_relevant(memory_text, task, max_total=1200):
+def extract_memory_relevant(memory_text, task, max_total=900):
     """v2.17.0 注入块记忆瘦身：只注入任务相关片段 + 关键铁律
 
     背景:旧逻辑按固定 marker 取前 4 个 section(各 500 字)或兜底 memory_text[:800],
@@ -512,7 +516,7 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, 
     for cat in matched_cats:
         skills = tree.get(cat, [])
         if skills:
-            lines.append(f"- **{cat}** ({len(skills)}): {', '.join(disp(n) for n in skills[:12])}{'...' if len(skills) > 12 else ''}")
+            lines.append(f"- **{cat}** ({len(skills)}): {', '.join(disp(n) for n in skills[:8])}{'...' if len(skills) > 8 else ''}")
     lines.append("")
 
     # v2.11.0 必需技能清单注入（硬校验依据）
@@ -530,7 +534,7 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, 
     if sad_candidates:
         lines.append("### 🧠 SAD 候选技能（v2.12.0 宽松语义检索 top-K，按相关度排序）")
         for score, s in sad_candidates:
-            desc = (s.get("description") or "")[:60]
+            desc = (s.get("description") or "")[:40]
             cats = "/".join(s.get("categories", [])[:3])
             qname = s.get("qualified_name")
             label = f"`{qname}`（插件）" if qname else f"`{s['name']}`"
@@ -541,9 +545,9 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None, 
         lines.append("")
 
     lines.append("**执行要求：**")
-    lines.append("1. 第一句话必须输出【宪法三查】汇报，且 ②技能树 必须**列出命中的技能名清单**（如：命中 `git-workflow-and-versioning`、`web-deploy-github`），禁止只写'已读技能树'")
-    lines.append("2. 命中技能 → 必须调用；无命中 → 声明'技能树无匹配'再走通用能力")
-    lines.append("3. 任务完成后输出【本次相关技能推荐】：若本地技能未能完美解决任务，必须去 GitHub 搜索高 Star 相关技能推荐给用户（含链接+star+获取方式），由用户自行决定是否安装")
+    lines.append("1. 首句输出【宪法三查】,②技能树必须列出命中技能名清单(禁止只写'已读技能树')")
+    lines.append("2. 命中技能必调用;无命中声明'技能树无匹配'再走通用能力")
+    lines.append("3. 完成后输出【本次相关技能推荐】:本地技能不够用时去 GitHub 搜高 Star 技能推荐(链接+star+获取方式),排除已装")
     lines.append("")
     return "\n".join(lines)
 

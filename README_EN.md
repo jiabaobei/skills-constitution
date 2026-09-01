@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.21.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.22.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -41,6 +41,13 @@ task arrives
 ```
 
 Design principles: **default soft checks** (`--strict` to block), **fail-open** (a gate bug never bricks the host), and the rule text never says "you must run the scripts" — so it stays satisfiable on prompt-only platforms.
+
+**What's new in v2.22.0 — evidence-chain gating (anti-bypass + anti-interruption + token diet):**
+
+- *Anti-bypass*: the gate's own state files (check records / exemption flag / violation ledger / injection context) can no longer be written by the agent — previously, creating one exemption-flag file exempted everything. Bash write detection now covers `sed -i`; a step-1 PASS is only accepted when it is a genuine `level=PASS` verdict.
+- *Anti-interruption*: the gate accepts **"platform injected memory + skill tree AND a matched skill was actually invoked in this task"** as complete evidence of the three checks (Skill invocations are recorded automatically) — no need to manually run the check command mid-task. Follow-up messages within the same task no longer reset the gate, and the Stop hook no longer re-verifies (or mis-records violations for) tasks that already hold an evidence chain.
+- *Self-healing injection*: if the injected context is missing/stale at prompt time, the SessionStart injector is re-run in place instead of blocking the task.
+- *Token diet*: default injection block slimmed ~30% (SAD candidates 6→4, description truncation 60→40 chars, per-category listings 12→8, memory excerpt 1200→900 chars); the ~8KB keyword matcher in `hooks.json` reduced to `.*` (classification happens inside the hook).
 
 ## Quick start
 

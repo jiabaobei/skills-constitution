@@ -5,6 +5,44 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.22.0] - 2026-09-01
+
+### 门禁双向修正：防绕过 + 防干扰 + 省 token
+**背景**（真实使用反馈三问题）：① Agent 仍能骗过门禁直接跑任务，绕过查记忆/查技能/调用技能；② 项目越改越费 token，违背"尽量省 token"的设计初衷；③ 门禁干扰任务运行——任务开始时 Agent 已查记忆/查技能/调用技能，任务中途门禁又拦截、误记违规。
+
+#### 防绕过（门禁被骗）
+- **门禁自身文件保护**（`constitution-gate.py` 新增 `gate_file_targeted()`）：`.constitution-state.json`（三查记录）/ `.constitution-simple`（豁免旗标）/ `.constitution-violations.json`（违规记录）/ `hooks/injected-context.json`（注入上下文）禁止被 Agent 经 Write/Edit/MultiEdit/NotebookEdit 或 Bash（重定向/tee/heredoc/rm/mv/cp/sed -i）篡改——**旧版 Agent 写一个 `.constitution-simple` 文件即可全局豁免、直接改 state 即可伪造 PASS**；只读门禁文件不拦（不误伤）
+- **Bash 写文件检测补 `sed -i`**：就地改写文件也是写文件，旧正则漏判
+- **step1 PASS 有效性加固**：PreToolUse 只认 `level=PASS` 的状态条目（constitution-check 真实判定结果），手写/降级条目不产生通行证
+
+#### 防干扰（门禁误拦）
+- **三查证据链**（核心机制）：「三查已完成」认两种证据，满足其一即放行写操作、收尾不重复校验：
+  ① **手动路径**：本任务内 `constitution-check --step 1` 真实校验通过（新鲜度 + `level=PASS`）；
+  ② **注入路径（新增）**：平台注入上下文就绪（`injected-context.json` status=ready，24h 内）= 记忆+技能树已由平台强制注入视为已查，叠加本任务内实际调用过技能即证据链完整——**PreToolUse 观察到 `Skill` 工具调用自动记录进 state**，Agent 无需再手动跑校验命令；注入就绪但任务无必需分类（未映射到任何技能分类）时直接放行
+- **追加式消息不重置**（`is_continuation()`）：超短消息（≤8 字符）或以追加标记开头（继续/好的/下一步/ok/continue…，只认开头防子串误判）视为同一任务延续，保留既有证据——修复"任务中途每条追加消息都被要求重新三查"
+- **Stop 防误记**：本任务内已有证据链时跳过最终回复的重复文本校验——修复"任务开头已查过、收尾回复没复述三查就被误记违规、下任务开头被误注入警告"
+- **注入自愈**（`hooks/user-prompt-submit.sh`）：注入上下文缺失/过期时现场重跑 SessionStart 注入（幂等），不再直接【宪法拦截】挡任务；自愈仍失败才拦截
+
+#### 省 token
+- **注入块默认瘦身约 30%**（`pre-hook.py`）：SAD 候选 6→4 条、描述截断 60→40 字、每分类技能清单 12→8 个、记忆片段上限 1200→900 字、执行要求文案精简
+- **`hooks/hooks.json` matcher 精简**：UserPromptSubmit 约 8KB 关键词列表改为 `.*`（任务分类在 hook 脚本内做，简单任务秒级 exit 0，巨型 matcher 纯属冗余）
+- **SKILL.md 顶部版本史压缩**：多版本摘要块收成一行，详情移入 CHANGELOG（每次加载 SKILL.md 省约 1K token）；阻断提示文案精简约一半
+
+#### 文档
+- SKILL.md：frontmatter/快速注入模板版本升 2.22.0；技术边界说明新增「门禁证据链」章节
+- README / README_EN：badge、注入模板、门禁自检章节加「三查证据链」、改版说明新增 v2.22.0 摘要
+- reference/gate-details.md：新增 v2.22.0 章节（证据链定义/防绕过加固/防干扰修正/瘦身清单）
+- docs/release-notes-v2.22.0.md
+
+#### 测试
+- run_tests.py 新增第 9 组「门禁证据链」（19 条）：门禁文件保护（写/删/读三态）、`sed -i` 写检测、追加式消息判定（含子串不误判）、证据链放行四种状态、瘦身默认参数断言、hooks.json matcher 断言
+- 全量 77 条零回归
+
+#### 验证（本机实测）
+- [x] 全量回归 77/77 通过
+- [x] 端到端冒烟：无证据写文件被拦（exit 2）/ 篡改豁免旗标被拦 / 平台注入+调用技能后写文件放行 / 追加消息不重置（后续写文件仍放行）/ Stop 有证据链不误记违规（无违规记录产生）
+- [x] 版本号全文件核查对齐 2.22.0（SKILL.md frontmatter 与模板、README/README_EN badge 与模板、install.sh/ps1 头与规则文件标记、hooks.json 描述、skill_tree.json 快照、run_tests、reference 文档；build_skill_tree.py 从 SKILL.md frontmatter 动态读版本，重建即同源）
+
 ## [2.21.0] - 2026-08-30
 
 ### 双机制平台覆盖：能力注册表 = 独立技能 ∪ 插件技能

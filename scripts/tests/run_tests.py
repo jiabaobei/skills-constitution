@@ -16,6 +16,8 @@
   7. 对抗性防伪造用例(v2.19.0):实测可打穿旧校验的糊弄向量,全部固化为"必须失败"
   8. 插件技能扫描(v2.21.0):双机制平台 技能+插件 全覆盖 —— 布局无关扫描 /
      版本去重 / .DISABLED 停用跳过 / 启用表过滤 / 入树集成 / 完整调用名渲染
+  9. 门禁证据链(v2.22.0):防绕过(门禁文件保护/写检测) + 防干扰(追加式消息/
+     证据链放行) + 注入瘦身断言
 
 用法: python scripts/tests/run_tests.py
 返回码: 0=全部通过, 1=有失败
@@ -63,7 +65,7 @@ def check(case, actual, expect=True):
 
 def main():
     print("=" * 60)
-    print("Skills Constitution 回归测试 (v2.21.0)")
+    print("Skills Constitution 回归测试 (v2.22.0)")
     print("=" * 60)
 
     # ---- 1. 同义词扩展:口语任务命中必需分类 ----
@@ -317,6 +319,68 @@ def main():
                 os.environ.pop("PLUGIN_CACHE_DIRS", None)
             else:
                 os.environ["PLUGIN_CACHE_DIRS"] = old_env
+
+    # ---- 9. 门禁证据链（v2.22.0：防绕过 + 防干扰 + 瘦身） ----
+    print("\n[9] 门禁证据链(constitution-gate v2.22.0)")
+    import inspect as _inspect
+
+    # 9.1 防绕过:门禁自身文件保护(篡改判定依据 = 给自己发通行证,必须拦)
+    check("Write 改状态文件被识别为篡改",
+          gate.gate_file_targeted("Write", {"file_path": "/repo/.constitution-state.json"}) is True)
+    check("Bash 写豁免旗标被识别为篡改",
+          gate.gate_file_targeted("Bash", {"command": "echo simple > .constitution-simple"}) is True)
+    check("Bash rm 违规记录文件被识别为篡改",
+          gate.gate_file_targeted("Bash", {"command": "rm -f .constitution-violations.json"}) is True)
+    check("只读门禁文件不拦(不误伤)",
+          gate.gate_file_targeted("Bash", {"command": "cat .constitution-state.json"}) is False)
+    check("普通文件写入不受保护规则影响",
+          gate.gate_file_targeted("Write", {"file_path": "/repo/src/app.py"}) is False)
+
+    # 9.2 防绕过:Bash 写文件检测补 sed -i
+    check("Bash 'sed -i' 就地改写被识别为写文件",
+          gate.is_bash_file_write("Bash", {"command": "sed -i 's/a/b/' config.txt"}) is True)
+    check("Bash 'sed -n' 只读不误报",
+          gate.is_bash_file_write("Bash", {"command": "sed -n '1,10p' config.txt"}) is False)
+
+    # 9.3 防干扰:追加式消息不重置门禁状态
+    check("追加消息'继续'判延续", gate.is_continuation("继续") is True)
+    check("追加消息'好的，开始吧'判延续", gate.is_continuation("好的，开始吧") is True)
+    check("追加标记英文'continue...'判延续",
+          gate.is_continuation("continue with the next step") is True)
+    check("新任务'帮我写爬虫并部署'不判延续",
+          gate.is_continuation("帮我写一个爬虫脚本并部署到服务器上") is False)
+    check("含追加子串的新任务不误判('可以'在句中)",
+          gate.is_continuation("帮我写一个可以自动运行的数据抓取脚本") is False)
+
+    # 9.4 证据链:手动路径(本任务内新鲜 step1 PASS)与注入路径(注入+技能调用)
+    fresh = {"reset_ts": "2026-09-01 10:00:00",
+             "steps": {"step1": {"passed": True, "level": "PASS",
+                                  "ts": "2026-09-01 10:01:00"}}}
+    check("本任务内新鲜 step1 PASS → 证据链完整", gate.task_evidence_ok(fresh) is True)
+    stale = {"reset_ts": "2026-09-01 10:00:00",
+             "steps": {"step1": {"passed": True, "level": "PASS",
+                                  "ts": "2026-08-31 09:00:00"}}}
+    check("旧任务的 step1 PASS 不赦免新任务", gate.task_evidence_ok(stale) is False)
+    injected_ok = {"reset_ts": "2026-09-01 10:00:00", "injected": True,
+                   "skill_invoked": {"ts": "2026-09-01 10:02:00", "skill": "git-workflow"}}
+    check("注入+本任务内技能调用 → 证据链完整(无需手动跑校验)",
+          gate.task_evidence_ok(injected_ok) is True)
+    injected_only = {"reset_ts": "2026-09-01 10:00:00", "injected": True}
+    check("只注入未调用技能 → 证据链不完整(仍需查技能)",
+          gate.task_evidence_ok(injected_only) is False)
+
+    # 9.5 注入块瘦身断言(默认参数收紧,防回归改回大注入)
+    check("SAD 候选默认 4 条(原 6)",
+          _inspect.signature(ph.loose_retrieve_skills).parameters["top_k"].default == 4)
+    check("记忆片段上限默认 900 字(原 1200)",
+          _inspect.signature(ph.extract_memory_relevant).parameters["max_total"].default == 900)
+
+    # 9.6 hooks.json matcher 精简(分类在 hook 脚本内做,巨型列表纯属冗余)
+    hooks_json_path = os.path.join(ROOT_DIR, "hooks", "hooks.json")
+    with open(hooks_json_path, encoding="utf-8") as f:
+        hooks_cfg = json.load(f)
+    ups = hooks_cfg["hooks"]["UserPromptSubmit"][0]
+    check("UserPromptSubmit matcher 精简为 '.*'", ups.get("matcher") == ".*")
 
     # ---- 汇总 ----
     total = len(RESULTS)

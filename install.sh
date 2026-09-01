@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# skills-constitution 一键安装脚本 (v2.21.0)
+# skills-constitution 一键安装脚本 (v2.22.0)
 # ============================================================
 # 平台机制不一样,安装方式也不一样 —— 本脚本按平台形态分流:
 #
@@ -51,7 +51,7 @@ die()  { printf '\033[1;31m%s\033[0m\n' "$*" >&2; exit 1; }
 install_as_rules() {
   local target="${TARGET_DIR:-$PWD}"
   [[ -d "$target" ]] || die "目标项目目录不存在: $target"
-  local header="<!-- skills-constitution v2.21.0 (advisory level: 规则文件型平台无钩子机制,
+  local header="<!-- skills-constitution v2.22.0 (advisory level: 规则文件型平台无钩子机制,
 #  技能树/门禁不可用, 宪法以行为建议生效) -->
 "
   case "$PLATFORM" in

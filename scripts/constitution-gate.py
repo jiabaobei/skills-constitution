@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-constitution-gate —— Skills 宪法门禁 Hook 脚本（WorkBuddy 宿主级拦截）v2.14.0
+constitution-gate —— Skills 宪法门禁 Hook 脚本（WorkBuddy 宿主级拦截）v2.22.0
 ======================================================================
 挂到 ~/.workbuddy/settings.json 的 hooks 字段，让"宪法三查"从自觉变成强制：
 
 事件:
-  UserPromptSubmit  任务提交:简单任务打豁免标记;专业任务重置门禁状态 + 记录任务 + 注入上轮违规警告
-  PreToolUse        写代码/写文件前:三查(step1)必须在本任务内"新鲜" PASS → 阻断(exit 2)
-  Stop              任务收尾:校验最终回复是否含三查+任务相关技能名,违规写入 .constitution-violations.json
+  UserPromptSubmit  任务提交:简单任务打豁免标记;追加式短消息不重置(防中途干扰);
+                    专业任务重置门禁状态 + 记录任务 + 标记注入证据 + 注入上轮违规警告
+  PreToolUse        写代码/写文件前:本任务内三查证据链完整 → 放行;否则阻断(exit 2)。
+                    同时拦截对门禁自身状态文件的篡改(防伪造豁免)。
+  Stop              任务收尾:本任务内已有证据链 → 不再重复文本校验(防误记违规);
+                    无证据链才校验最终回复,违规写入 .constitution-violations.json
 
 用法(由宿主 hook 调用,stdin 传入 JSON payload):
   python constitution-gate.py UserPromptSubmit
@@ -20,14 +23,25 @@ exit code 语义(兼容 Claude Code / WorkBuddy 同源 hook):
   1  = 阻断并显示错误
   2  = 阻断该次工具调用(PreToolUse 专用,不报错)
 
-v2.14.0 修复"假装查技能"漏洞(2026-08-24):
-  1. PreToolUse 新鲜度校验: step1 的 ts 必须 >= 本任务 UserPromptSubmit 写入的 reset_ts,
-     防止"上次任务的旧 PASS"一次通过、后续所有 Write/Edit 永久放行。
-  2. Stop 硬记录: 校验 last_assistant_message 是否含【宪法三查】+ 任务相关技能名(Layer C),
-     FAIL 写入 .constitution-violations.json(累计计数+原因+任务)。
-  3. UserPromptSubmit 注入违规警告: 有违规记录时输出到 stdout(平台注入 Agent 上下文),
-     让 Agent 在下个任务开头就看到上次假查被抓,形成"事前拦+事后记+下次警"闭环。
-  4. UserPromptSubmit 记录 last_task, Stop 用它做 Layer C 任务相关校验。
+v2.22.0 三查证据链升级(2026-09-01),修三类真实问题:
+  A. 防绕过(门禁可被骗):
+     1. 门禁自身文件保护 —— `.constitution-state.json` / `.constitution-simple` /
+        `.constitution-violations.json` / `injected-context.json` 禁止被 Agent
+        经 Write/Edit/Bash(重定向/tee/rm/mv/sed -i) 篡改。旧版 Agent 写一个
+        `.constitution-simple` 文件即可全局豁免、改 state 即可伪造 PASS。
+     2. Bash 写文件检测补 `sed -i`(就地改文件也是写文件)。
+     3. step1 PASS 必须 level==PASS(只认 constitution-check 真实判定结果)。
+  B. 防干扰(任务中途被门禁误拦):
+     1. 注入即查 —— UserPromptSubmit 检测平台注入上下文
+        (hooks/injected-context.json status=ready)时,记忆+技能树视为已查,
+        state 标记 injected;PreToolUse 接受"注入 + 本任务内实际调用过技能"
+        (PreToolUse 观察到 Skill 工具调用自动记录)作为完整证据链,
+        无需 Agent 再手动跑 constitution-check。
+     2. 追加式消息不重置 —— "继续/好的/下一步"等追加式短消息不再重置门禁状态,
+        同一任务内的三查证据持续有效,消除"任务开始已查过、中途又被拦"。
+     3. Stop 防误记 —— 本任务内已有证据链时跳过最终回复的重复文本校验,
+        不再因"收尾回复没复述三查"误记违规、下任务开头误注入警告。
+  C. 省 token —— 阻断提示文案精简约一半。
 
 设计原则:
   - fail-open:脚本自身异常一律 exit 0,绝不因 bug 卡死正常使用
@@ -47,6 +61,7 @@ STATE = os.path.join(BASE, ".constitution-state.json")
 SIMPLE_FLAG = os.path.join(BASE, ".constitution-simple")
 VIOLATIONS = os.path.join(BASE, ".constitution-violations.json")
 CHECK = os.path.join(BASE, "scripts", "constitution-check")
+INJECTED_CONTEXT = os.path.join(BASE, "hooks", "injected-context.json")
 
 # 简单任务关键词(零号条款:翻译/润色/概念解释/一般知识问答)
 # v2.19.0:仅作兜底 —— 正常路径统一走 pre-hook.classify_task(单一词表),
@@ -59,16 +74,35 @@ SIMPLE_KW = [
 # 需要"先查技能"的执行型工具(写代码/写文件)
 EXEC_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 
+# v2.22.0:门禁自身文件保护 —— 这些文件的状态就是门禁判定依据,
+# 允许 Agent 写改等于允许它给自己发通行证(实测绕过路径)。
+GATE_PROTECTED_NAMES = (
+    ".constitution-state.json",
+    ".constitution-simple",
+    ".constitution-violations.json",
+    "injected-context.json",
+)
+
+# v2.22.0:追加式消息标记 —— 命中即视为同一任务的延续,不重置门禁状态。
+# 只认开头(防"帮我写一个可以运行的脚本"这类含子串的新任务被误判延续)。
+CONTINUATION_MARKERS = [
+    "继续", "接着", "下一步", "再来", "还有呢", "好的", "可以,", "没问题",
+    "对,", "嗯", "ok", "okay", "yes", "yep", "sure", "go on", "continue",
+    "proceed", "对的", "就这样",
+]
+
 # v2.19.0:Bash 写文件模式检测 —— 旧版只拦 Write/Edit,Agent 用
 # `cat > file <<EOF` / 重定向 / tee 写文件完全绕过门禁,
 # 而"推送代码/跑爬虫"这类专业任务恰恰主要走 Bash。
 # 注意排除 >/dev/null(丢弃输出,不产生文件)。
+# v2.22.0:补 `sed -i` 就地改写。
 import re as _re
 _BASH_WRITE_RE = _re.compile(
     r">>?\s*(?!/dev/null)[\w\.\-/~][^\s|&;]*"   # cmd > file / cmd >> file
     r"|\btee\s+(?:-a\s+)?[\w\.\-/~]"            # cmd | tee file
     r"|\bcat\s+<<"                               # heredoc: cat <<EOF
     r"|\b(?:cp|mv|touch|mkdir)\s+"              # 文件操作命令
+    r"|\bsed\s+(?:-[a-zA-Z]*i[a-zA-Z]*\s|--inplace)"  # v2.22.0: sed -i 就地改写
 )
 
 
@@ -84,6 +118,19 @@ def classify_via_pre_hook(text):
         ph = _ilu.module_from_spec(spec)
         spec.loader.exec_module(ph)
         return ph.classify_task(text)
+    except Exception:
+        return None
+
+
+def required_categories_via_pre_hook(task):
+    """v2.22.0:任务必需分类(复用 pre-hook 确定性映射)。加载失败返回 None"""
+    try:
+        import importlib.util as _ilu
+        ph_path = os.path.join(BASE, "scripts", "pre-hook.py")
+        spec = _ilu.spec_from_file_location("pre_hook_gate_req_mod", ph_path)
+        ph = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+        return ph.required_categories_for_task(task or "")
     except Exception:
         return None
 
@@ -137,6 +184,22 @@ def is_simple(text):
     return any(k.lower() in low for k in SIMPLE_KW)
 
 
+def is_continuation(text):
+    """v2.22.0:追加式消息判定 —— 同一任务的延续,不应重置门禁状态
+
+    旧版每条用户消息都重置三查状态 → 任务中途的每条追加消息都要求重新三查,
+    造成"任务开始已查过记忆/技能/调用过技能,中途仍被门禁拦"的干扰。
+    规则(保守,只认开头):超短消息(≤8字符)或以追加标记开头 → 延续。
+    """
+    t = (text or "").strip()
+    if not t:
+        return False
+    if len(t) <= 8:
+        return True
+    tl = t.lower()
+    return any(tl.startswith(m) for m in CONTINUATION_MARKERS)
+
+
 def is_bash_file_write(tool, tool_input):
     """v2.19.0:Bash 是否在写文件(重定向/tee/heredoc/文件操作命令)"""
     if tool != "Bash":
@@ -147,9 +210,79 @@ def is_bash_file_write(tool, tool_input):
     return bool(_BASH_WRITE_RE.search(cmd or ""))
 
 
+def gate_file_targeted(tool, tool_input):
+    """v2.22.0:本次工具调用是否在篡改门禁自身文件
+
+    Write/Edit/MultiEdit/NotebookEdit:看 file_path/notebook_path;
+    Bash:命令含门禁文件名且是写操作(写重定向/tee/rm/mv/sed -i 等)。
+    读取门禁文件不拦(只读不改变判定依据)。
+    """
+    tool_input = tool_input if isinstance(tool_input, dict) else {}
+    if tool in EXEC_TOOLS:
+        path = (tool_input.get("file_path")
+                or tool_input.get("path")
+                or tool_input.get("notebook_path") or "")
+        return any(name in path for name in GATE_PROTECTED_NAMES)
+    if tool == "Bash":
+        cmd = tool_input.get("command", "") or ""
+        if not any(name in cmd for name in GATE_PROTECTED_NAMES):
+            return False
+        if bool(_BASH_WRITE_RE.search(cmd)):
+            return True
+        # rm 不在写文件正则里,单独补
+        return bool(_re.search(r"\brm\b", cmd))
+    return False
+
+
 def is_check_command(text):
     """是否在跑宪法门禁自身(防死锁)"""
     return "constitution-check" in (text or "")
+
+
+def injection_ready():
+    """v2.22.0:平台注入上下文是否就绪(注入即查:记忆+技能树已由平台注入)
+
+    读 hooks/injected-context.json(SessionStart 钩子产出)。
+    24 小时内的 ready 才算本会话证据;解析失败一律 fail-open 返回 False
+    (注入证据缺失只是回到"手动三查"路径,不会卡任务)。
+    """
+    try:
+        with open(INJECTED_CONTEXT, encoding="utf-8") as f:
+            data = json.load(f)
+        if data.get("status") != "ready":
+            return False
+        ts = (data.get("timestamp") or "")[:19]
+        if ts:
+            then = time.mktime(time.strptime(ts, "%Y-%m-%dT%H:%M:%S"))
+            if time.time() - then > 24 * 3600:
+                return False
+        return True
+    except Exception:
+        return False
+
+
+def is_fresh(ts, reset_ts):
+    """证据时间戳是否属于本任务(字符串字典序=时间序,同格式)"""
+    return (not reset_ts) or (ts or "") >= reset_ts
+
+
+def task_evidence_ok(data):
+    """v2.22.0:本任务内三查证据链是否完整(供 PreToolUse/Stop 共用)
+
+    满足其一即完整:
+      ① step1 在本任务内新鲜 PASS(手动跑过 constitution-check 且硬校验通过)
+      ② 平台已注入(记忆+技能树视为已查) 且 本任务内实际调用过技能
+    """
+    reset_ts = data.get("reset_ts", "")
+    s1 = data.get("steps", {}).get("step1", {})
+    if (bool(s1.get("passed")) and s1.get("level", "PASS") == "PASS"
+            and is_fresh(s1.get("ts", ""), reset_ts)):
+        return True
+    if data.get("injected"):
+        sk = data.get("skill_invoked", {})
+        if sk.get("ts") and is_fresh(sk["ts"], reset_ts):
+            return True
+    return False
 
 
 def main():
@@ -161,39 +294,65 @@ def main():
     # ---------- UserPromptSubmit ----------
     if EVENT == "UserPromptSubmit":
         prompt = payload.get("prompt", "") or ""
+        if not prompt.strip():
+            sys.exit(0)
         if is_simple(prompt):
             with open(SIMPLE_FLAG, "w", encoding="utf-8") as f:
                 f.write("simple")
-        else:
-            # 专业任务:清除豁免标记 + 重置门禁状态(含 reset_ts / last_task),要求新任务重新走三查
-            try:
-                if os.path.exists(SIMPLE_FLAG):
-                    os.remove(SIMPLE_FLAG)
-            except Exception:
-                pass
-            data = load_state()
-            data["steps"] = {}
-            data["reset_ts"] = now_ts()
-            data["last_task"] = (prompt or "")[:2000]
-            save_state(data)
-            # 注入上轮违规警告(v2.14.0): stdout 会被平台注入 Agent 上下文
-            vio = load_violations()
-            if vio.get("count", 0) > 0:
-                print(
-                    "【宪法违规警告】检测到上轮专业任务未通过宪法三查校验"
-                    "(累计 {} 次;最近时间:{};原因:{})."
-                    "本次任务必须:① 真正读取记忆;② 真正读取技能树并列出命中的技能名"
-                    "(禁止只写\"已读\");③ 有匹配必用. 若再次违规将累计记录."
-                    .format(vio.get("count", 0), vio.get("last_ts", "?"),
-                            (vio.get("last_reason") or "?")[:200]),
-                    file=sys.stdout,
-                )
+            sys.exit(0)
+        # v2.22.0:追加式消息不重置 —— 同一任务内的三查证据持续有效
+        if is_continuation(prompt):
+            sys.exit(0)
+        # 专业任务:清除豁免标记 + 重置门禁状态(含 reset_ts / last_task),要求新任务重新走三查
+        try:
+            if os.path.exists(SIMPLE_FLAG):
+                os.remove(SIMPLE_FLAG)
+        except Exception:
+            pass
+        data = load_state()
+        data["steps"] = {}
+        data.pop("skill_invoked", None)
+        data["reset_ts"] = now_ts()
+        data["last_task"] = (prompt or "")[:2000]
+        # v2.22.0:注入即查 —— 平台注入上下文就绪则记忆+技能树视为已查
+        data["injected"] = injection_ready()
+        save_state(data)
+        # 注入上轮违规警告(v2.14.0): stdout 会被平台注入 Agent 上下文
+        vio = load_violations()
+        if vio.get("count", 0) > 0:
+            print(
+                "【宪法违规警告】检测到上轮专业任务未通过宪法三查校验"
+                "(累计 {} 次;最近时间:{};原因:{})."
+                "本次任务必须:① 真正读取记忆;② 真正读取技能树并列出命中的技能名"
+                "(禁止只写\"已读\");③ 有匹配必用. 若再次违规将累计记录."
+                .format(vio.get("count", 0), vio.get("last_ts", "?"),
+                        (vio.get("last_reason") or "?")[:200]),
+                file=sys.stdout,
+            )
         sys.exit(0)
 
     # ---------- PreToolUse ----------
     if EVENT == "PreToolUse":
         tool = payload.get("tool_name", "") or ""
         tool_input = payload.get("tool_input", {})
+        # v2.22.0:记录技能调用(证据链一环)。Skill 调用本身不拦,记录后放行。
+        if tool == "Skill":
+            data = load_state()
+            skill_name = ""
+            if isinstance(tool_input, dict):
+                skill_name = (tool_input.get("skill")
+                              or tool_input.get("command") or "")
+            data["skill_invoked"] = {"ts": now_ts(), "skill": str(skill_name)[:80]}
+            save_state(data)
+            sys.exit(0)
+        # v2.22.0:门禁自身文件保护 —— 任何情况下禁止篡改门禁状态文件
+        if gate_file_targeted(tool, tool_input):
+            print(
+                "【宪法门禁·拦截】禁止直接修改门禁状态文件"
+                "(宪法三查证据必须由 constitution-check 真实校验产生).",
+                file=sys.stderr,
+            )
+            sys.exit(2)
         # v2.19.0:Bash 写文件(重定向/tee/heredoc)视同 Write/Edit 一并拦截
         if tool not in EXEC_TOOLS and not is_bash_file_write(tool, tool_input):
             sys.exit(0)
@@ -204,23 +363,23 @@ def main():
         # 简单任务豁免
         if os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
-        # 核心:三查(step1)必须在本任务内"新鲜" PASS(v2.14.0 新鲜度校验)
+        # 核心:本任务内三查证据链完整即放行
+        # (① step1 新鲜 PASS;② 注入+技能调用 —— v2.22.0)
         data = load_state()
-        s1 = data.get("steps", {}).get("step1", {})
-        reset_ts = data.get("reset_ts", "")
-        passed = bool(s1.get("passed"))
-        # 字符串比较: ts 与 reset_ts 同为 "%Y-%m-%d %H:%M:%S" 格式,字典序=时间序
-        fresh = (not reset_ts) or (s1.get("ts", "") >= reset_ts)
-        if passed and fresh:
+        if task_evidence_ok(data):
             sys.exit(0)
-        task_hint = ("；任务: " + data.get("last_task", "")[:80]) if data.get("last_task") else ""
+        # v2.22.0:注入已就绪且任务无必需分类 —— 记忆+技能树已注入,无技能可匹配
+        if data.get("injected"):
+            req = required_categories_via_pre_hook(data.get("last_task", ""))
+            if req is not None and not req:
+                sys.exit(0)
+        task_hint = ("；任务: " + data.get("last_task", "")[:60]) if data.get("last_task") else ""
         msg = (
-            "【宪法门禁·PreToolUse 阻断】调用 {} 前未完成本任务内的宪法三查声明"
-            "(或声明来自旧任务,已过期){}.\n"
-            "请先执行: constitution-check --step 1 --input '<宪法三查汇报>' --strict --task '<当前任务>'\n"
-            "      然后: constitution-check --step 2 --input '<技能树声明>' --strict\n"
-            "      然后: constitution-check --step 3 --input '<技能调用声明>' --strict"
-        ).format(tool, task_hint)
+            "【宪法门禁·拦截】写文件前本任务的宪法三查证据不足{}.\n"
+            "补救任选其一: ① 平台已注入记忆+技能树时,先用 Skill 工具调用命中的技能再写;"
+            "② 运行 constitution-check --step 1 --input '<宪法三查汇报(含命中技能名)>'"
+            " --strict --task '<当前任务>'."
+        ).format(task_hint)
         print(msg, file=sys.stderr)
         sys.exit(2)
 
@@ -230,6 +389,11 @@ def main():
         if not msg or os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
         data = load_state()
+        # v2.22.0:本任务内已有证据链 → 跳过重复文本校验(防误记违规)。
+        # 旧版对最终回复再做一遍三查文本校验,任务开头已查过、收尾回复没复述
+        # 三查就被误记违规,下个任务开头被误注入警告。
+        if task_evidence_ok(data):
+            sys.exit(0)
         last_task = data.get("last_task", "")
         try:
             cmd = [sys.executable, CHECK, "--input", "-", "--strict", "--step", "1"]
