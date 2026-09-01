@@ -5,6 +5,30 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.25.0] - 2026-09-01
+
+### 第五条「答复推荐」极度省 token 改造：本地排行榜快照（不再每次全盘搜 GitHub）
+
+起因（用户需求）："推荐环节是不是每次都要全盘扫 github？太浪费 token。能不能找一个可信度高的现成 github 排行榜，以后推荐只读排行榜，找任务相关 + 星数高的 3 个 skill 推荐。一切原则是极度省 token。"
+
+#### 新增
+
+- **`data/skill_rankings.json` 排行榜快照（作者快照随仓库发布）**：从权威排行榜仓库 `quemsah/awesome-claude-plugins`（GitHub raw README "Awesome Claude Code Plugins: Top 100 Repositories"，索引 3.6 万+ 仓库，实测 2026-08-31 更新）抓取 Top100 技能生成。字段精简（rank/name/owner/repo/stars/subs/plugins/desc/keywords），约 20KB，纯本地可读。
+- **`scripts/recommend_skills.py` 本地推荐器（推荐环节主入口）**：读快照 → 任务文本分词（英文词 + 中文连续片段）→ 条目 keywords/name/desc 子串匹配 → **排除本地已装**（E1 目录同名 + E2 `_<name>-references` 框架标记，与 step5 Layer E 口径一致）→ 命中数优先、星数次之排序 → 出 3 条（GitHub 链接 + star 数 + 获取方式，天然满足 step5 校验）。零命中 → 按星数回退 Top3，任何任务都有推荐。**零网络请求。**
+- **`scripts/update_skill_rankings.py` 快照刷新器（低频）**：网络抓取或 `--input README.md` 离线解析，生成快照（原子替换，网络/解析失败不覆盖旧快照）；`--source skilld` 可切备选源（skilld.dev 单技能级排行）；`--stale-days` 配过期阈值。
+- **快照过期策略**：超过 `stale_days`（默认 30 天）时，`recommend_skills.py` 输出顶部提示运行刷新命令 —— **只提示不自动拉取**，绝不在推荐环节发起网络请求。
+
+#### 修改
+
+- **宪法第五条重写（SKILL.md / README.md）**：推荐来源优先级改为 ① 本地排行榜快照（第一优先，零网络）→ ② GitHub 搜索（仅快照零相关时兜底，须标注来源）→ ③ 快照过期提示刷新。删除"每次答复必须去 GitHub 搜索"的旧要求；省 token 铁律：推荐环节默认零网络。
+- **step5-check.py 新增推荐来源标注软校验**：标注"本地排行榜快照"（data/skill_rankings.json）= 省 token 最佳实践 ✓；标注"GitHub 搜索"给出改用快照提示；未标注不判 FAIL（兼容旧 Agent 输出）。Layer A/B/E 逻辑不变。
+- **README 改版说明补 v2.24.0 摘要**（上次发布漏加，本次一并补齐）。
+
+#### 测试
+
+- 新增第 12 组回归（11 用例）：排行榜表格解析 / keywords 提取 / 推荐匹配排序 / E1+E2 已装排除 / 中文零命中回退 / 快照过期提示 / 快照缺失提示 / step5 来源标注。
+- 全量 117/117 通过（含既有 106 用例零回归）。
+
 ## [2.24.0] - 2026-09-01
 
 ### 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引

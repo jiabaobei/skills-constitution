@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.24.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.25.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.24.0
+## Skills 宪法（Skills Constitution）v2.25.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -47,7 +47,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 3. 匹配必用：有匹配则无条件优先使用该能力
 4. 无匹配必搜：先搜索可获取的能力，再考虑通用能力
 5. 能力边界：说"做不到"前必须先搜索确认无能力可用
-6. 答复推荐：本地技能未能完美解决任务时，必须去 GitHub 搜索高 Star 能力推荐给用户（含链接+star+获取方式），由用户决定是否安装
+6. 答复推荐（v2.25.0 快照优先，极度省 token）：本地技能未能完美解决任务时，**优先读本地排行榜快照** `python scripts/recommend_skills.py --task "<任务>"`（零网络、自动排除已装、出 3 条含链接+star+获取方式）；快照无匹配时才去 GitHub 搜索；快照过期（>30 天）跑 `python scripts/update_skill_rankings.py` 刷新
 
 双通道（v2.10.0）：简单任务（翻译/润色/解释）→ 零号条款豁免直接通用能力；
 专业任务（编码/爬虫/API）→ pre-hook 强制注入记忆+技能树，未汇报【宪法三查】即被拦截。
@@ -116,7 +116,7 @@ cp SKILL.md .clinerules
 说"做不到"前必须通过技能发现机制确认无能力可用。
 
 ### 第五条：答复推荐（Auto-Discovery）
-本地技能未能完美解决任务时，必须去 GitHub / 全网搜索高 Star 相关能力推荐给用户（含链接+star+获取方式），由用户自行决定是否安装。本地不足却不去搜索 → 违规（v2.11.0 修正定位）。
+本地技能未能完美解决任务时，**优先读本地排行榜快照**（`data/skill_rankings.json`，`python scripts/recommend_skills.py --task "<任务>"` —— 零网络、自动排除已装、出 3 条含 GitHub 链接+star+获取方式）；快照与任务零相关时才去 GitHub 搜索并标注来源；本地不足却不去推荐 → 违规（v2.11.0 修正定位；v2.25.0 快照优先省 token）。快照刷新（低频）：`python scripts/update_skill_rankings.py`。
 
 ---
 
@@ -298,6 +298,21 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.25.0（2026-09-01）— 第五条「答复推荐」极度省 token 改造：本地排行榜快照
+- **推荐来源改为「本地排行榜快照优先」**：新增 `data/skill_rankings.json`（作者快照）+ `scripts/recommend_skills.py` —— 推荐环节纯本地零网络（约 20KB 快照 + 确定性规则），任务关键词匹配 → 排除已装 → 星数排序 → 出 3 条（含 GitHub 链接 + star + 获取方式，天然满足 step5 校验）
+- **快照刷新（低频）**：新增 `scripts/update_skill_rankings.py`，从权威排行榜仓库 quemsah/awesome-claude-plugins（索引 3.6 万+ 仓库，2026-08-31 更新）抓取 Top100 重建快照；离线可用 `--input README.md` 解析；网络失败不覆盖旧快照
+- **快照过期只提示不自动拉取**：超过 `stale_days`（默认 30 天）推荐时顶部提示刷新命令，绝不自动发起网络请求
+- **step5 新增推荐来源标注软校验**：标注"本地排行榜快照"= 省 token 最佳实践；标注"GitHub 搜索"给出改用快照提示；未标注不判 FAIL（兼容旧 Agent）
+- **排除已装与 step5 Layer E 口径一致**：`recommend_skills.py` 内置 E1（目录同名）+ E2（`_<name>-references` 框架标记，如 `_agent-skills-references` → agent-skills 不推）
+- **实测**：`--task "帮我写 PPT"` → open-design/ppt-master/superpowers；`--task "code review"` → open-code-review 等；中文任务零命中 → 按星数回退 Top3
+
+### v2.24.0（2026-09-01）— 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引
+- **块标量解析修复**：`parse_frontmatter` 支持 YAML 块标量（`>`/`|` 及变体）——旧版把 ponytail 全套等 137 个技能描述解析成单个 `>`，检索永不命中；修复后 ponytail 描述 1→825 字符，code 分类 132→164
+- **索引描述上限 200→2000**：触发词（ponytail lazy mode 在第 400+ 字符）不再被截断
+- **门禁任务级通行证**：任务开始时三查通过（注入/step1 PASS）即全程放行，拦截前移为一次性提醒（用户要求：开始已三查，中途不得再拦）
+- **新增 `scripts/skill_doctor.py`**：隐形/损坏技能 8 类诊断 + `--fix` + `--quarantine` + `--emit-min-index` 轻量索引（约 20% 体积，冷门技能省 token 仍可命中）
+- **图谱巨簇回归**：锚点固定前 200 字符 + 停用词三批扩容 + DF 0.05→0.035，752 节点巨簇恢复 ≤80 纪律，回归测试 106/106
 
 ### v2.23.0（2026-09-01）— 技能图谱：技能树之上的确定性关系图（GitNexus 启发）
 - **技能图谱 `skill_graph.json`**：重建技能树时自动产出（也可单跑 `scripts/build_skill_graph.py`）。三种边全部零依赖确定性抽取：`chains_to`（registry 输出→输入 schema 交集，原 step4 临时数据固化成图）/ `co_anchor`（共享实体锚点——含套话停用词表 + 文档频率过滤，实测滤掉 268 节点巨簇）/ `alternative`（同分类高重叠替代方案）

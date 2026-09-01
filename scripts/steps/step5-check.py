@@ -7,6 +7,9 @@
 实际从未发起网络请求,只做格式校验 —— 现注释与实现保持一致。
 真实存在性校验见 reference/gate-details.md 的可选增强说明。)
 v2.15.0: 新增 Layer E 本地已装排除校验(推荐候选不得是本地已装技能)。
+v2.25.0: 新增推荐来源标注软校验 —— 标注"本地排行榜快照"(data/skill_rankings.json)
+  为省 token 最佳实践(配合 scripts/recommend_skills.py), 标注"GitHub 搜索"给出
+  改用快照的提示; 未标注不判 FAIL(兼容旧 Agent)。
 """
 import argparse
 import os
@@ -128,13 +131,22 @@ def check(text, skills_dir=None):
     if not e_passed:
         return False, e_msg, "FAIL"
 
+    # v2.25.0 推荐来源标注(软校验,不参与 PASS/FAIL):
+    # 标注"本地排行榜快照"为省 token 最佳实践, 未标注不判 FAIL(兼容旧 Agent)。
+    if T.has_any(text, "排行榜快照", "skill_rankings", "本地快照"):
+        src_note = "推荐来源: 本地排行榜快照(data/skill_rankings.json) ✓ 省 token 最佳实践"
+    elif T.has_any(text, "GitHub 搜索", "github 搜索", "去 GitHub 搜"):
+        src_note = "推荐来源: GitHub 搜索(⚠️ 每次全盘搜索费 token, 建议改用本地排行榜快照)"
+    else:
+        src_note = "推荐来源未标注(建议标注: 本地排行榜快照 data/skill_rankings.json)"
+
     # Layer A 通过,检查 Layer B
     hard_passed, hard_msg, hard_level = layer_b_hard_check(text)
     if hard_passed:
-        return True, f"软+硬校验均通过; {e_msg}", "PASS"
+        return True, f"软+硬校验均通过; {e_msg}; {src_note}", "PASS"
 
     # Layer A 通过但 Layer B 未通过,降级为 WARN
-    return False, f"软校验通过但硬校验未通过。{hard_msg}", "FAIL"
+    return False, f"软校验通过但硬校验未通过。{hard_msg}; {src_note}", "FAIL"
 
 
 if __name__ == "__main__":

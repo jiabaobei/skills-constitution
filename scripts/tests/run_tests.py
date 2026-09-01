@@ -551,6 +551,105 @@ def main():
         check("短语整体命中优先(不按空格拆分误配)",
               bool(_r24) and _r24[0]["name"] == "ponytail")
 
+    # ---- 12. v2.25.0 回归:排行榜快照推荐(第五条省 token 改造) ----
+    # 背景:旧版推荐环节每次答复都"去 GitHub 全盘搜索", token 浪费严重。
+    # v2.25.0 改为:读本地排行榜快照(data/skill_rankings.json) + 确定性规则,
+    # 零网络、自动排除已装、过期只提示不拉取。全部固化为用例。
+    print("\n[12] v2.25.0:排行榜快照推荐(省 token)")
+    spec25u = importlib.util.spec_from_file_location(
+        "ur25", os.path.join(SCRIPTS_DIR, "update_skill_rankings.py"))
+    ur25 = importlib.util.module_from_spec(spec25u)
+    spec25u.loader.exec_module(ur25)
+    spec25r = importlib.util.spec_from_file_location(
+        "rc25", os.path.join(SCRIPTS_DIR, "recommend_skills.py"))
+    rc25 = importlib.util.module_from_spec(spec25r)
+    spec25r.loader.exec_module(rc25)
+
+    # 12.1 排行榜表格解析(样例 README 表格)
+    _md = ("| # | Repo Name | Description | Stars | Subs | Plugins |\n"
+           "|---|-----------|-------------|-------|------|---------|\n"
+           "| 1 | [ppt-master](https://github.com/hugohe3/ppt-master) | "
+           "AI presentation deck generator | 47146 | 96 | 1 |\n"
+           "| 2 | [superpowers](https://github.com/obra/superpowers) | "
+           "agentic skills framework | 279372 | 1026 | 1 |\n")
+    _it25, _meta25 = ur25.parse_quemsah(_md)
+    check("表格解析: 条目数正确", len(_it25) == 2)
+    check("表格解析: repo/stars 字段完整",
+          _it25[0]["repo"] == "ppt-master" and _it25[0]["stars"] == 47146)
+    _kw25 = ur25.extract_keywords("ppt-master", "AI presentation deck generator")
+    check("keywords 提取: 去停用词保留实义词",
+          "presentation" in _kw25 and "generator" in _kw25 and "ai" not in _kw25)
+
+    # 12.2-12.7 推荐器核心路径(临时快照 fixture)
+    import tempfile as _tf25
+    with _tf25.TemporaryDirectory() as td25:
+        _snap25 = os.path.join(td25, "r.json")
+        _sitems25 = [
+            {"rank": 1, "name": "ppt-master", "owner": "hugohe3", "repo": "ppt-master",
+             "stars": 47146, "subs": 0, "plugins": 1,
+             "desc": "AI presentation deck generator", "keywords": ["presentation", "ppt"]},
+            {"rank": 2, "name": "superpowers", "owner": "obra", "repo": "superpowers",
+             "stars": 279372, "subs": 0, "plugins": 1,
+             "desc": "agentic skills framework", "keywords": ["framework"]},
+            {"rank": 3, "name": "agent-skills", "owner": "addyosmani", "repo": "agent-skills",
+             "stars": 87506, "subs": 0, "plugins": 1,
+             "desc": "production grade engineering skills", "keywords": ["engineering", "skills"]},
+            {"rank": 4, "name": "graphify", "owner": "safishamsi", "repo": "graphify",
+             "stars": 64351, "subs": 0, "plugins": 1,
+             "desc": "knowledge graph for large codebases", "keywords": ["graph"]},
+        ]
+        with open(_snap25, "w", encoding="utf-8") as f25:
+            json.dump({"format": 1, "source": "test", "source_url": "", "title": "",
+                       "updated": "2026-09-01", "stale_days": 30, "count": 3,
+                       "meta": {}, "items": _sitems25}, f25, ensure_ascii=False)
+        # 12.3 E1 已装排除: 本地目录同名
+        _sd1 = os.path.join(td25, "skills1")
+        os.makedirs(os.path.join(_sd1, "ppt-master"), exist_ok=True)
+        _ln1, _ = rc25.recommend("make a presentation deck", _snap25, _sd1, top=3)
+        check("E1 已装排除: 同名 ppt-master 不推",
+              not any("ppt-master" in l for l in _ln1))
+        check("E1 排除后按星数补位: superpowers 在推荐中",
+              any("superpowers" in l for l in _ln1))
+        # 12.4 E2 references 标记排除(_agent-skills-references → agent-skills)
+        _sd2 = os.path.join(td25, "skills2")
+        os.makedirs(_sd2, exist_ok=True)
+        with open(os.path.join(_sd2, "_agent-skills-references"), "w") as f25:
+            f25.write("")
+        _ln2, _ = rc25.recommend("engineering skills", _snap25, _sd2, top=3)
+        check("E2 references 排除: agent-skills 不推",
+              not any("agent-skills" in l for l in _ln2))
+        # 12.5 中文零命中回退: 仍输出 3 条(星数排序)
+        _ln3, _ = rc25.recommend("帮我写周报", _snap25, _sd2, top=3)
+        check("零命中回退: 仍输出 3 条推荐",
+              len([l for l in _ln3 if l.startswith("- ")]) == 3)
+        check("零命中回退: 星数最高优先(superpowers 279K)",
+              any("superpowers" in l for l in _ln3))
+        # 12.6 快照过期: 只提示不自动拉取
+        _snap_old25 = os.path.join(td25, "r_old.json")
+        with open(_snap_old25, "w", encoding="utf-8") as f25:
+            json.dump({"format": 1, "source": "test", "source_url": "", "title": "",
+                       "updated": "2026-01-01", "stale_days": 30, "count": 1,
+                       "meta": {}, "items": _sitems25[:1]}, f25, ensure_ascii=False)
+        _ln4, _ = rc25.recommend("ppt", _snap_old25, None, top=3)
+        check("快照过期: 顶部提示刷新(不自动拉取)",
+              any("已过期" in l for l in _ln4))
+        # 12.7 快照缺失: 提示先运行 update 脚本
+        _ln5, _ = rc25.recommend("ppt", os.path.join(td25, "missing.json"), None, top=3)
+        check("快照缺失: 提示运行 update_skill_rankings",
+              any("update_skill_rankings" in l for l in _ln5))
+
+    # 12.8 step5 推荐来源标注(软校验,不破坏旧行为)
+    spec25s = importlib.util.spec_from_file_location(
+        "s525", os.path.join(SCRIPTS_DIR, "steps", "step5-check.py"))
+    s525 = importlib.util.module_from_spec(spec25s)
+    spec25s.loader.exec_module(s525)
+    _txt_snap25 = ("🔍 本次相关技能推荐(来源: 本地排行榜快照 data/skill_rankings.json):\n"
+                   "- ppt-master — AI PPT 生成 (https://github.com/hugohe3/ppt-master, 50K★)\n"
+                   "  安装: git clone https://github.com/hugohe3/ppt-master")
+    _ok25, _msg25, _lv25 = s525.check(_txt_snap25, "/nonexistent_skills_dir_xyz")
+    check("step5: 快照来源标注 PASS 且含最佳实践提示",
+          _lv25 == "PASS" and "省 token 最佳实践" in _msg25)
+
     # ---- 汇总 ----
     total = len(RESULTS)
     passed = sum(1 for _, ok, _ in RESULTS if ok)

@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.24.0
+version: 2.25.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.24.0（当前）** — 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引。实测修复五项：
+> **v2.25.0（当前）** — 第五条「答复推荐」极度省 token 改造：推荐来源从"每次全盘搜 GitHub"改为**读本地排行榜快照**（`data/skill_rankings.json` + `scripts/recommend_skills.py` —— 零网络、约 20KB、纯确定性规则匹配 + 自动排除已装）；新增 `scripts/update_skill_rankings.py` 低频抓取权威排行榜（quemsah/awesome-claude-plugins，索引 3.6 万+ 仓库）重建快照，过期（>30 天）只提示不自动拉取；step5 新增推荐来源标注软校验（标注"本地排行榜快照"=省 token 最佳实践）。
+> **v2.24.0** — 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引。实测修复五项：
 > ① `parse_frontmatter` 支持 YAML 块标量（`>`/`|` 及折叠变体）——旧版把 ponytail 全套等 137 个技能的 description 解析成单个 `>` 字符，检索永远命中不到（典型：用户装了 GitHub 116k★ 的 ponytail 却从未被调用）；
 > ② 索引描述上限 200→2000——触发词（如 ponytail 的 lazy mode，位于第 400+ 字符）不再被截断丢弃；
 > ③ 门禁任务级通行证——任务开始时三查通过（平台注入或 step1 PASS）即全程放行，拦截前移为任务开始时的一次性提醒（用户明确要求：任务开始已三查，中途不得再拦）；
@@ -193,30 +194,33 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 
 ### 第五条：答复时自动推荐（Auto-Discovery）
 
-任务完成后（答复阶段）→ **若本地已装技能未能完美解决任务，必须去 GitHub / 全网能力库搜索更优能力推荐给用户**，由用户自行决定是否安装。本地技能不足时"不搜索、不推荐"是违规。**v2.15.0：推荐候选必须排除本地已装技能**（推荐的是"你没装过的更强能力"，已装项一律不推）。
+任务完成后（答复阶段）→ **若本地已装技能未能完美解决任务，优先读本地排行榜快照推荐更优能力**，由用户自行决定是否安装。本地技能不足时"不推荐"是违规。**v2.15.0：推荐候选必须排除本地已装技能**（推荐的是"你没装过的更强能力"，已装项一律不推）。**v2.25.0：推荐来源改为「本地排行榜快照优先」，极度省 token —— 每次答复不再全盘搜索 GitHub**。
 
 **触发场景**（满足其一即必须执行）：
 - 本地技能树查了，但没有完全匹配的技能
 - 本地有匹配技能但执行效果不理想（如推送 GitHub 受阻、脚本报错）
 - 任务明显超出本地技能范围（如需要专用工具/agent/插件）
 
-**搜索范围**：
-- GitHub（`github.com` 上的 skill/tool/agent 仓库，高 Star 优先）
-- 各平台官方市场（GPT Store / SkillHub / MCP Registry / Extensions Gallery）
+**推荐来源（v2.25.0 优先级）**：
+1. **本地排行榜快照（第一优先，零网络、零搜索）**：读 `data/skill_rankings.json`（仓库自带作者快照），跑 `python scripts/recommend_skills.py --task "<任务>"` —— 纯本地匹配关键词 + 按星数排序 + **自动排除本地已装技能**，输出 3 条（每条含 GitHub 链接 + star 数 + 获取方式，天然满足 step5 校验）。
+2. **GitHub 搜索（仅快照无匹配时兜底）**：快照条目与任务零相关时，才用 WebSearch/WebFetch 搜 `github.com` 高 Star 仓库，**并在推荐板块标注"来源: GitHub 搜索"**。
+3. **快照过期处理**：快照超过 `stale_days`（默认 30 天）未更新，推荐时顶部提示运行 `python scripts/update_skill_rankings.py` 刷新 —— **只提示不自动拉取**（省 token）。
 
 **推荐格式**：
 ```
-🔍 本地技能未能完美解决此任务，从 GitHub 搜到这几个更优能力：
+🔍 本次相关技能推荐（来源: 本地排行榜快照 data/skill_rankings.json, 更新于 2026-09-01）:
 - 名称：xxx — 一句话亮点 + GitHub 链接 + Star 数 + 获取方式（是否要安装由你决定）
 （最多 3 个，避免刷屏）
 ```
 
-**执行细则（v2.6.0 强化；v2.11.0 修正定位；v2.15.0 排除已装）**：
-- **推荐核心**：必须是 WebSearch/WebFetch 搜索到的 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式）——这是用户决定是否安装的依据
+**执行细则（v2.6.0 强化；v2.11.0 修正定位；v2.15.0 排除已装；v2.25.0 快照优先）**：
+- **推荐核心**：必须是 **GitHub 高 Star 数** skill/tool/agent 仓库（含 star 数 + 链接 + 获取方式）——这是用户决定是否安装的依据；数据来源优先本地排行榜快照（`recommend_skills.py` 输出），其次 GitHub 搜索
+- **省 token 铁律（v2.25.0）**：推荐环节**默认零网络**——只读本地 `data/skill_rankings.json`（约 20KB）跑确定性规则匹配；只有快照缺失或任务与快照零相关时，才允许发起 GitHub 搜索
+- **快照刷新（低频）**：`python scripts/update_skill_rankings.py` 从权威排行榜仓库（quemsah/awesome-claude-plugins 等）抓取 Top100 重建快照；建议每次发布会/每周跑一次，平时不跑
 - **允许**在推荐前简要说明"本地已查过哪些技能、为何不足"（如"本地已装 `git-workflow-and-versioning` 但网络受阻"），帮助用户理解为什么需要新技能
-- **禁止**以"本地已装技能清单"替代 GitHub 搜索推荐（本地技能仅作背景说明）
-- **v2.15.0 排除已装（硬性动作）**：推荐前必须先核对本地已装清单（如 `ls ~/.workbuddy/skills/`），**候选仓库若与本地已装技能同名/同源，一律不推**——包括"搜索结果恰好命中已装仓库"的情况（如 addyosmani/agent-skills 已装时不得再推荐）。仅可作背景说明（"本地已有 X，若需更强可看 Y"）。
-- 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式 + **v2.15.0 Layer E 本地已装排除校验**）
+- **禁止**以"本地已装技能清单"替代推荐（本地技能仅作背景说明）
+- **v2.15.0 排除已装（硬性动作）**：推荐前必须先核对本地已装清单（如 `ls ~/.workbuddy/skills/`），**候选仓库若与本地已装技能同名/同源，一律不推**——包括"搜索结果恰好命中已装仓库"的情况（如 addyosmani/agent-skills 已装时不得再推荐）。`recommend_skills.py` 已内置该排除（含 `_<name>-references` 框架标记）；GitHub 搜索路径同样必须人工核对。仅可作背景说明（"本地已有 X，若需更强可看 Y"）。
+- 可配合门禁 `constitution-check --step 5` 自动校验推荐板块是否合规（含 `github.com/owner/repo` 链接 + star 数标记 + 获取方式 + **v2.15.0 Layer E 本地已装排除校验** + **v2.25.0 推荐来源标注**：标注"本地排行榜快照"为省 token 最佳实践）
 
 ---
 
@@ -253,7 +257,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.24.0
+## Skills 宪法（Skills Constitution）v2.25.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
