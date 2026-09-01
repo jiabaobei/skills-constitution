@@ -428,7 +428,12 @@ def main():
         check("建图完全确定性(两次一致)",
               json.dumps(g, sort_keys=True) == json.dumps(g2, sort_keys=True))
     finally:
-        os.remove(fx_registry)
+        # v2.24.0:清理容错 —— Windows 沙箱回收站不可用时 os.remove 会被
+        # safe-delete 拦截并抛错,临时文件残留不应让整个测试套件崩溃
+        try:
+            os.remove(fx_registry)
+        except OSError:
+            pass
 
     # 10.5 快照图谱质量:无巨簇(防套话词/跨域桥接把全图连成一片)
     snap = graph.load_graph(GRAPH_PATH)
@@ -495,6 +500,56 @@ def main():
     check("无图时注入行为不变(候选为空)",
           ph.graph_candidates_for_task(inj_tree, "推送代码到github",
                                        "/nonexistent/g.json") == [])
+
+    # ---- 11. v2.24.0 回归:块标量解析 / 描述完整性 / 隐形技能诊断 ----
+    # 背景:ponytail 全套"装了却隐形"—— ① parse_frontmatter 不支持 YAML
+    # 块标量(description: >)导致 137 个技能描述失效;② 索引把描述截断到
+    # 200 字符,触发词(第 400+ 字符)被丢掉,检索永远命中不到。全部固化为用例。
+    print("\n[11] v2.24.0:块标量解析 + 描述完整性 + skill_doctor")
+    spec24 = importlib.util.spec_from_file_location(
+        "bst24", os.path.join(SCRIPTS_DIR, "build_skill_tree.py"))
+    bst24 = importlib.util.module_from_spec(spec24)
+    spec24.loader.exec_module(bst24)
+    fm_block = bst24.parse_frontmatter(
+        "---\nname: ponytail\ndescription: >\n  Forces the laziest solution.\n"
+        "  Supports \"yagni\" triggers.\n  Use on ANY coding task.\n"
+        "disable-model-invocation: true\n---\n# body")
+    _bd = fm_block.get("description", "")
+    check("块标量 > 折叠并保留全部行(laziest/yagni/ANY)",
+          "laziest" in _bd and "yagni" in _bd and "ANY" in _bd)
+    check("块标量之后的普通字段仍可解析",
+          fm_block.get("disable-model-invocation") == "true")
+    fm_lit = bst24.parse_frontmatter(
+        "---\nname: x\ndescription: |\n  line one\n  line two\n---\n")
+    check("块标量 | 保留换行", fm_lit.get("description") == "line one\nline two")
+    check("索引描述上限放开(DESC_LIMIT>=2000,触发词不再被截断)",
+          getattr(bst24, "DESC_LIMIT", 0) >= 2000)
+
+    spec24b = importlib.util.spec_from_file_location(
+        "sd24", os.path.join(SCRIPTS_DIR, "skill_doctor.py"))
+    sd24 = importlib.util.module_from_spec(spec24b)
+    spec24b.loader.exec_module(sd24)
+    _kws = sd24.extract_tail_keywords(
+        ' senior dev who has seen everything: question whether the task '
+        'needs to exist at all (YAGNI), reach for the standard library. '
+        'Also use whenever the user says "ponytail", "be lazy", "lazy mode", '
+        '"do less", or "shortest path"')
+    check("截断补偿提取触发词(yagni/be lazy/lazy mode/do less)",
+          {"yagni", "be lazy", "lazy mode", "do less"} <= set(_kws))
+    check("截断补偿丢弃被腰斩的首词残片",
+          not any(k.startswith("senior dev who") for k in _kws))
+    import tempfile as _tf24
+    with _tf24.TemporaryDirectory() as td24:
+        _mi = os.path.join(td24, "min.json")
+        with open(_mi, "w", encoding="utf-8") as f24:
+            json.dump({"skills": [
+                {"n": "ponytail", "c": ["code"], "d": "Forces the laz",
+                 "k": ["yagni", "lazy mode", "do less"]},
+                {"n": "other", "c": ["x"], "d": "lazy and mode together",
+                 "k": []}]}, f24)
+        _r24 = sd24.query_min_index("lazy mode", min_path=_mi)
+        check("短语整体命中优先(不按空格拆分误配)",
+              bool(_r24) and _r24[0]["name"] == "ponytail")
 
     # ---- 汇总 ----
     total = len(RESULTS)

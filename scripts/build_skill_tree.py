@@ -30,6 +30,13 @@ except ImportError:
 
 
 # 分类规则（关键词 → 分支）
+# v2.24.0:索引描述截断上限 200 → 600。实测教训:ponytail 的触发词
+# ("be lazy"/"lazy mode"/"do less")位于描述第 400+ 字符,截断 200 后
+# 索引里根本没有这些词,无论怎么检索都命中不到 —— 冷门技能等于隐形。
+# token 成本由 skill_doctor.py 生成的轻量索引(skill_index_min.json,
+# 约 25% 体积)承担,完整索引作为按需回查的权威数据源。
+DESC_LIMIT = 2000  # 实测 600 仍截断 ponytail 的 "do less"(第 700+ 字符);完整描述才是检索数据源,token 由 mini 索引承担
+
 CATEGORY_RULES = {
     "meta": ["constitution", "rule", "规范", "元规则", "宪法"],
     "memory": ["memory", "memor", "recall", "remember", "记忆", "持久化"],
@@ -61,8 +68,19 @@ def classify_skill(skill_name: str, description: str) -> list[str]:
     return matches if matches else ["general"]
 
 
+BLOCK_SCALAR_RE = re.compile(r"^[|>][+-]?[0-9]*$")
+
+
 def parse_frontmatter(content: str) -> dict:
-    """解析 SKILL.md 的 frontmatter"""
+    """解析 SKILL.md 的 frontmatter
+
+    v2.23.0:支持 YAML 块标量(`>` / `|` 及 `>-` `|+` `|-` 变体)。
+    旧版逐行 `key: value` 解析遇到 `description: >` 时只取到 `>` 符号本身,
+    后续缩进正文全部丢失 —— 实测导致 137 个技能描述为空/过短
+    (ponytail 全套、frontend-dev、fullstack-dev、api-gateway、
+    ios-application-dev 等均受影响),并因分类按 description 关键词匹配
+    而被误塞进 general 分类。
+    """
     if not content.startswith("---"):
         return {}
 
@@ -72,12 +90,29 @@ def parse_frontmatter(content: str) -> dict:
 
     fm_text = match.group(1)
     fm = {}
-    for line in fm_text.split("\n"):
+    lines = fm_text.split("\n")
+    i = 0
+    while i < len(lines):
+        line = lines[i]
         if ":" in line:
             key, _, value = line.partition(":")
             key = key.strip()
             value = value.strip().strip('"').strip("'")
+            if BLOCK_SCALAR_RE.match(value):
+                # 收集后续缩进行作为块内容:> 折叠为空格连接,| 保留换行
+                block = []
+                i += 1
+                while i < len(lines):
+                    nxt = lines[i]
+                    if nxt.strip() and not nxt.startswith((" ", "\t")):
+                        break
+                    block.append(nxt.strip())
+                    i += 1
+                joiner = " " if value.startswith(">") else "\n"
+                fm[key] = joiner.join(x for x in block if x).strip()
+                continue
             fm[key] = value
+        i += 1
     return fm
 
 
@@ -289,7 +324,7 @@ def scan_plugin_skills(cache_root, agent: str = "", enabled_map: dict | None = N
         description = fm.get("description", "") or fm.get("description_zh", "")
         entry = {
             "name": skill_name,
-            "description": description[:200],  # 截断到 200 字符,与独立技能一致
+            "description": description[:DESC_LIMIT],  # v2.24.0: 200→600,保触发词
             "version": fm.get("version", "0.0.0"),
             "categories": classify_skill(skill_name, description),
             "source": "plugin",
@@ -347,7 +382,7 @@ def build_skill_tree(skills_dir: str, binaries_dir: str = "",
 
         skill_info = {
             "name": skill_name.name,
-            "description": description[:200],  # 截断到 200 字符
+            "description": description[:DESC_LIMIT],  # v2.24.0: 200→600,保触发词
             "version": version,
             "categories": categories
         }

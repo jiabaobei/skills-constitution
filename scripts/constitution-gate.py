@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-constitution-gate —— Skills 宪法门禁 Hook 脚本（WorkBuddy 宿主级拦截）v2.22.0
+constitution-gate —— Skills 宪法门禁 Hook 脚本（WorkBuddy 宿主级拦截）v2.24.0
 ======================================================================
 挂到 ~/.workbuddy/settings.json 的 hooks 字段，让"宪法三查"从自觉变成强制：
 
@@ -266,17 +266,48 @@ def is_fresh(ts, reset_ts):
     return (not reset_ts) or (ts or "") >= reset_ts
 
 
+def issue_task_clearance(data, reason):
+    """v2.24.0:签发"任务级通行证" —— 本任务三查已过,中途写操作一路绿灯
+
+    只在本函数内签发(两种情形),且状态文件受 GATE_PROTECTED 保护,
+    Agent 无法自写文件伪造:
+      ① injected —— 平台已强制注入记忆+技能树(注入即查)
+      ② step1    —— 本任务内 constitution-check step1 真实 PASS
+    """
+    data["task_cleared"] = {"ts": now_ts(), "reason": reason}
+    return data
+
+
+def task_cleared_ok(data):
+    """v2.24.0:本任务是否已持通行证(签发于本任务 reset 之后)
+
+    用户诉求(2026-09-01):"每一次任务,只要任务开始时执行了三查,任务中途,
+    门禁系统不得再拦截"。通行证在任务开始时签发,中途一律放行,
+    直到 UserPromptSubmit 判定为新任务(非追加式消息)才重置。
+    """
+    cl = data.get("task_cleared") or {}
+    if not cl.get("ts"):
+        return False
+    return is_fresh(cl.get("ts", ""), data.get("reset_ts", ""))
+
+
 def task_evidence_ok(data):
     """v2.22.0:本任务内三查证据链是否完整(供 PreToolUse/Stop 共用)
 
     满足其一即完整:
       ① step1 在本任务内新鲜 PASS(手动跑过 constitution-check 且硬校验通过)
       ② 平台已注入(记忆+技能树视为已查) 且 本任务内实际调用过技能
+      ③ v2.24.0:本任务已持通行证(注入即查 或 step1 通过时签发)
     """
     reset_ts = data.get("reset_ts", "")
     s1 = data.get("steps", {}).get("step1", {})
     if (bool(s1.get("passed")) and s1.get("level", "PASS") == "PASS"
             and is_fresh(s1.get("ts", ""), reset_ts)):
+        # 证据成立即补发通行证,后续步骤不再重复举证
+        issue_task_clearance(data, "step1")
+        save_state(data)
+        return True
+    if task_cleared_ok(data):
         return True
     if data.get("injected"):
         sk = data.get("skill_invoked", {})
@@ -315,7 +346,28 @@ def main():
         data["reset_ts"] = now_ts()
         data["last_task"] = (prompt or "")[:2000]
         # v2.22.0:注入即查 —— 平台注入上下文就绪则记忆+技能树视为已查
-        data["injected"] = injection_ready()
+        injected = injection_ready()
+        data["injected"] = injected
+        # v2.24.0:注入成功即在任务开始时签发通行证 —— 记忆+技能树已由平台
+        # 强制注入,本任务中途的写操作不再重复拦截(用户明确要求:
+        # "只要任务开始时执行了三查,任务中途,门禁系统不得再拦截")。
+        # 未注入(降级 bash 兜底)时不签发,回到既有的 step1/Skill 调用路径。
+        if injected:
+            issue_task_clearance(data, "injected")
+            # v2.24.0:拦截前移为提醒 —— 任务开始时一次性注入"本任务该看哪些
+            # 技能",中途写操作不再阻断。既满足"任务开始三查后中途不得再拦",
+            # 又保留"有匹配必用"的引导(约束从阻断降级为提示,不打断执行流)。
+            try:
+                req = required_categories_via_pre_hook(prompt)
+                if req:
+                    print(
+                        "【宪法·注入即查】记忆与技能树已由平台注入,本任务必需分类: "
+                        + "、".join(req)
+                        + "。命中技能请先用 Skill 工具调用再动手。",
+                        file=sys.stdout,
+                    )
+            except Exception:
+                pass
         save_state(data)
         # 注入上轮违规警告(v2.14.0): stdout 会被平台注入 Agent 上下文
         vio = load_violations()

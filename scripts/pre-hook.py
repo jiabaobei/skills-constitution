@@ -745,24 +745,52 @@ def main():
         return 0
 
     if a.json:
-        print(json.dumps({
+        # v2.24.0:注入块序列化加固 —— 任一字段含不可 JSON 序列化对象
+        # (set / Path / 自定义类型)时,旧版整段 json.dumps 抛异常 →
+        # session-start 判定 python 分支失败 → 降级 bash 兜底 →
+        # 门禁 injected 证据缺失,"注入即查"失效,每个任务都被迫重跑三查。
+        # 现改为:① default 兜底转换;② 兜底仍失败则降级为纯文本输出,
+        # 保证注入块永不因序列化问题整体丢失(fail-open,与项目设计原则一致)。
+        def _json_default(o):
+            if isinstance(o, (set, frozenset, tuple)):
+                return list(o)
+            if isinstance(o, bytes):
+                return o.decode("utf-8", errors="ignore")
+            try:
+                import pathlib
+                if isinstance(o, pathlib.PurePath):
+                    return str(o)
+            except Exception:
+                pass
+            return str(o)
+
+        payload = {
             "task": a.task,
             "memory_len": len(memory_text),
             "tree_categories": len(tree),
             "injected_categories": matched_cats,
             "sad_candidates": [
-                {"name": s["name"], "score": sc, "categories": s.get("categories", []),
+                {"name": s.get("name", ""), "score": sc,
+                 "categories": list(s.get("categories", []) or []),
                  "qualified_name": s.get("qualified_name", "")}
                 for sc, s in sad_candidates
             ],
             "plugin_skills": len(aliases),
             "graph_candidates": [
-                {"name": it["name"], "via": it["via"], "kind": it["kind"],
-                 "evidence": it["evidence"]}
+                {"name": it.get("name", ""), "via": it.get("via", ""),
+                 "kind": it.get("kind", ""), "evidence": it.get("evidence", "")}
                 for it in graph_items
             ],
             "injection": injection,
-        }, ensure_ascii=False, indent=2))
+        }
+        try:
+            print(json.dumps(payload, ensure_ascii=False, indent=2,
+                             default=_json_default))
+        except Exception as _e:
+            # 兜底:注入块是本脚本的核心价值,宁可退化格式也不能不输出
+            print(json.dumps({"task": a.task, "injection": injection,
+                              "serialize_warning": str(_e)[:200]},
+                             ensure_ascii=False))
     else:
         print(injection)
     return 0

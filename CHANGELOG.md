@@ -5,6 +5,31 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.24.0] - 2026-09-01
+
+### 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引
+
+起因（用户实测两连问）：① 「我装过的 ponytail（马尾辫，GitHub 116k★）怎么从没见调用？」② 「任务开始时明明执行了三查，任务中途又被门禁拦了，必须改。」
+
+#### 新增
+
+- **`scripts/skill_doctor.py` 隐形技能诊断与修复**：8 类检查（missing_skill_md / empty_skill_md / no_frontmatter / missing_name / missing_desc / block_scalar_residue / name_mismatch / empty_dir），分 severity（broken=损坏 / invisible=隐形 / warn=告警）；`--fix` 自动修复（补缺失 name、重建索引）、`--quarantine` 隔离损坏技能、`--emit-min-index` 生成轻量索引、`--query` 轻量检索验证。实测本库：121 项目录级问题（损坏 7 / 隐形 4 / 告警 110），已自动补齐 4 个缺失 name（agnes-video-generator / caozhao-radar / desktop-control / grill-me-ytang）。
+- **`skill_index_min.json` 轻量索引**：约为完整索引 20% 体积（160KB / 777KB）。检索入口先用它，命中后再回查完整索引 —— 冷门技能不删除、不丢检索入口，省的是常驻 token 不是可用性。摘要截断部分提取长尾触发词（引号短语 + 全大写缩写优先，普通实词限额兜底）单独存 `k` 字段；实测 yagni / lazy mode / do less / be lazy / shortest path 五个触发词全部命中 ponytail。
+- **门禁任务级通行证（constitution-gate.py）**：任务开始时（UserPromptSubmit）平台注入成功即签发 `task_cleared`（注入即查）；step1 PASS 亦补发。持证任务内所有写操作一路绿灯，拦截前移为任务开始时的一次性「必需分类提醒」。追加式消息仍不重置；新任务重置重发。防伪造不变：状态文件仍在 GATE_PROTECTED 保护内，注入失败（bash 兜底）时回到 step1/Skill 调用证据路径。
+
+#### 修复
+
+- **`parse_frontmatter` 支持 YAML 块标量**（`>` / `|` 及 `>-` `|+` `|-` 变体）：旧版逐行 `key: value` 解析只取到 `>` 符号本身，实测 137 个技能描述失效（ponytail 全套、frontend-dev、fullstack-dev、api-gateway、ios-application-dev 等），分类按 description 匹配故被误塞 general。修复后 ponytail 描述从 1 字符恢复 825 字符，code 分类 132→164、general 699→640。
+- **pre-hook.py 注入块序列化加固**：`json.dumps` 加 `default` 兜底 + 整段 try 降级 —— 任一字段含不可序列化对象时旧版整段失败 → session-start 判 python 分支失败 → 降级 bash 兜底 → 门禁 injected 证据缺失（实测 2026-09-01 18:37 会话即发生），「注入即查」失效、每个任务都被迫重跑三查。
+- **索引描述截断 200→2000**（build_skill_tree.py `DESC_LIMIT`）：实测 ponytail 的触发词位于第 400~700+ 字符，截断 200 / 600 均丢失 —— 检索数据源必须完整，token 成本由轻量索引承担。
+- **图谱巨簇回归**：描述放宽后 co_anchor 锚点暴增，实测产生 752 节点巨簇（纪律 ≤80）。修复：① 锚点抽取固定用描述前 200 字符（与 v2.23.0 快照口径一致，图结构与存储职责分离）；② 停用词三批扩容（模板套话 guidance/routing/reference/expert 等 + 销售/CRM 通用词 account/company/contact 等 + 技术通用桥接词 sdk/auth/webhook/video 等）；③ ANCHOR_DF_RATIO 0.05→0.035。最大簇 752→123→116→104→95→≤80，回归测试 106/106。
+- **run_tests.py 清理容错**：Windows 沙箱回收站不可用时 os.remove 被 safe-delete 拦截抛错，临时文件残留不应让测试套件崩溃。
+
+#### 测试
+
+- 新增第 11 组回归（7 用例）：块标量折叠/字面解析、块标量后普通字段、DESC_LIMIT≥2000、截断补偿提取触发词、腰斩残片丢弃、短语整体命中优先（不按空格拆分误配）。
+- 全量 106/106 通过。
+
 ## [2.23.0] - 2026-09-01
 
 ### 技能图谱：技能树之上的确定性关系图（GitNexus 启发）

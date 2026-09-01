@@ -103,6 +103,35 @@ ANCHOR_STOPWORDS = {
     # 中文泛词
     "支持", "工具", "技能", "使用", "用于", "可以", "进行", "相关",
     "内容", "数据", "文件", "用户", "任务", "功能", "自动", "帮助",
+    # v2.24.0 补充:索引描述上限放宽后实测驱动 123 节点巨簇的半套话词
+    # (簇内共现 guidance×236 / routing×197 / reference×190 / after×153
+    #  / expert×134 —— 描述模板句里的词,不是"同一实体"的证据)
+    "guidance", "routing", "reference", "references", "after", "before",
+    "expert", "experts", "implementing", "implement", "implements",
+    "implementation", "server", "servers", "client", "clients",
+    "application", "applications", "platform", "platforms", "framework",
+    "frameworks", "tool", "tools", "system", "systems", "service",
+    "services", "feature", "features", "project", "projects", "team",
+    "team's", "agent", "agents", "model", "models", "provider",
+    "providers", "endpoint", "endpoints", "token", "tokens", "prompt",
+    "prompts", "response", "responses", "request", "requests",
+    # v2.24.0 二轮补充:销售/CRM 域描述通用名词(实测驱动 104~123 节点
+    # 巨簇的第二组词 —— account×88 / company×70 / recent×60 等,
+    # 出现在大量互不相关的销售/数据技能描述里,不是"同一实体"证据)
+    "account", "accounts", "company", "companies", "contact", "contacts",
+    "recent", "identify", "engagement", "engagements", "name", "call",
+    "calls", "email", "emails", "customer", "customers", "revenue",
+    "deal", "deals", "meeting", "meetings", "conversation", "message",
+    "messages", "data", "database", "record", "records", "update",
+    "updates", "create", "creates", "creating", "created", "manage",
+    "manages", "managing", "build", "builds", "building", "built",
+    # v2.24.0 三轮补充:技术通用词(实测作为"桥接边"把互不相关的生态
+    # 卷进同一巨簇 —— sdk×26/auth×13/video×25/webhook×11 把 scrape/
+    # tavily/bilibili/gsd 等桥接进 Zoom 生态簇;它们低频到躲过 DF 过滤,
+    # 但语义上是"任何集成描述都会写"的词,与 guidance/reference 同类)
+    "sdk", "sdks", "auth", "authentication", "oauth", "webhook",
+    "webhooks", "video", "videos", "audio", "api", "apis", "cli",
+    "json", "http", "url", "urls",
 }
 
 
@@ -125,7 +154,7 @@ CLUSTER_EDGE_KINDS = {"chains_to", "co_anchor"}
 
 # co_anchor 锚点文档频率上限:一个锚点出现在超过该比例的技能里,
 # 说明它是"creating/wants"这类描述套话而不是实体,剔除(确定性 IDF 思想)
-ANCHOR_DF_RATIO = 0.05
+ANCHOR_DF_RATIO = 0.035  # v2.24.0: 0.05→0.035,销售/CRM 通用词实测仍驱动 116 巨簇
 ANCHOR_DF_MIN_CAP = 8
 
 
@@ -202,8 +231,13 @@ def build_graph(skills, registry_path):
     # 2) co_anchor: 共享实体锚点
     # 先做文档频率过滤:出现在过多技能里的锚点是描述套话(如 creating),
     # 不构成"同一实体"证据 —— 否则所有技能经套话连成一个巨簇。
-    anchor_map_raw = {n: extract_anchors(n, by_name[n].get("description", ""))
-                      for n in names}
+    # v2.24.0:锚点抽取固定用描述前 200 字符(与 v2.23.0 快照口径一致)。
+    # 索引描述上限已从 200 放宽到 2000(保触发词检索),若锚点也用全文,
+    # 每技能锚点数暴增 → 两两共享概率暴增 → 实测产生 752 节点巨簇,
+    # 击穿"无巨簇"纪律。锚点(图结构)与存储(检索)职责分离,各用各的口径。
+    anchor_map_raw = {n: extract_anchors(
+        n, (by_name[n].get("description", "") or "")[:200])
+        for n in names}
     df = Counter()
     for anchors in anchor_map_raw.values():
         for a in anchors:

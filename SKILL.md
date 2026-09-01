@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.23.0
+version: 2.24.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,13 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.23.0（当前）** — 技能图谱（借鉴 GitNexus 预计算关系智能）：技能树之上叠加确定性关系图（`skill_graph.json`，随技能树重建自动产出）。三种边全部零依赖确定性抽取——`chains_to`（registry 的输出→输入 schema 交集）/ `co_anchor`（共享实体锚点，含停用词与文档频率过滤）/ `alternative`（同分类高重叠替代方案）；确定性标签传播聚成功能簇。三处落地：① 注入块从"整分类清单"收窄到"锚点技能的任务线图谱"（带"为什么相关"溯源，更省 token）；② 门禁 step3 新增 Layer F 图证据校验——引用的技能必须与任务锚点图谱连通，零连通带簇证据判 FAIL；③ 替代边不做放行凭证、不参与聚簇（纪律同 GitNexus 只对结构边做社区检测）。图缺失时全部链路行为与旧版一致（只加不删）。
+> **v2.24.0（当前）** — 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引。实测修复五项：
+> ① `parse_frontmatter` 支持 YAML 块标量（`>`/`|` 及折叠变体）——旧版把 ponytail 全套等 137 个技能的 description 解析成单个 `>` 字符，检索永远命中不到（典型：用户装了 GitHub 116k★ 的 ponytail 却从未被调用）；
+> ② 索引描述上限 200→2000——触发词（如 ponytail 的 lazy mode，位于第 400+ 字符）不再被截断丢弃；
+> ③ 门禁任务级通行证——任务开始时三查通过（平台注入或 step1 PASS）即全程放行，拦截前移为任务开始时的一次性提醒（用户明确要求：任务开始已三查，中途不得再拦）；
+> ④ 新增 `scripts/skill_doctor.py`：隐形/损坏技能自动诊断（8 类检查）+ `--fix` 自动修复 + `--quarantine` 隔离损坏 + `--emit-min-index` 轻量索引（约完整索引 20% 体积，截断部分保留长尾触发词，冷门技能省 token 仍可命中）；
+> ⑤ 图谱锚点抽取固定用前 200 字符 + 停用词三批扩容 + DF 上限 0.05→0.035——描述放宽后锚点暴增曾产生 752 节点巨簇，现恢复 ≤80 纪律（回归测试 106/106）。
+> **v2.23.0** — 技能图谱（借鉴 GitNexus 预计算关系智能）：技能树之上叠加确定性关系图（`skill_graph.json`，随技能树重建自动产出）。三种边全部零依赖确定性抽取——`chains_to`（registry 的输出→输入 schema 交集）/ `co_anchor`（共享实体锚点，含停用词与文档频率过滤）/ `alternative`（同分类高重叠替代方案）；确定性标签传播聚成功能簇。三处落地：① 注入块从“整分类清单”收窄到“锚点技能的任务线图谱”（带“为什么相关”溯源，更省 token）；② 门禁 step3 新增 Layer F 图证据校验——引用的技能必须与任务锚点图谱连通，零连通带簇证据判 FAIL；③ 替代边不做放行凭证、不参与聚簇（纪律同 GitNexus 只对结构边做社区检测）。图缺失时全部链路行为与旧版一致（只加不删）。
 >
 > 完整版本史见 `CHANGELOG.md`。
 
@@ -247,7 +253,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.23.0
+## Skills 宪法（Skills Constitution）v2.24.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
