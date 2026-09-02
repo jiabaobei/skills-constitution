@@ -20,6 +20,7 @@
      证据链放行) + 注入瘦身断言
   10. 技能图谱(v2.23.0):锚点抽取/三种边/聚类纪律(替代边不并簇)/门禁图证据
       (LayerF 连通放行/零连通失败/缺图降级)/注入集成/确定性复现
+  13. 钩子超时保护(v2.25.1):解释器存活探针/stdin 限时/自愈限时/fail-open 不卡任务
 
 用法: python scripts/tests/run_tests.py
 返回码: 0=全部通过, 1=有失败
@@ -67,7 +68,7 @@ def check(case, actual, expect=True):
 
 def main():
     print("=" * 60)
-    print("Skills Constitution 回归测试 (v2.23.0)")
+    print("Skills Constitution 回归测试 (v2.25.1)")
     print("=" * 60)
 
     # ---- 1. 同义词扩展:口语任务命中必需分类 ----
@@ -649,6 +650,60 @@ def main():
     _ok25, _msg25, _lv25 = s525.check(_txt_snap25, "/nonexistent_skills_dir_xyz")
     check("step5: 快照来源标注 PASS 且含最佳实践提示",
           _lv25 == "PASS" and "省 token 最佳实践" in _msg25)
+
+    # ---- 13. 钩子超时保护（v2.25.1）----
+    # 回归背景：Windows 上 python 可能是 Microsoft Store 占位别名（启动即挂起），
+    # 旧钩子只查存在不真跑，每次调用挂起 → 超宿主 20s 强杀、任务卡死。
+    import shutil
+    import tempfile
+    import time as _time
+    HOOK_PATH = os.path.join(ROOT_DIR, "hooks", "user-prompt-submit.sh")
+    # 13.0 静态断言：三道超时保护必须存在（防手滑删回归）
+    with open(HOOK_PATH, encoding="utf-8") as fh:
+        _hook_src = fh.read()
+    check("13.0a 钩子: 解释器存活探针(timeout 3)在位", "timeout 3" in _hook_src)
+    check("13.0b 钩子: stdin 读取限时(read -r -t 2)在位", "read -r -t 2" in _hook_src)
+    check("13.0c 钩子: 自愈限时(timeout 10)在位", "timeout 10" in _hook_src)
+
+    # 挂起解释器桩：三个名字都启动即睡 30s，模拟 Store 占位别名
+    _stub_dir = tempfile.mkdtemp(prefix="stubpy_")
+    try:
+        for _c in ("python3", "python", "py"):
+            _sp = os.path.join(_stub_dir, _c)
+            with open(_sp, "w") as f:
+                f.write("#!/bin/sh\nsleep 30\n")
+            os.chmod(_sp, 0o755)
+        _env_stub = dict(os.environ, PATH=_stub_dir + os.pathsep + os.environ.get("PATH", ""))
+
+        # 13.1 最坏：三解释器全挂 → 探针 3s×3 降级 fail-open，低于宿主 20s 上限
+        _t0 = _time.time()
+        _r = subprocess.run(["bash", HOOK_PATH], input='{"prompt":"推送代码到github"}',
+                            capture_output=True, text=True, env=_env_stub, timeout=25)
+        _dt = _time.time() - _t0
+        check("13.1 解释器全挂: 钩子 fail-open 放行(exit 0)", _r.returncode == 0)
+        check("13.1 解释器全挂: %.1fs 内完成(<20s)" % _dt, _dt < 20)
+
+        # 13.2 stdin 开着却无数据：read -t 2 不得无限阻塞
+        _t0 = _time.time()
+        _p = subprocess.Popen(["bash", HOOK_PATH], stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=_env_stub)
+        try:
+            _rc = _p.wait(timeout=25)  # 不写不关 stdin
+        except subprocess.TimeoutExpired:
+            _p.kill()
+            _rc = -1
+        _dt = _time.time() - _t0
+        check("13.2 stdin 开着无数据: 不无限阻塞(exit 0)", _rc == 0)
+        check("13.2 stdin 开着无数据: %.1fs 内完成(<20s)" % _dt, _dt < 20)
+    finally:
+        shutil.rmtree(_stub_dir, ignore_errors=True)
+
+    # 13.3 正常环境：钩子秒级完成不挂起
+    _t0 = _time.time()
+    subprocess.run(["bash", HOOK_PATH], input='{"prompt":"你好"}',
+                   capture_output=True, text=True, timeout=25)
+    _dt = _time.time() - _t0
+    check("13.3 正常环境: 钩子 %.1fs 内完成(不挂起)" % _dt, _dt < 10)
 
     # ---- 汇总 ----
     total = len(RESULTS)
