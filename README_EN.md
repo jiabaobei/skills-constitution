@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.25.1-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.26.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -41,6 +41,11 @@ task arrives
 ```
 
 Design principles: **default soft checks** (`--strict` to block), **fail-open** (a gate bug never bricks the host), and the rule text never says "you must run the scripts" — so it stays satisfiable on prompt-only platforms.
+
+**What's new in v2.26.0 — one-click update scripts (download-latest-first, auto-install):**
+
+- **`scripts/update.sh` / `scripts/update.ps1`**: the rule "before updating, download the latest version from GitHub; after the update, install the latest version locally automatically" is now enforced by script.
+- **Flow**: download the latest main tarball (codeload primary + API fallback) → integrity check (must unpack and contain SKILL.md; a broken package never touches the existing install) → run the *new* installer with arguments passed through (`--platform` / `--skills-dir` / `--register-hooks`) → clean up the temp dir on success.
 
 **What's new in v2.25.1 — hook hang fix (no more 20s host timeouts freezing tasks):**
 
