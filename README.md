@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.25.1-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.26.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -298,6 +298,11 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.26.0（2026-09-02）— 一键更新脚本：下载最新版 → 校验 → 自动安装
+- **新增 `scripts/update.sh` / `scripts/update.ps1`**：把「更新前先去 GitHub 下载最新版、更新完成后自动在本地安装最新版」固化为死规矩脚本
+- **流程**：下载最新 main 包（codeload 主 + api 备双保险）→ 完整性校验（必须可解压且含 SKILL.md，半残包保持旧版、不毁旧装）→ 透传参数跑**新版**安装器自动安装（`install.sh` / `install.ps1`，`--platform` / `--skills-dir` / `--register-hooks` 等原样透传）→ 成功自动清理临时目录
+- **实测**：`bash scripts/update.sh --platform claude --skills-dir <临时目录>` 全链路通过（下载 2.25.1 → 校验 → 安装产物齐全）
 
 ### v2.25.1（2026-09-02）— 钩子挂起修复：WorkBuddy 20s 强杀不再卡死任务
 - **起因**：Windows 上 `python`/`python3` 可能是 Microsoft Store 占位别名（启动即挂起）；旧版钩子解释器检测只查存在不真跑，钩子里每次 python 调用都挂起，叠加数次超过宿主 20000ms 超时，`UserPromptSubmit` 被强杀、任务卡死
