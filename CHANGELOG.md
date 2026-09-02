@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.25.1] - 2026-09-02
+
+### 钩子挂起修复：WorkBuddy 20s 强杀不再卡死任务（Windows）
+
+#### 起因
+
+Windows 平台上 `python`/`python3` 可能指向 Microsoft Store 占位别名（启动即挂起）。钩子的解释器检测只用 `command -v` 查存在、不真跑，导致钩子里每次 python 调用都挂起；叠加数次调用超过宿主 20000ms 超时，WorkBuddy 强杀钩子并报 `UserPromptSubmit operation blocked by hook: Hook timed out after 20000ms`，任务卡死。
+
+#### 修复
+
+- **解释器存活探针**：`hooks/user-prompt-submit.sh` 与 `hooks/session-start.sh` 探测 python3/python/py 时真跑 `timeout 3 <py> -c "pass"`；超时视为不可用并降级（无 python → 放行 / bash 兜底），不再使用挂起的解释器。
+- **stdin 读取限时**：`read -r stdin_payload` 改为 `read -r -t 2` —— 宿主开着输入通道却不发内容、也不关闭时，不再无限阻塞。
+- **自愈限时**：`user-prompt-submit.sh` 中注入缺失时重跑 SessionStart 的自愈加 `timeout 10` 上限，嵌套钩子挂起不会把整个 UserPromptSubmit 拖过宿主超时。
+
+#### 纪律与实测
+
+- fail-open 设计哲学不变：全链路不可用时降级放行，钩子永不卡任务。
+- 实测最坏情况（三个解释器全部启动挂起）：9s 降级放行（低于宿主 20s 上限）；正常环境 0.2s。
+
 ## [2.25.0] - 2026-09-01
 
 ### 第五条「答复推荐」极度省 token 改造：本地排行榜快照（不再每次全盘搜 GitHub）

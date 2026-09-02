@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.23.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.25.1-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -41,6 +41,12 @@ task arrives
 ```
 
 Design principles: **default soft checks** (`--strict` to block), **fail-open** (a gate bug never bricks the host), and the rule text never says "you must run the scripts" — so it stays satisfiable on prompt-only platforms.
+
+**What's new in v2.25.1 — hook hang fix (no more 20s host timeouts freezing tasks):**
+
+- **Root cause**: on Windows, `python`/`python3` can resolve to the Microsoft Store stub alias that hangs on launch. The old hooks only checked interpreter *existence*, so every python invocation inside a hook hung; a few stacked invocations blew past the host's 20000ms hook timeout, `UserPromptSubmit` was force-killed and the task froze.
+- **Liveness probe**: `user-prompt-submit.sh` / `session-start.sh` now actually run `timeout 3 <py> -c pass` while detecting python3/python/py; a timing-out interpreter is treated as absent and the hook degrades (bash fallback / fail-open) instead of hanging.
+- **Bounded blocking points**: stdin read capped with `read -t 2`; the self-heal re-run of SessionStart capped with `timeout 10`, so a nested hook hang can't drag the parent past the host budget. Fail-open discipline unchanged — worst case (all interpreters hanging) degrades in ~9s, healthy env 0.2s.
 
 **What's new in v2.23.0 — the skill graph (deterministic relational intelligence, inspired by GitNexus):**
 

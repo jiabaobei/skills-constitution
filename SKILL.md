@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.25.0
+version: 2.25.1
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.25.0（当前）** — 第五条「答复推荐」极度省 token 改造：推荐来源从"每次全盘搜 GitHub"改为**读本地排行榜快照**（`data/skill_rankings.json` + `scripts/recommend_skills.py` —— 零网络、约 20KB、纯确定性规则匹配 + 自动排除已装）；新增 `scripts/update_skill_rankings.py` 低频抓取权威排行榜（quemsah/awesome-claude-plugins，索引 3.6 万+ 仓库）重建快照，过期（>30 天）只提示不自动拉取；step5 新增推荐来源标注软校验（标注"本地排行榜快照"=省 token 最佳实践）。
+> **v2.25.1（当前）** — 钩子挂起修复：两条钩子的解释器检测加 3s 存活探针（修复 Windows 上 Microsoft Store 占位别名启动即挂起、被宿主 20s 强杀的卡死），stdin 读取限时 2s、自愈限时 10s，超时一律降级 fail-open，钩子永不卡任务。
+> **v2.25.0** — 第五条「答复推荐」极度省 token 改造：推荐来源从"每次全盘搜 GitHub"改为**读本地排行榜快照**（`data/skill_rankings.json` + `scripts/recommend_skills.py` —— 零网络、约 20KB、纯确定性规则匹配 + 自动排除已装）；新增 `scripts/update_skill_rankings.py` 低频抓取权威排行榜（quemsah/awesome-claude-plugins，索引 3.6 万+ 仓库）重建快照，过期（>30 天）只提示不自动拉取；step5 新增推荐来源标注软校验（标注"本地排行榜快照"=省 token 最佳实践）。
 > **v2.24.0** — 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引。实测修复五项：
 > ① `parse_frontmatter` 支持 YAML 块标量（`>`/`|` 及折叠变体）——旧版把 ponytail 全套等 137 个技能的 description 解析成单个 `>` 字符，检索永远命中不到（典型：用户装了 GitHub 116k★ 的 ponytail 却从未被调用）；
 > ② 索引描述上限 200→2000——触发词（如 ponytail 的 lazy mode，位于第 400+ 字符）不再被截断丢弃；

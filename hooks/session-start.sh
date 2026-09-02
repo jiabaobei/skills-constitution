@@ -45,9 +45,15 @@ python_branch_ok="no"    # v2.13.3: python 分支是否真实成功产出注入�
 FALLBACK_REASON=""       # v2.13.3: 兜底触发原因（无 python / python 分支失败）
 
 # ---- 解释器检测（关键修复1）----
+# v2.25.1: 存活探针——Windows 上 python 可能是 Microsoft Store 占位别名（启动即挂起），
+# 只查存在性不够，必须真跑一次；探针限时 3s，超时视为不可用走 bash 兜底，绝不卡任务
 PY_CMD=""
+_HAVE_TIMEOUT=""
+command -v timeout >/dev/null 2>&1 && _HAVE_TIMEOUT=1
 for c in python3 python py; do
-  if command -v "$c" >/dev/null 2>&1; then PY_CMD="$c"; break; fi
+  command -v "$c" >/dev/null 2>&1 || continue
+  if [[ -n "${_HAVE_TIMEOUT}" ]] && ! timeout 3 "$c" -c "pass" 2>/dev/null; then continue; fi
+  PY_CMD="$c"; break
 done
 
 if [[ -f "${MEMORY_FILE}" ]]; then

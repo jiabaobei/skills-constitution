@@ -21,9 +21,15 @@ CONTEXT_FILE="${PLUGIN_ROOT}/hooks/injected-context.json"
 TASK_DESC=""
 
 # 解释器检测（v2.13.2: 兼容 hook 环境无 python3 的情况，找不到则降级放行）
+# v2.25.1: 存活探针——Windows 上 python 可能是 Microsoft Store 占位别名（启动即挂起），
+# 只查存在性不够，必须真跑一次；探针限时 3s，超时视为不可用降级放行，绝不卡任务
 PY_CMD=""
+_HAVE_TIMEOUT=""
+command -v timeout >/dev/null 2>&1 && _HAVE_TIMEOUT=1
 for c in python3 python py; do
-  if command -v "$c" >/dev/null 2>&1; then PY_CMD="$c"; break; fi
+  command -v "$c" >/dev/null 2>&1 || continue
+  if [[ -n "${_HAVE_TIMEOUT}" ]] && ! timeout 3 "$c" -c "pass" 2>/dev/null; then continue; fi
+  PY_CMD="$c"; break
 done
 if [[ -z "${PY_CMD}" ]]; then
   exit 0
@@ -33,8 +39,8 @@ fi
 if [[ -n "${1:-}" ]]; then
   TASK_DESC="${1}"
 else
-  # 读取 stdin JSON payload
-  read -r stdin_payload
+  # 读取 stdin JSON payload（v2.25.1: 限时 2s，宿主不关 stdin 也不至于无限阻塞）
+  read -r -t 2 stdin_payload || true
   if [[ -n "${stdin_payload}" ]]; then
     TASK_DESC=$(echo "${stdin_payload}" | "${PY_CMD}" -c "
 import sys, json
@@ -83,7 +89,12 @@ case "${task_type}" in
       # v2.22.0 自愈: 注入上下文缺失/过期时不再直接拦截任务,
       # 而是现场重跑 SessionStart 注入(幂等),让任务带着上下文继续。
       # 修复"会话启动注入没跑到 → 每条专业消息都被【宪法拦截】挡住"的干扰。
-      bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
+      # v2.25.1: 自愈限时 10s——嵌套重跑 SessionStart 若再挂起，不能把整个钩子拖过宿主 20s 上限
+      if [[ -n "${_HAVE_TIMEOUT}" ]]; then
+        timeout 10 bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
+      else
+        bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
+      fi
       if [[ -f "${CONTEXT_FILE}" ]]; then
         status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
       fi
