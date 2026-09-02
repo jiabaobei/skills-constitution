@@ -5,6 +5,26 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.26.0] - 2026-09-02
+
+### 一键更新脚本：「更新前先下载最新版、更新后自动安装」固化为死规矩
+
+#### 新增
+
+- **`scripts/update.sh`（bash）/ `scripts/update.ps1`（Windows PowerShell）**：更新流程脚本化——
+  ① 更新前先从 GitHub 下载最新 main 包（`codeload.github.com` 主、`api.github.com` tarball 备，双保险）；
+  ② 完整性校验：必须可解压且含 `SKILL.md`，半残包**保持旧版不安装**（不毁旧装）；
+  ③ 更新完成后自动在本地安装最新版——透传全部参数跑**新版**安装器（`install.sh` / `install.ps1`，`--platform` / `--skills-dir` / `--register-hooks` 等原样透传）；
+  ④ 成功自动清理临时目录（`trap` / `finally` 保证失败也清理）。
+
+#### 修复（脚本自身）
+
+- `update.sh` 完整性校验初版用 `tar -tzf | grep -q`，`grep -q` 提前退出触发 SIGPIPE，在 `set -o pipefail` 下把 tar 退出码拖成失败、误判半残包；改为先取完整列表再 grep（全量读完，无 SIGPIPE）。
+
+#### 实测
+
+- `bash scripts/update.sh --platform claude --skills-dir <临时目录>`：下载 v2.25.1 → 校验通过 → 新版安装器自动安装、产物齐全 → 报「已更新并安装 v2.25.1」。
+
 ## [2.25.1] - 2026-09-02
 
 ### 钩子挂起修复：WorkBuddy 20s 强杀不再卡死任务（Windows）
