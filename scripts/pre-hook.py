@@ -44,6 +44,7 @@ import json
 import os
 import re
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
@@ -94,6 +95,11 @@ DEFAULT_TREE = os.path.join(
 # v2.23.0:技能图谱(由 build_skill_tree.py / build_skill_graph.py 生成)
 DEFAULT_GRAPH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "skill_graph.json"
+)
+# v2.27.0:注入上下文文件路径(SessionStart / 钩子模式共用)
+CONTEXT_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "hooks", "injected-context.json",
 )
 
 # v2.23.0:图谱模块(缺失/损坏时全部降级为"无图",不影响任何既有链路)
@@ -665,6 +671,76 @@ def check_injection(text, memory_path=DEFAULT_MEMORY, tree_path=DEFAULT_TREE, ta
     return True, "注入合规(三查+记忆+技能树均已覆盖)"
 
 
+# ---- v2.27.0:钩子单进程模式辅助(上下文保活 + 原子写入) ----
+
+def _atomic_write_json(path, data):
+    """v2.27.0:原子写入 JSON(temp + os.replace)。
+
+    旧版直接 open(w)+dump,UserPromptSubmit/PreToolUse/Stop 三个钩子进程
+    并发写同一状态文件时互相截断 → 门禁状态丢失 → 任务级通行证失效,
+    造成"任务开始已三查、中途仍被拦"(用户钦定 bug)。replace 原子替换后,
+    读方看到的永远是完整文件。
+    """
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+
+
+def context_ready(context_path=None, max_age=24 * 3600):
+    """v2.27.0:注入上下文是否新鲜可用(status=ready 且 24h 内)"""
+    path = context_path or CONTEXT_PATH
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if data.get("status") != "ready":
+            return False
+        ts = (data.get("timestamp") or "")[:19]
+        if ts:
+            then = time.mktime(time.strptime(ts, "%Y-%m-%dT%H:%M:%S"))
+            if time.time() - then > max_age:
+                return False
+        return True
+    except Exception:
+        return False
+
+
+def refresh_injection(task_text, context_path=None):
+    """v2.27.0:进程内刷新注入上下文(自愈,替代嵌套重跑 session-start.sh)。
+
+    旧自愈路径 = bash 再跑一遍 session-start.sh(约 12 次进程启动,本机 25s+,
+    在 10s 自愈限时内永远跑不完 → 注入永远不 ready → 每个专业任务都被拦)。
+    现改为在当前 python 进程内直接构建注入块并原子写入上下文文件,
+    零额外进程,秒级完成。返回 True=刷新成功。
+    """
+    path = context_path or CONTEXT_PATH
+    memory_text = load_memory(DEFAULT_MEMORY)
+    tree = load_tree(DEFAULT_TREE)
+    matched_cats = filter_tree_by_task(tree, task_text) if task_text else []
+    sad_candidates = loose_retrieve_skills(load_tree_full(DEFAULT_TREE),
+                                           task_text) if task_text else []
+    injection = build_injection(memory_text, tree, matched_cats, task_text,
+                                sad_candidates, load_skill_aliases(DEFAULT_TREE), [])
+    data = {
+        "status": "ready",
+        "hook": "UserPromptSubmit-selfheal",
+        "memory_file": DEFAULT_MEMORY,
+        "memory_len": len(memory_text),
+        "tree_file": DEFAULT_TREE,
+        "tree_categories": len(tree),
+        "injected_categories": ",".join(matched_cats),
+        "sad_candidates": ";".join(s.get("name", "") for _, s in sad_candidates[:3]),
+        "python": sys.executable or "python",
+        "python_branch_ok": "yes",
+        "fallback_reason": "",
+        "injection_len": len(injection),
+        "debug": {"pre_hook_stderr": ""},
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+    _atomic_write_json(path, data)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser(description="宪法 Pre-hook: 任务前强制注入记忆+技能树")
     ap.add_argument("--task", help="任务描述(用于过滤技能树分类;check模式用于任务必需技能硬校验)")
@@ -678,7 +754,41 @@ def main():
     ap.add_argument("--strict", action="store_true", help="校验失败 exit 1(宿主 hook 阻断)")
     ap.add_argument("--classify", action="store_true",
                     help="任务分类模式:按零号条款判定简单/专业/模糊(不注入不校验)")
+    ap.add_argument("--hook-mode", action="store_true",
+                    help="v2.27.0 钩子单进程模式: 分类+上下文保活一次完成(热路径仅1次python调用,fail-open不拦)")
+    ap.add_argument("--context-out",
+                    help="v2.27.0: 注入同时把 injected-context.json 原子写入此路径(session-start 单进程化)")
     a = ap.parse_args()
+
+    # ---- v2.27.0:钩子单进程模式 ----
+    # user-prompt-submit.sh exec 进来,整个钩子热路径只有这一次 python 调用:
+    # ① 读任务(stdin JSON 或 $1) → ② 简单任务直接放行 → ③ 专业/模糊任务做
+    # 注入上下文保活(缺失/过期时进程内刷新,替代旧版嵌套重跑 session-start.sh)。
+    # 全程 fail-open:任何异常都放行,绝不卡用户任务。
+    if a.hook_mode:
+        try:
+            task_text = a.task or ""
+            if not task_text and not sys.stdin.isatty():
+                raw = (sys.stdin.read() or "").strip()
+                if raw.startswith("{"):
+                    try:
+                        d = json.loads(raw)
+                        task_text = str(d.get("prompt", d.get("task",
+                                        d.get("input", "")) or "")).strip()
+                    except Exception:
+                        task_text = ""
+                else:
+                    task_text = raw
+            if task_text and classify_task(task_text) != "simple":
+                # 专业/模糊任务:上下文保活(缺失/过期>24h 时进程内刷新)
+                if not context_ready():
+                    try:
+                        refresh_injection(task_text[:2000])
+                    except Exception:
+                        pass  # 刷新失败不拦任务(fail-open)
+        except Exception:
+            pass  # fail-open
+        return 0
 
     # ---- 任务分类模式（零号条款双通道分流） ----
     if a.classify:
@@ -736,6 +846,32 @@ def main():
                                             tree_path=a.tree) if a.task else []
     injection = build_injection(memory_text, tree, matched_cats, a.task,
                                 sad_candidates, aliases, graph_items)
+
+    # ---- v2.27.0:--context-out —— 注入块与上下文文件一次调用同时产出 ----
+    # session-start.sh 单进程化:旧版 1 次生成 + 3 次 JSON 解析 + 1 次上下文写入
+    # 共 5 次 python 调用,现合并为本调用(原子写入上下文,stdout 直接输出注入块)。
+    if a.context_out:
+        try:
+            _atomic_write_json(a.context_out, {
+                "status": "ready",
+                "hook": "SessionStart",
+                "memory_file": a.memory,
+                "memory_len": len(memory_text),
+                "tree_file": a.tree,
+                "tree_categories": len(tree),
+                "injected_categories": ",".join(matched_cats),
+                "sad_candidates": ";".join(s.get("name", "") for _, s in sad_candidates[:3]),
+                "python": sys.executable or "python",
+                "python_branch_ok": "yes",
+                "fallback_reason": "",
+                "injection_len": len(injection),
+                "debug": {"pre_hook_stderr": ""},
+                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            })
+            print("【宪法】注入完成: memory=%d字 tree=%d分类 注入分类=%s"
+                  % (len(memory_text), len(tree), ",".join(matched_cats) or "-"))
+        except Exception:
+            pass  # 上下文写失败不影响注入块输出(fail-open)
 
     if a.output:
         with open(a.output, "w", encoding="utf-8") as f:

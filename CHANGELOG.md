@@ -5,6 +5,25 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.0] - 2026-09-02
+
+### 钩子单进程化 + 门禁「任务开始拦一次、中途不再拦」真实生效
+
+#### 修复
+
+- **门禁状态文件并发写截断（用户钦定 bug）**：UserPromptSubmit / PreToolUse / Stop 三个钩子进程并发 `open(w)+json.dump` 同一 `.constitution-state.json`，互相截断 → `load_state` 读到损坏 JSON 返回空 → 任务级通行证（task_cleared）与 injected 标记丢失 → PreToolUse 把任务中途的每次写文件都当「三查不足」拦截。现改为**原子写入**（temp + os.replace），读方永远看到完整文件。
+- **注入上下文过期导致通行证不签发**：injected-context.json 超过 24h 时 `injection_ready()` 恒为 False → 任务开始时通行证根本没签发 → 中途被迫补证据。现改为 UserPromptSubmit 时**进程内自动刷新**（复用 `pre-hook.refresh_injection()`，零额外进程、秒级完成），刷新成功即签发通行证。
+- **状态损坏兜底放行**：状态文件为空/损坏但注入证据就绪时，PreToolUse / Stop 兜底放行（不再误拦任务、不再误记违规）。
+- **user-prompt-submit.sh 钩子单进程化**：解释器检测缓存（`.py-interp`，热路径 0 次探针）+ stdin builtin 限时读取 + 路径转换 bash 内建（替代 sed）+ exec 单次 `pre-hook.py --hook-mode`；进程启动 9 次→热路径 1 次，慢机器（每进程约 2s）实测 33~39s → 预期 <8s，不再触发宿主 20s 超时拦截。
+- **session-start.sh 单进程化**：python 分支约 6 次进程启动→1 次（`--context-out` 原子写上下文 + stdout 直出注入块）。
+- **bash 兜底 token 炸弹修复**：兜底注入块不再引导 Agent「整读技能树文件」（可达数十万字符、极度费 token），改为引导运行 `pre-hook.py --task "当前任务"` 获取按任务过滤的轻量注入块（约 3 千字符）。
+
+#### 新增
+
+- `pre-hook.py --hook-mode`：钩子单进程模式（任务分类 + 注入上下文保活一次完成；全程 fail-open，绝不拦任务）
+- `pre-hook.py --context-out <path>`：注入块与 injected-context.json 一次调用同时产出（原子写入）
+- `pre-hook.py refresh_injection()`：进程内刷新注入上下文（自愈，替代旧版嵌套重跑 session-start.sh —— 旧自愈在慢机器上 10s 限时内永远跑不完，导致注入永远不 ready）
+
 ## [2.26.0] - 2026-09-02
 
 ### 一键更新脚本：「更新前先下载最新版、更新后自动安装」固化为死规矩

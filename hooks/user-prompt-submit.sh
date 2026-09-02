@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
-# UserPromptSubmit hook: 宪法分类器 + 注入校验
-# 简单任务 → 通道A跳过 | 专业任务 → 通道B强制校验
-# 输入支持两种方式:
-#   1. WorkBuddy hook: stdin JSON payload {"prompt": "..."}
-#   2. 直接调用: bash user-prompt-submit.sh "任务描述"
+# UserPromptSubmit hook: 宪法分类器 + 注入上下文保活
+# 简单任务 → 通道A跳过 | 专业任务 → 通道B(上下文保活,不拦)
+#
+# v2.27.0 重写(钩子单进程化):
+#   旧版整个钩子要起 9 次进程(解释器探针 3 + stdin解析 1 + sed 2 + 分类器 1
+#   + 结果解析 1 + 状态检查 1),在慢机器(每进程约2s)上实测 33~39s,
+#   远超宿主 20s 上限 → 任务被超时拦截。现改为:
+#     ① 解释器缓存 .py-interp(首次探测后落盘,热路径 0 次进程启动)
+#     ② stdin 用 read builtin 限时读取(零进程启动)
+#     ③ 路径转换用 bash 内建(替代 sed)
+#     ④ exec 单次 python pre-hook.py --hook-mode 完成分类+上下文保活
+#   热路径总进程启动:1 次(首次 3~4 次)。全程 fail-open。
 set -uo pipefail
 
-# v2.14.0: 去掉 HUAWEI 硬编码——环境变量优先，缺失时按脚本位置自定位；定位失败静默放行（fail-open，不卡任务）
 if [[ -n "${CODEBUDDY_PLUGIN_ROOT:-}" ]]; then
   PLUGIN_ROOT="${CODEBUDDY_PLUGIN_ROOT}"
 else
@@ -17,96 +23,66 @@ if [[ ! -f "${PLUGIN_ROOT}/SKILL.md" ]]; then
   exit 0
 fi
 PRE_HOOK="${PLUGIN_ROOT}/scripts/pre-hook.py"
-CONTEXT_FILE="${PLUGIN_ROOT}/hooks/injected-context.json"
-TASK_DESC=""
-
-# 解释器检测（v2.13.2: 兼容 hook 环境无 python3 的情况，找不到则降级放行）
-# v2.25.1: 存活探针——Windows 上 python 可能是 Microsoft Store 占位别名（启动即挂起），
-# 只查存在性不够，必须真跑一次；探针限时 3s，超时视为不可用降级放行，绝不卡任务
-PY_CMD=""
-_HAVE_TIMEOUT=""
-command -v timeout >/dev/null 2>&1 && _HAVE_TIMEOUT=1
-for c in python3 python py; do
-  command -v "$c" >/dev/null 2>&1 || continue
-  if [[ -n "${_HAVE_TIMEOUT}" ]] && ! timeout 3 "$c" -c "pass" 2>/dev/null; then continue; fi
-  PY_CMD="$c"; break
-done
-if [[ -z "${PY_CMD}" ]]; then
-  exit 0
-fi
-
-# ---- 读取任务描述: 优先 stdin JSON(prompt 字段), 其次 $1 ----
-if [[ -n "${1:-}" ]]; then
-  TASK_DESC="${1}"
-else
-  # 读取 stdin JSON payload（v2.25.1: 限时 2s，宿主不关 stdin 也不至于无限阻塞）
-  read -r -t 2 stdin_payload || true
-  if [[ -n "${stdin_payload}" ]]; then
-    TASK_DESC=$(echo "${stdin_payload}" | "${PY_CMD}" -c "
-import sys, json
-try:
-    d = json.load(sys.stdin)
-    print(d.get('prompt', d.get('task', d.get('input', ''))).strip())
-except Exception:
-    print('')
-" 2>/dev/null)
-  fi
-fi
-
-# 无任务描述则放行
-if [[ -z "${TASK_DESC}" ]]; then
-  exit 0
-fi
-
-# 检查 pre-hook.py
 if [[ ! -f "${PRE_HOOK}" ]]; then
   exit 0
 fi
+HOOK_DIR="${PLUGIN_ROOT}/hooks"
 
-# 路径转换: Git Bash /c/... → Windows C:/...
-to_win() { echo "$1" | sed 's|^/\([a-zA-Z]\)|\1:|'; }
+# ---- 路径转换(Git Bash /c/... → Windows C:/...),bash 内建实现,零进程启动 ----
+to_win() {
+  case "$1" in
+    /[a-zA-Z]/*) printf '%s\n' "${1:1:1}:${1:2}" ;;
+    *) printf '%s\n' "$1" ;;
+  esac
+}
 PRE_HOOK_WIN="$(to_win "${PRE_HOOK}")"
-CONTEXT_FILE_WIN="$(to_win "${CONTEXT_FILE}")"
 
-# 调用分类器判断任务类型（使用 --task 参数，不是 stdin）
-result=$("${PY_CMD}" "${PRE_HOOK_WIN}" --classify --task "${TASK_DESC}" --json 2>/dev/null || echo '{"task_type":"ambiguous"}')
+# ---- 解释器检测:v2.25.1 存活探针 + v2.27.0 结果缓存 ----
+# Windows 上 python 可能是 Microsoft Store 占位别名(启动即挂起),必须真跑一次;
+# 探针通过后把绝对路径写入缓存,后续每次钩子 0 次探针进程。
+PY_CMD=""
+PY_CACHE="${HOOK_DIR}/.py-interp"
+if [[ -r "${PY_CACHE}" ]]; then
+  _cached=""
+  { read -r _cached; } < "${PY_CACHE}" 2>/dev/null || _cached=""
+  if [[ -n "${_cached}" && -x "${_cached}" ]]; then
+    PY_CMD="${_cached}"
+  fi
+fi
+if [[ -z "${PY_CMD}" ]]; then
+  _HAVE_TIMEOUT=""
+  command -v timeout >/dev/null 2>&1 && _HAVE_TIMEOUT=1
+  for c in python3 python py; do
+    command -v "$c" >/dev/null 2>&1 || continue
+    _cand="$(command -v "$c")"
+    # v2.27.0: 垫片真身解析——同目录优先取原生 .exe(少一层 bash 垫片进程;
+    # 慢机器每进程约 2-3s,直接决定钩子能否压进宿主超时)
+    _cdir="${_cand%/*}"
+    _real=""
+    for _alt in python.exe python3.exe; do
+      if [[ -x "${_cdir}/${_alt}" ]]; then _real="${_cdir}/${_alt}"; break; fi
+    done
+    [[ -z "${_real}" ]] && _real="${_cand}"
+    if [[ -n "${_HAVE_TIMEOUT}" ]] && ! timeout 3 "${_real}" -c "pass" 2>/dev/null; then continue; fi
+    PY_CMD="${_real}"
+    printf '%s\n' "${PY_CMD}" > "${PY_CACHE}" 2>/dev/null || true
+    break
+  done
+fi
+if [[ -z "${PY_CMD}" ]]; then
+  exit 0  # 无可用解释器:降级放行(fail-open,不卡任务)
+fi
 
-# 提取任务类型
-task_type=$(echo "${result}" | "${PY_CMD}" -c "import sys,json; d=json.load(sys.stdin); print(d.get('task_type','ambiguous'))" 2>/dev/null || echo "ambiguous")
-
-case "${task_type}" in
-  "simple")
-    # 简单任务：跳过门禁，直接通用能力
-    exit 0
-    ;;
-  "professional"|"ambiguous")
-    # 专业/模糊任务：检查注入上下文
-    status=""
-    if [[ -f "${CONTEXT_FILE}" ]]; then
-      status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
-    fi
-    if [[ "${status}" != "ready" ]]; then
-      # v2.22.0 自愈: 注入上下文缺失/过期时不再直接拦截任务,
-      # 而是现场重跑 SessionStart 注入(幂等),让任务带着上下文继续。
-      # 修复"会话启动注入没跑到 → 每条专业消息都被【宪法拦截】挡住"的干扰。
-      # v2.25.1: 自愈限时 10s——嵌套重跑 SessionStart 若再挂起，不能把整个钩子拖过宿主 20s 上限
-      if [[ -n "${_HAVE_TIMEOUT}" ]]; then
-        timeout 10 bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
-      else
-        bash "${PLUGIN_ROOT}/hooks/session-start.sh" >/dev/null 2>&1 || true
-      fi
-      if [[ -f "${CONTEXT_FILE}" ]]; then
-        status=$("${PY_CMD}" -c "import json; d=json.load(open(r'${CONTEXT_FILE_WIN}')); print(d.get('status',''))" 2>/dev/null || echo "")
-      fi
-    fi
-    if [[ "${status}" == "ready" ]]; then
-      exit 0
-    fi
-    # 自愈仍失败才拦截(注入链路确实不可用)
-    echo "【宪法拦截】专业任务需要先注入记忆+技能树上下文，请确保宪法钩子已生效"
-    exit 1
-    ;;
-  *)
-    exit 0
-    ;;
-esac
+# ---- 读取任务描述:$1 优先,其次 stdin JSON(builtin 限时读取) ----
+# 任务文本经管道喂给 python(写方是本钩子自己,写完即 EOF,python 不会挂起)
+if [[ -n "${1:-}" ]]; then
+  exec "${PY_CMD}" "${PRE_HOOK_WIN}" --hook-mode --task "${1}"
+else
+  _payload=""
+  read -r -t 2 _payload || true
+  if [[ -z "${_payload}" ]]; then
+    exit 0  # 无任务描述:放行
+  fi
+  printf '%s' "${_payload}" | "${PY_CMD}" "${PRE_HOOK_WIN}" --hook-mode
+fi
+exit 0

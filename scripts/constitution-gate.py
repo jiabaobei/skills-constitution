@@ -147,12 +147,31 @@ def load_state():
         return {"steps": {}}
 
 
-def save_state(data):
+def _atomic_write_json(path, data):
+    """v2.27.0:原子写入 JSON(temp + os.replace)。
+
+    修复用户钦定 bug:"任务开始拦一次,中途不得再拦"失效的根因 ——
+    UserPromptSubmit/PreToolUse/Stop 三个钩子进程并发 open(w)+dump 同一
+    状态文件,互相截断 → load_state 读到损坏 JSON 返回空 → 通行证
+    (task_cleared)与 injected 标记丢失 → PreToolUse 每次写文件都误拦。
+    replace 原子替换后,读方看到的永远是完整文件。
+    """
     try:
-        with open(STATE, "w", encoding="utf-8") as f:
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, path)
     except Exception:
-        pass
+        # 原子路径失败(如 replace 被平台拦截):退回直接写,尽力而为
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+
+def save_state(data):
+    _atomic_write_json(STATE, data)
 
 
 def load_violations():
@@ -164,11 +183,7 @@ def load_violations():
 
 
 def save_violations(data):
-    try:
-        with open(VIOLATIONS, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
+    _atomic_write_json(VIOLATIONS, data)
 
 
 def is_simple(text):
@@ -261,6 +276,28 @@ def injection_ready():
         return False
 
 
+def refresh_injection_via_pre_hook(task_text):
+    """v2.27.0:注入上下文缺失/过期时进程内自动刷新(复用 pre-hook.refresh_injection)
+
+    旧逻辑:injection_ready()(24h 内 ready)为 False 就不签发通行证 →
+    安装副本带着过期上下文文件时,每个专业任务开始都拿不到通行证,
+    中途写操作被迫补证据(用户钦定 bug 的第二个根因)。
+    现改为:过期即进程内刷新(零额外进程,秒级),成功即视为已注入,
+    任务开始签发通行证,中途写操作一路绿灯。
+    """
+    try:
+        import importlib.util as _ilu2
+        ph_path = os.path.join(BASE, "scripts", "pre-hook.py")
+        spec = _ilu2.spec_from_file_location("pre_hook_gate_refresh", ph_path)
+        ph = _ilu2.module_from_spec(spec)
+        spec.loader.exec_module(ph)
+        if hasattr(ph, "refresh_injection"):
+            return bool(ph.refresh_injection((task_text or "")[:2000]))
+    except Exception:
+        return False
+    return False
+
+
 def is_fresh(ts, reset_ts):
     """证据时间戳是否属于本任务(字符串字典序=时间序,同格式)"""
     return (not reset_ts) or (ts or "") >= reset_ts
@@ -347,6 +384,10 @@ def main():
         data["last_task"] = (prompt or "")[:2000]
         # v2.22.0:注入即查 —— 平台注入上下文就绪则记忆+技能树视为已查
         injected = injection_ready()
+        if not injected:
+            # v2.27.0:上下文缺失/过期 → 进程内自动刷新后再判
+            # (修复任务开始拿不到通行证、中途被拦的用户钦定 bug)
+            injected = refresh_injection_via_pre_hook(prompt)
         data["injected"] = injected
         # v2.24.0:注入成功即在任务开始时签发通行证 —— 记忆+技能树已由平台
         # 强制注入,本任务中途的写操作不再重复拦截(用户明确要求:
@@ -418,6 +459,10 @@ def main():
         # 核心:本任务内三查证据链完整即放行
         # (① step1 新鲜 PASS;② 注入+技能调用 —— v2.22.0)
         data = load_state()
+        # v2.27.0:状态文件损坏/丢失(并发写历史遗留)但注入证据就绪 → 兜底放行
+        # (防"任务开始已通行、状态文件被截断后中途误拦")
+        if not data.get("steps") and not data.get("task_cleared") and injection_ready():
+            sys.exit(0)
         if task_evidence_ok(data):
             sys.exit(0)
         # v2.22.0:注入已就绪且任务无必需分类 —— 记忆+技能树已注入,无技能可匹配
@@ -441,6 +486,9 @@ def main():
         if not msg or os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
         data = load_state()
+        # v2.27.0:状态文件损坏/丢失但注入证据就绪 → 兜底视为有证据链(防误记违规)
+        if not data.get("steps") and not data.get("task_cleared") and injection_ready():
+            sys.exit(0)
         # v2.22.0:本任务内已有证据链 → 跳过重复文本校验(防误记违规)。
         # 旧版对最终回复再做一遍三查文本校验,任务开头已查过、收尾回复没复述
         # 三查就被误记违规,下个任务开头被误注入警告。

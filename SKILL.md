@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.26.0
+version: 2.27.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.26.0（当前）** — 一键更新脚本 `scripts/update.sh` / `scripts/update.ps1`：把「更新前先去 GitHub 下载最新版、更新完成后自动在本地安装最新版」固化为脚本——下载最新 main 包（codeload + api 双保险）→ 完整性校验（半残包保持旧版不毁旧装）→ 透传参数跑新版安装器自动安装。
+> **v2.27.0（当前）** — 钩子单进程化 + 门禁「任务开始拦一次、中途不再拦」真实生效：① 门禁状态文件改原子写入（修复 UserPromptSubmit/PreToolUse/Stop 三钩子并发写截断 → 通行证丢失 → 中途误拦，用户钦定 bug）；② 注入上下文过期(>24h)时门禁进程内自动刷新（修复任务开始拿不到通行证）；③ user-prompt-submit.sh 热路径进程启动 9 次→1 次、session-start.sh 6 次→1 次（解释器缓存 + builtin 读取 + exec 单次 python --hook-mode），慢机器实测 33~39s → 预期 <8s，不再触发宿主 20s 超时；④ bash 兜底注入块禁止引导 Agent 整读技能树文件（可达数十万字符），改为 pre-hook 按任务过滤约 3 千字符（省 token）。
+> **v2.26.0** — 一键更新脚本 `scripts/update.sh` / `scripts/update.ps1`：把「更新前先去 GitHub 下载最新版、更新完成后自动在本地安装最新版」固化为脚本——下载最新 main 包（codeload + api 双保险）→ 完整性校验（半残包保持旧版不毁旧装）→ 透传参数跑新版安装器自动安装。
 > **v2.25.1** — 钩子挂起修复：两条钩子的解释器检测加 3s 存活探针（修复 Windows 上 Microsoft Store 占位别名启动即挂起、被宿主 20s 强杀的卡死），stdin 读取限时 2s、自愈限时 10s，超时一律降级 fail-open，钩子永不卡任务。
 > **v2.25.0** — 第五条「答复推荐」极度省 token 改造：推荐来源从"每次全盘搜 GitHub"改为**读本地排行榜快照**（`data/skill_rankings.json` + `scripts/recommend_skills.py` —— 零网络、约 20KB、纯确定性规则匹配 + 自动排除已装）；新增 `scripts/update_skill_rankings.py` 低频抓取权威排行榜（quemsah/awesome-claude-plugins，索引 3.6 万+ 仓库）重建快照，过期（>30 天）只提示不自动拉取；step5 新增推荐来源标注软校验（标注"本地排行榜快照"=省 token 最佳实践）。
 > **v2.24.0** — 隐形技能治理 + 门禁「一次三查全程放行」+ 轻量索引。实测修复五项：
