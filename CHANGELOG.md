@@ -5,6 +5,18 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.1] - 2026-09-02
+
+### 技能图谱补全与降噪（省 token）
+
+#### 修复
+
+- **自愈路径漏传图谱候选**：v2.27.0 新增的 `refresh_injection()`（hook-mode 自愈）构建注入块时 graph_items 传 `[]`，导致自愈刷新产出的注入块缺少「🕸️ 技能图谱」段，与主链路（SessionStart / `--context-out`）不一致。现接入 `graph_candidates_for_task()`，两链路对齐。
+
+#### 变更
+
+- **cluster 候选降噪**：`graph_candidates_for_task()` 改为先超采样 3 倍，再过滤——同簇（cluster）候选必须与任务有词面交集（技能名或描述，`overlap_score > 0`）才收录；结构边（chains_to/co_anchor）与 alternative（建边时已要求同分类+描述重叠）语义足够强，不过滤。词面工具缺失时退化为不过滤（fail-open）。实测："写爬虫"任务候选 8→1（adobe-* 无关同簇成员全灭）、注入块 4199→3458 字符、无关任务宁缺毋滥（0 候选）。
+
 ## [2.27.0] - 2026-09-02
 
 ### 钩子单进程化 + 门禁「任务开始拦一次、中途不再拦」真实生效

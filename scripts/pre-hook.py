@@ -108,6 +108,12 @@ try:
 except ImportError:
     G = None
 
+# v2.27.1:词面重叠工具(cluster 候选降噪用;缺失时降噪退化为"不过滤")
+try:
+    from lib.text import overlap_score as _overlap_score
+except ImportError:
+    _overlap_score = None
+
 # 任务类型 → 技能树分类关键词映射（用于过滤注入哪些技能）
 TASK_CATEGORY_MAP = {
     "编码/开发": ["code", "coding", "编程", "代码", "开发"],
@@ -542,7 +548,30 @@ def graph_candidates_for_task(tree, task, graph_path=DEFAULT_GRAPH, max_neighbor
     # 锚点排名 + 序贯扩展:按 SAD 排名依次尝试,孤立于图谱的锚点自然跳过,
     # 直到填满 token 预算(与 Layer F 锚点同源)
     ranked = rank_anchors_for_task(tree_path, task, anchors, top_k=12)
-    return G.graph_expand(graph, ranked, max_neighbors=max_neighbors)
+    # v2.27.1:超采样 3 倍后对 cluster 候选降噪 —— 同簇成员必须与任务有词面
+    # 交集(技能名或描述),否则丢弃(实测"写爬虫"任务混入 7 个 adobe-* 无关
+    # 同簇成员,821 字符大半是噪声,违背项目"极度省 token"原则)。
+    # 结构边(chains_to/co_anchor)与 alternative(建边时已要求同分类+描述重叠)
+    # 语义已足够强,保持原样不过滤。降噪工具缺失时退化为不过滤(fail-open)。
+    raw = G.graph_expand(graph, ranked, max_neighbors=max_neighbors * 3)
+    if _overlap_score is None:
+        return raw[:max_neighbors]
+    _desc = {}
+    try:
+        for _s in load_tree_full(tree_path):
+            _desc[_s.get("name", "")] = (_s.get("description") or "")
+    except Exception:
+        pass
+    kept = []
+    for it in raw:
+        if it.get("kind") == "cluster":
+            _text = "%s %s" % (it.get("name", ""), _desc.get(it.get("name", ""), ""))
+            if _overlap_score(_text, task) <= 0:
+                continue
+        kept.append(it)
+        if len(kept) >= max_neighbors:
+            break
+    return kept
 
 
 def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
@@ -719,8 +748,12 @@ def refresh_injection(task_text, context_path=None):
     matched_cats = filter_tree_by_task(tree, task_text) if task_text else []
     sad_candidates = loose_retrieve_skills(load_tree_full(DEFAULT_TREE),
                                            task_text) if task_text else []
+    # v2.27.1:自愈路径同样接入技能图谱候选(v2.23.0 特性在此处曾漏传 [],
+    # 导致 hook-mode 自愈刷新产出的注入块缺少「🕸️ 技能图谱」段)
+    graph_items = graph_candidates_for_task(tree, task_text) if task_text else []
     injection = build_injection(memory_text, tree, matched_cats, task_text,
-                                sad_candidates, load_skill_aliases(DEFAULT_TREE), [])
+                                sad_candidates, load_skill_aliases(DEFAULT_TREE),
+                                graph_items)
     data = {
         "status": "ready",
         "hook": "UserPromptSubmit-selfheal",
