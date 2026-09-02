@@ -69,7 +69,7 @@ _STOP = {
 
 def _fetch(url, timeout=20):
     """抓取远程文本(UTF-8 优先, 失败抛异常由调用方处理)。"""
-    req = urllib.request.Request(url, headers={"User-Agent": "skills-constitution/2.25.1"})
+    req = urllib.request.Request(url, headers={"User-Agent": "skills-constitution/2.26.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         raw = resp.read()
     for enc in ("utf-8", "utf-8-sig", "latin-1"):
