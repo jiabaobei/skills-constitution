@@ -147,25 +147,91 @@ def load_state():
         return {"steps": {}}
 
 
+def state_broken(data):
+    """v2.27.3:状态文件损坏/丢失判定。
+
+    任何一次专业任务的 UserPromptSubmit 都会写入 reset_ts;状态文件被并发
+    写截断/丢失时 load_state 返回 {"steps": {}},没有 reset_ts —— 据此区分
+    "本任务刚重置"与"状态不可读"两种情况。
+    """
+    return not data.get("reset_ts")
+
+
+def degraded_pass(reason):
+    """v2.27.3:降级放行 —— 不阻断(agent 不被卡死),但不签通行证。
+
+    与 v2.27.0 无条件静默放行的区别:本次放行后 task_cleared 仍为空,
+    下次任务开始 UserPromptSubmit 会重置状态并重新走三查,门禁自动恢复,
+    不会像 v2.27.0 那样一旦损坏就永久失效。
+    """
+    print(
+        "[constitution-gate] 提示: 本任务三查状态不可读(%s),本次放行不阻断;"
+        "下次任务开始将重新校验三查。" % reason,
+        file=sys.stderr,
+    )
+    sys.exit(0)
+
+
+def _cleanup_stale_tmp(path):
+    """v2.27.3:清理陈旧 tmp(进程被强杀时 finally 来不及清理的残留)。
+
+    只清理 5 分钟前就停止更新的 tmp,避免误删正在写入的其他进程文件。
+    """
+    try:
+        base = os.path.basename(path)
+        d = os.path.dirname(path) or "."
+        for n in os.listdir(d):
+            if n.startswith(base) and n.endswith(".tmp"):
+                fp = os.path.join(d, n)
+                if time.time() - os.path.getmtime(fp) > 300:
+                    os.remove(fp)
+    except Exception:
+        pass
+
+
 def _atomic_write_json(path, data):
-    """v2.27.0:原子写入 JSON(temp + os.replace)。
+    """v2.27.3:原子写入 JSON(进程唯一 temp + os.replace)。
 
     修复用户钦定 bug:"任务开始拦一次,中途不得再拦"失效的根因 ——
     UserPromptSubmit/PreToolUse/Stop 三个钩子进程并发 open(w)+dump 同一
     状态文件,互相截断 → load_state 读到损坏 JSON 返回空 → 通行证
     (task_cleared)与 injected 标记丢失 → PreToolUse 每次写文件都误拦。
-    replace 原子替换后,读方看到的永远是完整文件。
+
+    v2.27.3 修正 v2.27.0 的修复漏洞:v2.27.0 用固定名 `path + ".tmp"`,
+    三个并发进程仍会 open(w) 同一个 tmp 互相截断,只是把截断从主文件挪到
+    tmp,再被 os.replace 换回主文件(2026-09-03 实测:状态文件停在
+    `"last_task": ` 被写残 → 兜底放行 → 门禁整体失效)。
+    tmp 名带 pid 后各进程写各自文件,os.replace 仍是原子替换,读方永远
+    看到完整文件。
+
+    Windows 专有坑(v2.27.3 修复):目标文件正被另一进程读取时 os.replace
+    抛 PermissionError。v2.27.0 此时的兜底是 `open(path,"w")` 直接写 ——
+    而 open(w) 会先截断主文件,其他进程恰在此时读到半截 JSON → 状态损坏
+    → 门禁整体失效(2026-09-03 实测)。v2.27.3:replace 失败只做短重试,
+    仍失败则**放弃本次写入、保留旧文件** —— 状态略微陈旧最多多拦一次,
+    下次任务开始 UserPromptSubmit 会重写,远好过写残导致门禁永久失效。
     """
+    blob = json.dumps(data, ensure_ascii=False, indent=2)
+    tmp = "%s.%d.tmp" % (path, os.getpid())
+    _cleanup_stale_tmp(path)
     try:
-        tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        os.replace(tmp, path)
+            f.write(blob)
+        for attempt in range(5):
+            try:
+                os.replace(tmp, path)
+                return
+            except PermissionError:
+                time.sleep(0.05 * (attempt + 1))
+            except OSError:
+                time.sleep(0.02)
+        # 重试耗尽:放弃写入,保留旧文件(绝不退回 open(w) 直接写)
     except Exception:
-        # 原子路径失败(如 replace 被平台拦截):退回直接写,尽力而为
+        pass
+    finally:
         try:
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+            if os.path.exists(tmp):
+                os.remove(tmp)
         except Exception:
             pass
 
@@ -459,10 +525,11 @@ def main():
         # 核心:本任务内三查证据链完整即放行
         # (① step1 新鲜 PASS;② 注入+技能调用 —— v2.22.0)
         data = load_state()
-        # v2.27.0:状态文件损坏/丢失(并发写历史遗留)但注入证据就绪 → 兜底放行
-        # (防"任务开始已通行、状态文件被截断后中途误拦")
-        if not data.get("steps") and not data.get("task_cleared") and injection_ready():
-            sys.exit(0)
+        # v2.27.3:状态文件损坏/丢失但注入证据就绪 → 降级放行(提醒,不阻断)
+        # (防"任务开始已通行、状态文件被截断后中途误拦";
+        #  同时防 v2.27.0 静默放行导致门禁永久失效)
+        if state_broken(data) and injection_ready():
+            degraded_pass("状态文件损坏或丢失")
         if task_evidence_ok(data):
             sys.exit(0)
         # v2.22.0:注入已就绪且任务无必需分类 —— 记忆+技能树已注入,无技能可匹配
@@ -486,8 +553,8 @@ def main():
         if not msg or os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
         data = load_state()
-        # v2.27.0:状态文件损坏/丢失但注入证据就绪 → 兜底视为有证据链(防误记违规)
-        if not data.get("steps") and not data.get("task_cleared") and injection_ready():
+        # v2.27.3:状态文件损坏/丢失但注入证据就绪 → 降级放行(不记违规,防误记)
+        if state_broken(data) and injection_ready():
             sys.exit(0)
         # v2.22.0:本任务内已有证据链 → 跳过重复文本校验(防误记违规)。
         # 旧版对最终回复再做一遍三查文本校验,任务开头已查过、收尾回复没复述

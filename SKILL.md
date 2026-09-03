@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.27.2
+version: 2.27.3
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.27.2（当前）** — 测试修正（零功能变更）：过时断言对齐 v2.27.0 单进程架构——13.0c 改断言单进程委托在位+嵌套自愈已删除、13.3 阈值 10s→18s（慢机器+Defender 首扫实测 6~18s 波动，热路径均值 ~7s）、13.1/13.3 超时捕获记失败不崩套件。
+> **v2.27.3（当前）** — 门禁状态文件写入健壮性修复（用户钦定"宪法不起作用"真因）：① 并发 tmp 重名 —— 三个钩子进程共用固定名 `state.json.tmp`，互相截断后被 `os.replace` 换回主文件，实测状态文件停在 `"last_task": ` 被写残；改为 tmp 名带 pid，各进程写各自文件；② Windows `os.replace` 遇 PermissionError 时，v2.27.0 的兜底是 `open(path,"w")` 直接写，而 open(w) 会截断主文件 → 其他进程读到半截 JSON → 状态损坏；改为只做短重试，仍失败则放弃写入保留旧文件（状态陈旧最多多拦一次，远好过写残）；③ 兜底语义纠偏 —— v2.27.0 遇损坏即静默放行，导致门禁**永久失效**；改为降级放行：不阻断（agent 不卡死）但打印提示且不签通行证，下次任务开始 UserPromptSubmit 重置状态，门禁自动恢复。附陈旧 tmp 清理 + 5 条回归用例（并发压测 4 进程 3961 次读取 0 损坏）。
+> **v2.27.2** — 测试修正（零功能变更）：过时断言对齐 v2.27.0 单进程架构——13.0c 改断言单进程委托在位+嵌套自愈已删除、13.3 阈值 10s→18s（慢机器+Defender 首扫实测 6~18s 波动，热路径均值 ~7s）、13.1/13.3 超时捕获记失败不崩套件。
 > **v2.27.1** — 技能图谱补全与降噪：① 自愈路径（refresh_injection）接入图谱候选（v2.27.0 曾漏传 []，导致 hook-mode 自愈产出的注入块缺「🕸️ 技能图谱」段）；② cluster 候选降噪——超采样 3 倍后，同簇成员必须与任务有词面交集（名称/描述，overlap_score>0）才收录，结构边（chains_to/co_anchor）与 alternative 保持原样；实测"写爬虫"任务候选 8→1（adobe-* 无关同簇成员全灭），注入块 4199→3458 字符，无关任务宁缺毋滥（0 候选）。
 > **v2.27.0** — 钩子单进程化 + 门禁「任务开始拦一次、中途不再拦」真实生效：① 门禁状态文件改原子写入（修复 UserPromptSubmit/PreToolUse/Stop 三钩子并发写截断 → 通行证丢失 → 中途误拦，用户钦定 bug）；② 注入上下文过期(>24h)时门禁进程内自动刷新（修复任务开始拿不到通行证）；③ user-prompt-submit.sh 热路径进程启动 9 次→1 次、session-start.sh 6 次→1 次（解释器缓存 + builtin 读取 + exec 单次 python --hook-mode），慢机器实测 33~39s → 预期 <8s，不再触发宿主 20s 超时；④ bash 兜底注入块禁止引导 Agent 整读技能树文件（可达数十万字符），改为 pre-hook 按任务过滤约 3 千字符（省 token）。
 > **v2.26.0** — 一键更新脚本 `scripts/update.sh` / `scripts/update.ps1`：把「更新前先去 GitHub 下载最新版、更新完成后自动在本地安装最新版」固化为脚本——下载最新 main 包（codeload + api 双保险）→ 完整性校验（半残包保持旧版不毁旧装）→ 透传参数跑新版安装器自动安装。

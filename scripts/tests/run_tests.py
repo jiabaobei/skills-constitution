@@ -719,6 +719,72 @@ def main():
     except subprocess.TimeoutExpired:
         check("13.3 正常环境: 25s 仍阻塞(挂起,须修复)", False)
 
+    # ---- 13.4/13.5 门禁状态文件写入健壮性(v2.27.3) ----
+    # 背景: 2026-09-03 实测状态文件被写残(停在 `"last_task": `)→ 兜底放行
+    # → 门禁整体失效。根因两条: ① tmp 名固定,并发进程互相截断;
+    # ② os.replace 在 Windows 遇 PermissionError 后兜底 `open(path,"w")`,
+    #    而 open(w) 会截断主文件 → 别的进程读到半截 JSON。
+    _gate_src = ""
+    try:
+        _gate_src = open(os.path.join(ROOT_DIR, "scripts", "constitution-gate.py"),
+                         encoding="utf-8").read()
+    except Exception:
+        pass
+    check("13.4 状态写入: tmp 名带 pid(并发不共用临时文件)",
+          '"%s.%d.tmp" % (path, os.getpid())' in _gate_src)
+    # 静态断言: 禁止再有破坏性的 open(<state>, "w") 退回直写
+    check("13.4 状态写入: 已移除破坏性直写兜底(不再 open(w) 截断主文件)",
+          'with open(path, "w"' not in _gate_src)
+
+    # 13.5 并发压测: 多进程同时 save_state,读方不得读到损坏 JSON
+    try:
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location(
+            "cg_conc", os.path.join(ROOT_DIR, "scripts", "constitution-gate.py"))
+        _cg = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_cg)
+        _worker = os.path.join(ROOT_DIR, "scripts", "tests", "_conc_worker.py")
+        with open(_worker, "w", encoding="utf-8") as _f:
+            _f.write(
+                "import importlib.util, os, sys\n"
+                "_s=importlib.util.spec_from_file_location('cg', r'%s')\n"
+                "_g=importlib.util.module_from_spec(_s); _s.loader.exec_module(_g)\n"
+                "for i in range(25):\n"
+                "    _g.save_state({'steps': {'1': {'ts': _g.now_ts()}},\n"
+                "                   'reset_ts': _g.now_ts(),\n"
+                "                   'last_task': 'w%s-%%d' %% (sys.argv[1], i),\n"
+                "                   'task_cleared': {'ts': _g.now_ts()}})\n"
+                % (os.path.join(ROOT_DIR, "scripts", "constitution-gate.py").replace("\\", "/"),
+                   "%s")
+            )
+        _state = _cg.STATE
+        _procs = [subprocess.Popen([sys.executable, _worker, str(i)]) for i in range(4)]
+        _corrupt = 0
+        _reads = 0
+        while any(p.poll() is None for p in _procs):
+            try:
+                with open(_state, encoding="utf-8") as _fh:
+                    json.load(_fh)
+                _reads += 1
+            except (FileNotFoundError, PermissionError):
+                pass          # 文件不存在/被写进程短暂锁住: 正常,非损坏
+            except Exception:
+                _corrupt += 1
+        for p in _procs:
+            p.wait()
+        try:
+            os.remove(_worker)
+        except Exception:
+            pass
+        check("13.5 并发压测: 4 进程并发写 %d 次读取, 0 次损坏(实得 %d)"
+              % (_reads, _corrupt), _corrupt == 0 and _reads > 0)
+        # 损坏判定: 无 reset_ts 视为不可读
+        check("13.5 损坏判定: 空状态视为损坏", _cg.state_broken({"steps": {}}) is True)
+        check("13.5 损坏判定: 有 reset_ts 的合法状态不算损坏",
+              _cg.state_broken({"steps": {}, "reset_ts": "2026-09-03 00:00:00"}) is False)
+    except Exception as _e:
+        check("13.5 并发压测/损坏判定(异常: %s)" % _e, False)
+
     # ---- 汇总 ----
     total = len(RESULTS)
     passed = sum(1 for _, ok, _ in RESULTS if ok)
