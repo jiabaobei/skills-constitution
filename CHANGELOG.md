@@ -445,6 +445,23 @@ Windows 平台上 `python`/`python3` 可能指向 Microsoft Store 占位别名�
 - 无 python 环境（模拟平台 hook PATH）：bash 兜底注入块 ✅，tree=14，JSON 合法
 - 分类器：专业任务放行（注入 ready）、简单任务放行 ✅
 
+## [2.13.1] - 2026-08-21
+
+### 安装到 WorkBuddy：钩子真正跑起来（settings.json 注册 + stdin JSON 兼容）
+
+#### 新增
+
+- **`~/.workbuddy/settings.json` 注册钩子**：SessionStart + UserPromptSubmit 写入用户级 settings.json，全局生效（不再依赖 hooks.json 单点声明）
+- **SKILL.md frontmatter 增加 `hooks` 字段**：技能随包分发时钩子跟着走，与 settings.json 注册形成双保险
+
+#### 修复
+
+- **`user-prompt-submit.sh` 兼容 WorkBuddy stdin JSON payload**：支持解析 `{"prompt": ...}` 字段，同时兼容 `--input` 传参，两种入口都能正确分类
+
+#### 验证
+
+- SessionStart 注入 ✅ / 专业任务放行 ✅ / 简单任务跳过 ✅ / 无注入拦截 ✅
+
 ## [2.13.0] - 2026-08-21
 
 ### 重大更新：宪法强制拦截上线 — hooks + Ruler 跨平台分发
@@ -471,6 +488,21 @@ Windows 平台上 `python`/`python3` 可能指向 Microsoft Store 占位别名�
 - 所有平台：宪法从"被动读取"升级为"主动拦截"
 
 ---
+
+## [2.12.1] - 2026-08-19
+
+### 修复：宪法自举 — 技能关键词映射 + SAD 排除逻辑
+
+**问题复盘**：用户任务「把最新版本的 skills 宪法，安装到元规则层」未触发 skills-constitution，宪法自己接不到自己的活。
+
+#### 修复
+
+- **关键词映射补缺**：`REQUIRED_CATEGORY_KEYWORDS` 新增 `skill` / `skills` / `技能` → meta 分类映射（此前缺失导致任务分类失败）；补充 `安装` / `install` / `配置` 相关映射
+- **SAD 排除逻辑改条件排除**：`loose_retrieve_skills()` 原硬编码排除 skills-constitution 自身（防空头汇报），但在「安装/配置宪法」类任务中宪法本身就是目标，不应排除。现改为**条件排除**——仅当任务不含「安装/install/配置/configure」时才排除自身
+
+#### 验证
+
+- 宪法自举任务实测：skills-constitution 排 SAD 检索第 1 位（score=0.673）✅
 
 ## [2.12.0] - 2026-08-19
 
