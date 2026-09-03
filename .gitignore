@@ -38,3 +38,4 @@ tests/tmp/
 hooks/injected-context.json
 .constitution-violations.json
 .constitution-simple
+hooks/.py-interp

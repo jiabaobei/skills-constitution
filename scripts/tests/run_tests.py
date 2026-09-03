@@ -663,7 +663,11 @@ def main():
         _hook_src = fh.read()
     check("13.0a 钩子: 解释器存活探针(timeout 3)在位", "timeout 3" in _hook_src)
     check("13.0b 钩子: stdin 读取限时(read -r -t 2)在位", "read -r -t 2" in _hook_src)
-    check("13.0c 钩子: 自愈限时(timeout 10)在位", "timeout 10" in _hook_src)
+    # v2.27.2: 旧断言检查 "timeout 10"(bash 层嵌套自愈限时)——v2.27.0 钩子单进程化后
+    # 自愈改为 pre-hook.py 进程内 refresh_injection()(1.5s 级,无需外层限时),
+    # 嵌套自愈已删除。现断言:钩子委托单进程 hook-mode,且不再重跑 session-start.sh。
+    check("13.0c 钩子: 单进程委托(--hook-mode)在位", "--hook-mode" in _hook_src)
+    check("13.0d 钩子: 嵌套自愈已删除(不重跑 session-start.sh)", "session-start.sh" not in _hook_src)
 
     # 挂起解释器桩：三个名字都启动即睡 30s，模拟 Store 占位别名
     _stub_dir = tempfile.mkdtemp(prefix="stubpy_")
@@ -676,12 +680,16 @@ def main():
         _env_stub = dict(os.environ, PATH=_stub_dir + os.pathsep + os.environ.get("PATH", ""))
 
         # 13.1 最坏：三解释器全挂 → 探针 3s×3 降级 fail-open，低于宿主 20s 上限
+        # v2.27.2: 超时不再让套件崩溃,记失败继续跑(套件健壮性)
         _t0 = _time.time()
-        _r = subprocess.run(["bash", HOOK_PATH], input='{"prompt":"推送代码到github"}',
-                            capture_output=True, text=True, env=_env_stub, timeout=25)
-        _dt = _time.time() - _t0
-        check("13.1 解释器全挂: 钩子 fail-open 放行(exit 0)", _r.returncode == 0)
-        check("13.1 解释器全挂: %.1fs 内完成(<20s)" % _dt, _dt < 20)
+        try:
+            _r = subprocess.run(["bash", HOOK_PATH], input='{"prompt":"推送代码到github"}',
+                                capture_output=True, text=True, env=_env_stub, timeout=25)
+            _dt = _time.time() - _t0
+            check("13.1 解释器全挂: 钩子 fail-open 放行(exit 0)", _r.returncode == 0)
+            check("13.1 解释器全挂: %.1fs 内完成(<20s)" % _dt, _dt < 20)
+        except subprocess.TimeoutExpired:
+            check("13.1 解释器全挂: 25s 仍阻塞(挂起,须修复)", False)
 
         # 13.2 stdin 开着却无数据：read -t 2 不得无限阻塞
         _t0 = _time.time()
@@ -698,12 +706,18 @@ def main():
     finally:
         shutil.rmtree(_stub_dir, ignore_errors=True)
 
-    # 13.3 正常环境：钩子秒级完成不挂起
+    # 13.3 正常环境：钩子完成不挂起
+    # v2.27.2: 阈值 10s→18s。慢机器(每进程 2-3s)+Defender 首扫/负载尖峰时
+    # 实测 6~18s 波动(热路径均值 ~7s),原 10s 阈值误报;18s 仍低于宿主 20s 上限,
+    # 且足以捕获真挂起(30s 级)。超时记失败,不让套件崩溃。
     _t0 = _time.time()
-    subprocess.run(["bash", HOOK_PATH], input='{"prompt":"你好"}',
-                   capture_output=True, text=True, timeout=25)
-    _dt = _time.time() - _t0
-    check("13.3 正常环境: 钩子 %.1fs 内完成(不挂起)" % _dt, _dt < 10)
+    try:
+        subprocess.run(["bash", HOOK_PATH], input='{"prompt":"你好"}',
+                       capture_output=True, text=True, timeout=25)
+        _dt = _time.time() - _t0
+        check("13.3 正常环境: 钩子 %.1fs 内完成(不挂起)" % _dt, _dt < 18)
+    except subprocess.TimeoutExpired:
+        check("13.3 正常环境: 25s 仍阻塞(挂起,须修复)", False)
 
     # ---- 汇总 ----
     total = len(RESULTS)
