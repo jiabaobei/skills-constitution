@@ -5,6 +5,29 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.6] - 2026-09-04
+
+### 修复："查了技能树"却看不见技能 —— 注入名录截断 + 分类兜底退化
+
+事故（2026-09-04，用户抓包）：任务"把我本机改好的最新版 skills 宪法推送到 github 和 gitee"，
+`github-gitee-publish` **就在技能树里且分类正确**（`code/doc/file/automation`），
+Agent 却报"技能树无匹配"。技能树本身是新的（2026-09-01 生成，764 条目），锅在注入器。
+
+- **分类路由兜底退化（主因）**：`filter_tree_by_task` 的关键词表没覆盖"推送/github/gitee"，
+  未命中时 `return list(tree.keys())[:5]` —— 直接返回**字母序前 5 个分类**
+  `general/browser/search/file/data`，与任务毫无关系，真正相关的 `code`/`automation`
+  根本没进必需清单。改为复用确定性路由 `required_categories_for_task(task)`
+  （同一句话实测正确返回 `code`+`meta`），仍为空才退回前 5 个。
+- **注入名录硬截断（兜底失效）**：`build_injection` 两处按字母序截取 ——
+  分类名录 `skills[:8]`、必需技能候选 `cat_skills[:10]`。该技能在 `code` 类排**第 38 位**，
+  永远显示不出来。新增 `pick_display_skills()`，复用现成的 `loose_retrieve_skills`
+  按任务相关度排序取前 N（无任务文本/无人过线时退回字母序，行为不变），
+  行尾标注"未列全；判定'无匹配'前须 grep 完整索引"。
+- **新增死规则「第一条补充 A」**：注入名录是**预览不是清单**；行尾标"未列全"时，
+  判定"技能树无匹配"前**必须**检索全量索引（`grep SKILL_TREE.md` 或查 `skill_tree.json`）。
+- 实测：同一句话注入的分类由 `general/browser/search/file/data` 变为 `code`+`meta`，
+  `github-gitee-publish` 出现在 code 类第 7 位。
+
 ## [2.27.5] - 2026-09-03
 
 ### Stop 追责拧紧：堵"弱通行证零追责"漏洞 + GBK 输出崩溃根治

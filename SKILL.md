@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.27.5
+version: 2.27.6
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.27.5（当前）** — Stop 追责拧紧：收尾免检区分强/弱证据（step1 真实 PASS 或真调过技能才免检；仅"注入即签"弱通行证且本任务有必需分类时，收尾回复仍须过三查文本校验），堵"无视注入提示、全程零举证零追责"漏洞；必需分类缓存进门禁状态零开销复用；GBK 输出崩溃根治（stdout/stderr 强制 UTF-8，收编自安装副本实战补丁）。
+> **v2.27.6（当前）** — 修"技能树查了等于没查"：① 分类路由兜底原取字母序前 5 个分类（general/browser/search/file/data，与任务无关），改复用确定性路由，实测"推送到 github 和 gitee"能正确落到 code/meta；② 注入名录两处硬截断 `skills[:8]`/`cat_skills[:10]` 改为按任务相关度排序取前 N（复用现有 loose_retrieve_skills），行尾标注"未列全"——排在 code 类第 38 位的 github-gitee-publish 从此能露面；③ 新增死规则「第一条补充 A」：注入名录是预览不是清单，行尾标"未列全"时判"无匹配"前必须 grep 全量索引。
+> **v2.27.5** — Stop 追责拧紧：收尾免检区分强/弱证据（step1 真实 PASS 或真调过技能才免检；仅"注入即签"弱通行证且本任务有必需分类时，收尾回复仍须过三查文本校验），堵"无视注入提示、全程零举证零追责"漏洞；必需分类缓存进门禁状态零开销复用；GBK 输出崩溃根治（stdout/stderr 强制 UTF-8，收编自安装副本实战补丁）。
 > **v2.27.4** — 钩子注册补全：UserPromptSubmit 补注册注入保活钩子（pre-hook --hook-mode），修复"注入只在 SessionStart 做一次、长会话过期后 Agent 拿不到记忆+技能树 → 该调技能不调技能"的防线缺口；注册脚本全面直调 python（本机实测 bash 包装层单次 2.5~12.9s 是宿主 20s 超时元凶，pre-hook 本身仅 0.19s，直调后热路径门禁+注入合计 ≈3.5s）；MARKERS 收编 pre-hook.py，幂等替换/卸载可识别手工添加的注入钩子。回归 +3 条（13.6 注册完整性）。
 > **v2.27.3** — 门禁状态文件写入健壮性修复（用户钦定"宪法不起作用"真因）：① 并发 tmp 重名 —— 三个钩子进程共用固定名 `state.json.tmp`，互相截断后被 `os.replace` 换回主文件；改为 tmp 名带 pid。② Windows `os.replace` 遇 PermissionError 时 v2.27.0 兜底 open(w) 直写会截断主文件 → 改为只做短重试，仍失败放弃写入保留旧文件。③ 兜底语义纠偏 —— 损坏即静默放行导致门禁**永久失效**；改为降级放行（不阻断、打印提示、不签通行证），下次任务开始自动重置恢复。附陈旧 tmp 清理 + 5 条回归用例（并发压测 0 损坏）。
 > **v2.27.2** — 测试修正（零功能变更）：过时断言对齐 v2.27.0 单进程架构——13.0c 改断言单进程委托在位+嵌套自愈已删除、13.3 阈值 10s→18s（慢机器+Defender 首扫实测 6~18s 波动，热路径均值 ~7s）、13.1/13.3 超时捕获记失败不崩套件。
@@ -155,6 +156,21 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
   ```
 - **v2.11.0 任务相关硬校验（Layer C）**：任务含「代码/编码/编程/开发/写一个/实现/git/github/push/commit/deploy/部署/爬虫/抓取/网页/前端/文档/数据/邮件/图片/视频」等关键词时，**输出必须引用 skill_tree.json 对应分类下的实际技能名**（如 `git-workflow-and-versioning`），仅写"已查 skills-constitution"或"已读技能树"而无具体技能名 → 门禁 FAIL
 - 简单问答豁免（翻译/润色/概念解释）
+
+**第一条补充 A：注入的技能名录是截断的，判"无匹配"前必须检索全量（v2.27.6 死规则）**
+
+注入块里每个分类**只显示一小部分技能名**（v2.27.6 起按任务相关度排序取前 8/10 个，行尾会标"未列全"）——分类里排第 38 位的技能从名录里是看不见的。2026-09-04 实锤事故：任务"推送到 github 和 gitee"，`github-gitee-publish` 就在树里且分类正确，仅因排在 code 类第 38 位没被显示，Agent 便对着那 8 个名字判了"技能树无匹配"，被用户抓包。
+
+- **禁止把注入片段里的几个名字当作该分类的全量** —— 那是预览，不是清单
+- 判定"技能树无匹配"前，**必须检索全量索引**（二选一，命中即算已查）：
+  ```bash
+  grep -n "关键词" ~/.workbuddy/skills/skills-constitution/SKILL_TREE.md      # 人读版
+  python -c "import json;d=json.load(open(r'<索引>/skill_tree.json',encoding='utf-8'));print([e['name'] for c in d['categories'].values() for e in c if '关键词' in e['name']+e.get('description','')])"
+  ```
+- 名录行尾标了"未列全"时，上面这一步是**强制**的，不是可选项
+- 分类路由也可能退化（任务关键词没命中映射表时会兜底取字母序前几个分类），此时名录里的分类本身就与任务无关 —— 更需要直接按关键词检索全量
+
+---
 
 **第一条补充：双机制平台覆盖（v2.21.0）**
 

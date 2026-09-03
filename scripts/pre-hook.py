@@ -456,7 +456,12 @@ def filter_tree_by_task(tree, task):
             seen.add(c)
             result.append(c)
     if not result:
-        return list(tree.keys())[:5]  # 未匹配 → 取前5个分类兜底
+        # v2.27.6:原兜底 = 字母序前 5 个分类(general/browser/search/file/data),
+        # 与任务毫无关系 —— "推送到 github 和 gitee"这类任务连 code/automation 分类
+        # 都进不来,相关技能(排在分类第 38 位)永远不露面。
+        # 改为复用确定性路由(REQUIRED_CATEGORY_KEYWORDS 那套关键词,已验证对
+        # 同一句话能正确返回 code/meta),仍为空才退回前 5 个。
+        return required_categories_for_task(task) or list(tree.keys())[:5]
     return result
 
 
@@ -580,6 +585,32 @@ def graph_candidates_for_task(tree, task, graph_path=DEFAULT_GRAPH, max_neighbor
     return kept
 
 
+def pick_display_skills(tree, cat, task, n=8, full_by_name=None):
+    """v2.27.6:按任务相关度挑选要展示的技能名,替代原来的字母序硬截断。
+
+    原逻辑 `skills[:8]`/`cat_skills[:10]` 只取字母序前 N 个 —— 分类里排第 38 位的
+    github-gitee-publish 永远显示不出来,Agent 据这份残缺名单判"技能树无匹配"
+    (2026-09-04 实锤事故)。改为复用现成的 loose_retrieve_skills 打分排序,
+    相关度高的优先展示;无任务文本或无人过线时退回字母序前 N 个(行为不变)。
+
+    full_by_name:{技能名: 完整条目(含 description)},调用方用 load_tree_full 建一次传进来。
+    返回 (names, total):names=展示用技能名(最多 n 个),total=该分类技能总数。
+    """
+    names = tree.get(cat) or []
+    total = len(names)
+    if not names:
+        return [], 0
+    picked = []
+    if task and full_by_name:
+        entries = [full_by_name[x] for x in names if x in full_by_name]
+        if entries:
+            picked = [s.get("name") for _, s in
+                      loose_retrieve_skills(entries, task, top_k=n) if s.get("name")]
+    if not picked:
+        picked = names[:n]
+    return picked, total
+
+
 def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
                     aliases=None, graph_items=None):
     """生成注入块 Markdown
@@ -615,10 +646,21 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
         example = next(iter(aliases.values()))
         lines.append(f"> 双机制平台（v2.21.0）：技能树含 {len(aliases)} 个插件技能，"
                      f"命中插件技能时按完整调用名调用（如 `{example}`）。")
+    # v2.27.6:全量条目索引(含描述)只在这里建一次,供各分类按相关度挑选展示项
+    full_by_name = {}
+    try:
+        for _e in load_tree_full(DEFAULT_TREE):
+            full_by_name[_e.get("name")] = _e
+    except Exception:
+        full_by_name = {}
     for cat in matched_cats:
         skills = tree.get(cat, [])
         if skills:
-            lines.append(f"- **{cat}** ({len(skills)}): {', '.join(disp(n) for n in skills[:8])}{'...' if len(skills) > 8 else ''}")
+            picked, total = pick_display_skills(tree, cat, task, 8, full_by_name)
+            tail = (f"（按任务相关度显示前 {len(picked)}/{total} 个，"
+                    f"未列全；判定“无匹配”前须 grep 完整索引）"
+                    if total > len(picked) else "")
+            lines.append(f"- **{cat}** ({total}): {', '.join(disp(n) for n in picked)}{tail}")
     lines.append("")
 
     # v2.11.0 必需技能清单注入（硬校验依据）
@@ -626,9 +668,12 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
     if required_skills:
         lines.append("### 🎯 任务必需技能（v2.11.0 硬校验：输出必须引用其一，否则判定 FAIL）")
         for cat in required_cats:
-            cat_skills = [s for s in required_skills if s in tree.get(cat, [])]
+            picked, total = pick_display_skills(tree, cat, task, 10, full_by_name)
+            cat_skills = [s for s in picked if s in required_skills]
             if cat_skills:
-                lines.append(f"- **{cat}** 分类命中候选: {', '.join(cat_skills[:10])}")
+                tail = (f"（共 {total} 个，按相关度显示前 {len(cat_skills)} 个）"
+                        if total > len(cat_skills) else "")
+                lines.append(f"- **{cat}** 分类命中候选: {', '.join(cat_skills)}{tail}")
         lines.append("")
 
     # v2.23.0 技能图谱候选注入（锚点技能的任务线：同簇+一跳，带边证据）
