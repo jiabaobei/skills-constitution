@@ -46,6 +46,12 @@ import re
 import sys
 import time
 
+# v2.27.5 修复: Windows 控制台默认 GBK,注入块含 ⚡ 等字符时 print 直接
+# UnicodeEncodeError 崩溃 → 宪法注入从未送达。强制 UTF-8(不合规字符降级替换)。
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
     from lib.text import overlap_score, keyword_in

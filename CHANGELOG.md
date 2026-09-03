@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.5] - 2026-09-03
+
+### Stop 追责拧紧：堵"弱通行证零追责"漏洞 + GBK 输出崩溃根治
+
+- **Stop 收尾免检条件收紧（本版核心）**：原逻辑任务开始注入就绪即签发通行证，Stop 见到任何通行证一律免检——agent 无视注入提示、全程不汇报三查、不调用命中技能，收尾零追责。现区分强/弱证据：step1 真实 PASS 或本任务内真调用过技能（PreToolUse 自动记录）才免检；仅"注入即签"的弱通行证且本任务存在必需技能分类时，收尾回复仍须通过三查文本校验，不过即记违规、下轮任务开头红牌警告。"本任务无必需分类"（注入即查已足额）不受影响，不误记。
+- **必需分类缓存**：UserPromptSubmit 时将 `required_categories` 缓存进门禁状态，Stop 判定零开销复用（不重复加载技能树）。
+- **GBK 输出崩溃根治（从安装副本收编）**：`pre-hook.py`/`constitution-gate.py` 入口强制 stdout/stderr UTF-8（`errors="replace"`），根治 Windows 控制台打印 ⚡ 等字符时 `UnicodeEncodeError` 导致注入块从未送达的事故（2026-09-03 实锤：安装副本 `pre-hook.err` 抓到现行）。
+- 新任务重置时同步清除 `required_categories` 缓存，防上一任务分类泄漏到下一任务。
+
 ## [2.27.4] - 2026-09-03
 
 ### 钩子注册补全：注入保活钩子入册 + 全链路直调 python（防"改好了、一用又不行"复发）

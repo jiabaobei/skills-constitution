@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.27.4
+version: 2.27.5
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.27.4（当前）** — 钩子注册补全：UserPromptSubmit 补注册注入保活钩子（pre-hook --hook-mode），修复"注入只在 SessionStart 做一次、长会话过期后 Agent 拿不到记忆+技能树 → 该调技能不调技能"的防线缺口；注册脚本全面直调 python（本机实测 bash 包装层单次 2.5~12.9s 是宿主 20s 超时元凶，pre-hook 本身仅 0.19s，直调后热路径门禁+注入合计 ≈3.5s）；MARKERS 收编 pre-hook.py，幂等替换/卸载可识别手工添加的注入钩子。回归 +3 条（13.6 注册完整性）。
+> **v2.27.5（当前）** — Stop 追责拧紧：收尾免检区分强/弱证据（step1 真实 PASS 或真调过技能才免检；仅"注入即签"弱通行证且本任务有必需分类时，收尾回复仍须过三查文本校验），堵"无视注入提示、全程零举证零追责"漏洞；必需分类缓存进门禁状态零开销复用；GBK 输出崩溃根治（stdout/stderr 强制 UTF-8，收编自安装副本实战补丁）。
+> **v2.27.4** — 钩子注册补全：UserPromptSubmit 补注册注入保活钩子（pre-hook --hook-mode），修复"注入只在 SessionStart 做一次、长会话过期后 Agent 拿不到记忆+技能树 → 该调技能不调技能"的防线缺口；注册脚本全面直调 python（本机实测 bash 包装层单次 2.5~12.9s 是宿主 20s 超时元凶，pre-hook 本身仅 0.19s，直调后热路径门禁+注入合计 ≈3.5s）；MARKERS 收编 pre-hook.py，幂等替换/卸载可识别手工添加的注入钩子。回归 +3 条（13.6 注册完整性）。
 > **v2.27.3** — 门禁状态文件写入健壮性修复（用户钦定"宪法不起作用"真因）：① 并发 tmp 重名 —— 三个钩子进程共用固定名 `state.json.tmp`，互相截断后被 `os.replace` 换回主文件；改为 tmp 名带 pid。② Windows `os.replace` 遇 PermissionError 时 v2.27.0 兜底 open(w) 直写会截断主文件 → 改为只做短重试，仍失败放弃写入保留旧文件。③ 兜底语义纠偏 —— 损坏即静默放行导致门禁**永久失效**；改为降级放行（不阻断、打印提示、不签通行证），下次任务开始自动重置恢复。附陈旧 tmp 清理 + 5 条回归用例（并发压测 0 损坏）。
 > **v2.27.2** — 测试修正（零功能变更）：过时断言对齐 v2.27.0 单进程架构——13.0c 改断言单进程委托在位+嵌套自愈已删除、13.3 阈值 10s→18s（慢机器+Defender 首扫实测 6~18s 波动，热路径均值 ~7s）、13.1/13.3 超时捕获记失败不崩套件。
 > **v2.27.1** — 技能图谱补全与降噪：① 自愈路径（refresh_injection）接入图谱候选（v2.27.0 曾漏传 []，导致 hook-mode 自愈产出的注入块缺「🕸️ 技能图谱」段）；② cluster 候选降噪——超采样 3 倍后，同簇成员必须与任务有词面交集（名称/描述，overlap_score>0）才收录，结构边（chains_to/co_anchor）与 alternative 保持原样；实测"写爬虫"任务候选 8→1（adobe-* 无关同簇成员全灭），注入块 4199→3458 字符，无关任务宁缺毋滥（0 候选）。

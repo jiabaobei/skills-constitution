@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.27.4-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.27.5-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 

@@ -54,6 +54,11 @@ import subprocess
 import sys
 import time
 
+# v2.27.5 修复: Windows GBK 控制台下 print 中文/emoji 可能崩溃,强制 UTF-8
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 EVENT = sys.argv[1] if len(sys.argv) > 1 else ""
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -446,6 +451,7 @@ def main():
         data = load_state()
         data["steps"] = {}
         data.pop("skill_invoked", None)
+        data.pop("required_categories", None)  # v2.27.5:新任务重置必需分类缓存
         data["reset_ts"] = now_ts()
         data["last_task"] = (prompt or "")[:2000]
         # v2.22.0:注入即查 —— 平台注入上下文就绪则记忆+技能树视为已查
@@ -467,6 +473,8 @@ def main():
             try:
                 req = required_categories_via_pre_hook(prompt)
                 if req:
+                    # v2.27.5:缓存本任务必需分类,供 Stop 收尾判"是否欠三查"零开销复用
+                    data["required_categories"] = req
                     print(
                         "【宪法·注入即查】记忆与技能树已由平台注入,本任务必需分类: "
                         + "、".join(req)
@@ -560,7 +568,16 @@ def main():
         # 旧版对最终回复再做一遍三查文本校验,任务开头已查过、收尾回复没复述
         # 三查就被误记违规,下个任务开头被误注入警告。
         if task_evidence_ok(data):
-            sys.exit(0)
+            # v2.27.5:强证据才免检 —— step1 真实 PASS 或本任务内真调过技能。
+            # 仅"注入即签"的弱通行证 → 收尾回复仍须过三查文本校验,
+            # 堵"无视注入提示、全程零举证零追责"漏洞(用户钦定 2026-09-03)。
+            _sk = data.get("skill_invoked", {})
+            _strong = (
+                data.get("task_cleared", {}).get("reason") == "step1"
+                or bool(_sk.get("ts") and is_fresh(_sk["ts"], data.get("reset_ts", "")))
+            )
+            if _strong or not data.get("required_categories"):
+                sys.exit(0)
         last_task = data.get("last_task", "")
         try:
             cmd = [sys.executable, CHECK, "--input", "-", "--strict", "--step", "1"]
