@@ -785,6 +785,24 @@ def main():
     except Exception as _e:
         check("13.5 并发压测/损坏判定(异常: %s)" % _e, False)
 
+    # ---- 13.6 钩子注册完整性(v2.27.4) ----
+    # 教训:register_hooks.py 曾漏注册 UserPromptSubmit 注入保活钩子(pre-hook
+    # --hook-mode),注入只在 SessionStart 做一次,长会话过期后"该调技能不调技能"
+    # 防线失效;且 bash 版钩子在本机吃 2.5~12.9s 触发宿主 20s 超时。
+    _reg_src = ""
+    try:
+        with open(os.path.join(ROOT_DIR, "scripts", "register_hooks.py"),
+                  encoding="utf-8") as _rf:
+            _reg_src = _rf.read()
+    except Exception as _e:
+        check("13.6 注册脚本: 可读取", False)
+    check("13.6 注册脚本: UserPromptSubmit 注册注入保活钩子(pre-hook --hook-mode)",
+          "pre-hook.py" in _reg_src and "--hook-mode" in _reg_src)
+    check("13.6 注册脚本: 全部直调 python(不再注册 bash user-prompt-submit.sh)",
+          "user-prompt-submit.sh" not in _reg_src)
+    check("13.6 注册脚本: pre-hook.py 已入 MARKERS(幂等卸载/替换能识别)",
+          '"pre-hook.py"' in _reg_src)
+
     # ---- 汇总 ----
     total = len(RESULTS)
     passed = sum(1 for _, ok, _ in RESULTS if ok)

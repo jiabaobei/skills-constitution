@@ -5,6 +5,16 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.4] - 2026-09-03
+
+### 钩子注册补全：注入保活钩子入册 + 全链路直调 python（防"改好了、一用又不行"复发）
+
+- **注册脚本漏注册注入保活钩子（本版核心修复）**：`register_hooks.py` 只注册门禁三钩子（UserPromptSubmit/PreToolUse/Stop）+ SessionStart 注入，UserPromptSubmit 的 `pre-hook.py --hook-mode` 未入册——注入只在会话启动做一次，长会话上下文过期（>24h）后 Agent 拿不到记忆+技能树注入，"该调用技能时一定调用技能"的防线随之失效。现补注册为 UserPromptSubmit 第二条钩子。
+- **全链路直调 python，绕开 bash 层**：实测定位宿主 20s 超时元凶——bash.exe（MSYS）单次启动 2.5~12.9s 且随负载剧烈波动（Defender 扫描），而 pre-hook.py 本身仅 0.19s。注册脚本全面改为直调 python：热路径实测门禁 1.7~1.9s + 注入 1.5s ≈ **3.5s**，距宿主 20s 上限余量 5 倍+。20s 红线本身是宿主保险丝（防钩子挂死锁死会话），正确方向是把钩子做快而非放宽容忍度。
+- **MARKERS 收编 `pre-hook.py`**：幂等替换/卸载可识别并接管此前手工添加的注入钩子条目，重跑注册不再产生重复或残留。
+- **回归 +3 条（13.6 注册完整性）**：断言注入保活钩子已入册、全部直调 python（不再注册 bash user-prompt-submit.sh）、MARKERS 含 pre-hook.py。
+- 实测：`--dry-run` 输出 UserPromptSubmit 双钩子（门禁+注入保活）正确，幂等替换逻辑确认。
+
 ## [2.27.3] - 2026-09-03
 
 ### 门禁状态文件并发截断根治 + 损坏兜底纠偏（修复"宪法不起作用"真因）

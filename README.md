@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.27.3-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.27.4-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.27.3
+## Skills 宪法（Skills Constitution）v2.27.4
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

@@ -29,7 +29,7 @@ import shutil
 import sys
 import time
 
-MARKERS = ("constitution-gate.py", "session-start.sh")  # 识别"我们注册的条目"
+MARKERS = ("constitution-gate.py", "session-start.sh", "pre-hook.py")  # 识别"我们注册的条目"
 
 
 def detect_platform():
@@ -60,12 +60,24 @@ def build_entries(platform, skills_dir):
 
     entries = {}
     # UserPromptSubmit: 重置门禁状态 + 记录任务 + 注入上轮违规警告
+    # v2.27.4: 补注册注入保活钩子(pre-hook --hook-mode,直调 python 不走 bash——
+    # 本机实测 bash 层吃 2.5~12.9s 是宿主 20s 超时元凶,直调仅 ~1.5s)。
+    # 此前漏注册:注入只在 SessionStart 做一次,长会话过期后 Agent 拿不到
+    # 记忆+技能树注入,"该调技能时不调技能"的防线随之失效。
+    pre_hook = os.path.join(skills_dir, "scripts", "pre-hook.py")
     entries["UserPromptSubmit"] = [{
         "hooks": [{
             "type": "command",
             "command": f"{q}{py}{q} {q}{gate}{q} UserPromptSubmit",
             "timeout": 15,
             "description": "宪法 UserPromptSubmit：重置门禁状态 + 记录任务 + 注入上轮违规警告",
+        }]
+    }, {
+        "hooks": [{
+            "type": "command",
+            "command": f"{q}{py}{q} {q}{pre_hook}{q} --hook-mode",
+            "timeout": 15,
+            "description": "宪法 UserPromptSubmit：任务分类 + 注入上下文保活(过期自动刷新)",
         }]
     }]
     # PreToolUse: 写文件前校验本任务内三查新鲜 PASS
