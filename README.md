@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.27.6-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.28.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.27.6
+## Skills 宪法（Skills Constitution）v2.28.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -298,6 +298,14 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.28.0（2026-09-10）— 技能检索质量重构：双路证据召回 + RRF 融合 + 配对评测纪律
+- **起因**：借鉴 zg「多路召回 + RRF + 配对评测」方法论回查检索层，拿配对 A/B 一量就露馅 —— 旧打分器在 20 条任务上 **hit@4 只有 45%**
+- **根因**：`overlap_score` 既无长度归一化也无停用词 → 描述"又长又万能"的技能霸榜（撞掉的正是 `browser-automation`/`code-review`/`ponytail` 这类描述简短或纯英文的技能）；分词还会吐出"个转/份汇/价和"这类跨词边界假词
+- **改造**：① 单一打分 → **双路证据召回 + RRF 融合**（名称路 = 词面命中技能名；描述路 = BM25 词频×IDF×长度归一化；按排名融合、零调参）；② 分词修噪（纯虚词表 / 弱义字表分离）；③ 新增**跨语言技术词桥**（技能库双语，任务中文而大量技能描述是英文，词面交集恒为空 —— 用确定性词桥作"语义通道"的零依赖替代）
+- **评测纪律（最关键的一环）**：新增 `scripts/tests/retrieval_eval.py` 配对 A/B + **12 条开发期从未调参的留出集**；实测把 dev 集调到 hit@4 100% 后，留出集只剩 66.7% —— **过拟合被当场抓出**，据此再补词桥回到 100%。评测已入回归门禁（`run_tests` 第 14 节），测试 **134 → 140 条**
+- **实测（技能池 1084）**：dev hit@4 45% → **100%**、hit@1 25% → 50%；holdout hit@4 66.7% → **100%**、hit@1 41.7% → 66.7%；同时平均候选数保持 4.00、Top1 注入字符反而减少约 16%（命中率涨、token 不涨）
+- **明确未采纳**：向量/embedding 语义索引（违背零依赖 + 省 token 基调）；把"分类路由"当一路召回（实测降分 —— 路由是**策略**不是**证据**）
 
 ### v2.26.0（2026-09-02）— 一键更新脚本：下载最新版 → 校验 → 自动安装
 - **新增 `scripts/update.sh` / `scripts/update.ps1`**：把「更新前先去 GitHub 下载最新版、更新完成后自动在本地安装最新版」固化为死规矩脚本

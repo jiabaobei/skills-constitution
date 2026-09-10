@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.27.6
+version: 2.28.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.27.6（当前）** — 修"技能树查了等于没查"：① 分类路由兜底原取字母序前 5 个分类（general/browser/search/file/data，与任务无关），改复用确定性路由，实测"推送到 github 和 gitee"能正确落到 code/meta；② 注入名录两处硬截断 `skills[:8]`/`cat_skills[:10]` 改为按任务相关度排序取前 N（复用现有 loose_retrieve_skills），行尾标注"未列全"——排在 code 类第 38 位的 github-gitee-publish 从此能露面；③ 新增死规则「第一条补充 A」：注入名录是预览不是清单，行尾标"未列全"时判"无匹配"前必须 grep 全量索引。
+> **v2.28.0（当前）** — 技能检索质量重构（借鉴 zg「多路召回 + RRF + 配对评测」方法论）：① 单一加权打分改**双路证据召回 + RRF 融合**（名称路 = 词面命中技能名；描述路 = BM25 词频×IDF×长度归一化），按排名融合、零调参 —— 实测 dev 集 hit@4 45%→100%、未调参的留出集 66.7%→100%；② 分词修噪（纯虚词表 / 弱义字表分离，二元组含纯虚词即丢），修"个转/价和/份汇"这类**跨词边界假词**与冗长描述误撞导致的"万能描述技能霸榜"（overlap_score 既无长度归一化也无停用词，这是根因）；③ 新增**跨语言技术词桥**——技能库是双语的，任务说中文而相当一批技能的 description 是英文（browser-automation / code-review / ponytail / openai-whisper），纯词面检索在这道语言鸿沟前交集恒为空，用确定性词桥作"语义通道"的零依赖替代（只映射英文技术词，不动 Layer C 任务分类）；④ 新增**评测纪律**：`scripts/tests/retrieval_eval.py` 配对 A/B（legacy vs hybrid）+ 12 条**开发期从未调参的留出集** —— 实测 dev 集被调到 100% 时留出集只有 66.7%，过拟合被当场抓出；评测已入回归门禁（run_tests 第 14 节，134→140 条）。
+> **v2.27.6** — 修"技能树查了等于没查"：① 分类路由兜底原取字母序前 5 个分类（general/browser/search/file/data，与任务无关），改复用确定性路由，实测"推送到 github 和 gitee"能正确落到 code/meta；② 注入名录两处硬截断 `skills[:8]`/`cat_skills[:10]` 改为按任务相关度排序取前 N（复用现有 loose_retrieve_skills），行尾标注"未列全"——排在 code 类第 38 位的 github-gitee-publish 从此能露面；③ 新增死规则「第一条补充 A」：注入名录是预览不是清单，行尾标"未列全"时判"无匹配"前必须 grep 全量索引。
 > **v2.27.5** — Stop 追责拧紧：收尾免检区分强/弱证据（step1 真实 PASS 或真调过技能才免检；仅"注入即签"弱通行证且本任务有必需分类时，收尾回复仍须过三查文本校验），堵"无视注入提示、全程零举证零追责"漏洞；必需分类缓存进门禁状态零开销复用；GBK 输出崩溃根治（stdout/stderr 强制 UTF-8，收编自安装副本实战补丁）。
 > **v2.27.4** — 钩子注册补全：UserPromptSubmit 补注册注入保活钩子（pre-hook --hook-mode），修复"注入只在 SessionStart 做一次、长会话过期后 Agent 拿不到记忆+技能树 → 该调技能不调技能"的防线缺口；注册脚本全面直调 python（本机实测 bash 包装层单次 2.5~12.9s 是宿主 20s 超时元凶，pre-hook 本身仅 0.19s，直调后热路径门禁+注入合计 ≈3.5s）；MARKERS 收编 pre-hook.py，幂等替换/卸载可识别手工添加的注入钩子。回归 +3 条（13.6 注册完整性）。
 > **v2.27.3** — 门禁状态文件写入健壮性修复（用户钦定"宪法不起作用"真因）：① 并发 tmp 重名 —— 三个钩子进程共用固定名 `state.json.tmp`，互相截断后被 `os.replace` 换回主文件；改为 tmp 名带 pid。② Windows `os.replace` 遇 PermissionError 时 v2.27.0 兜底 open(w) 直写会截断主文件 → 改为只做短重试，仍失败放弃写入保留旧文件。③ 兜底语义纠偏 —— 损坏即静默放行导致门禁**永久失效**；改为降级放行（不阻断、打印提示、不签通行证），下次任务开始自动重置恢复。附陈旧 tmp 清理 + 5 条回归用例（并发压测 0 损坏）。
@@ -170,6 +171,21 @@ SKILL_INDEX_PATH: <你的技能目录>/skill_tree.json
 - 名录行尾标了"未列全"时，上面这一步是**强制**的，不是可选项
 - 分类路由也可能退化（任务关键词没命中映射表时会兜底取字母序前几个分类），此时名录里的分类本身就与任务无关 —— 更需要直接按关键词检索全量
 
+**第一条补充 B：检索质量不得凭感觉，必须配对 A/B + 留出集说话（v2.28.0 死规则）**
+
+检索层（打分 / 分词 / 同义词表 / 分类路由 / 排序）是"该调技能不调技能"防线的上游 —— 上游漏检一次，下游门禁再严也拦不住（候选压根没出现在注入块里）。而检索改动最容易自我欺骗："我觉得这样更准"。所以定死规矩：
+
+1. **改任何检索逻辑后，必须跑评测并同时报告两套集**：
+   ```bash
+   python scripts/tests/retrieval_eval.py          # dev + holdout 双集对照
+   python scripts/tests/retrieval_eval.py --gate   # 门禁:双集 hit@4 均不得跌破下限
+   ```
+   只报 dev 集视为**未验证** —— 本版实测：dev 集被调到 hit@4 100% 时，12 条留出集只有 66.7%。
+2. **留出集禁止用于调参**（`data/retrieval_eval_holdout.json`）。dev 集可据其迭代，留出集只用于验收；反复拿留出集调参 = 换一套用例继续过拟合。
+3. **hit@4 下降即判退化**（`--gate` 会 exit 1），不得以"个别用例看起来更合理"为由放过；要用数字证明，或把该用例的期望值更新为**经人工核验确为同域**的技能（核验依据记在用例文件里）。
+4. **期望值只允许"放宽到真同域"，不允许"迁就到算法输出"**。放宽前必须读候选技能的 description 确认它真能干这事（本版对 7 条用例放宽时逐条核验过；例如"发票提金额"补入 `pdf-image-text-extractor__skillhub` 是因为它确实做 OCR 提取）。
+5. **判"无匹配"前记住：用户说的是意图，不是技能名**。"把改好的东西传上去"对应的技能叫 `github-gitee-publish`；中文任务撞上英文 description 的技能是常态（`browser-automation` / `code-review` / `openai-whisper`），检索已内置中英双语技术词桥，但**禁止仅因字面不同就判无匹配**。
+
 ---
 
 **第一条补充：双机制平台覆盖（v2.21.0）**
@@ -281,7 +297,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.25.0
+## Skills 宪法（Skills Constitution）v2.28.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

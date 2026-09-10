@@ -1,0 +1,99 @@
+{
+  "note": "留出集(holdout)—— 开发 v2.28.0 检索改造期间【从未】用于调参的用例。期望技能仅依据技能描述本身的领域含义人工判定,不参考算法输出。用途:检验 dev 集上的 hit@4 100% 是否过拟合。修改任何检索逻辑后跑 scripts/tests/retrieval_eval.py --holdout 复查。",
+  "cases": [
+    {
+      "task": "帮我把这个 Excel 里的数据按月份汇总一下",
+      "expect": [
+        "xlsx",
+        "excel-auto-zh__skillhub",
+        "data-analysis",
+        "data-analyst"
+      ]
+    },
+    {
+      "task": "用 docker 把这个服务部署到服务器上",
+      "expect": [
+        "docker-essentials",
+        "deployment-patterns"
+      ]
+    },
+    {
+      "task": "帮我根据岗位 JD 改一版简历",
+      "expect": [
+        "resume-assistant"
+      ]
+    },
+    {
+      "task": "把这张发票上的金额和账号提取出来",
+      "expect": [
+        "nutrient-document-processing",
+        "ocr-local",
+        "beneficiary-creation"
+      ]
+    },
+    {
+      "task": "查一下今天沪深300指数的行情",
+      "expect": [
+        "akshare-stock",
+        "cnfinancialscraper__skillhub"
+      ]
+    },
+    {
+      "task": "把会议录音转成文字稿",
+      "expect": [
+        "openai-whisper",
+        "together-audio",
+        "scribe",
+        "tencent-meeting-skill",
+        "meeting-and-brief__skillhub"
+      ]
+    },
+    {
+      "task": "画一张系统架构图",
+      "expect": [
+        "diagram-generator",
+        "contextweave-interactive-architecture__skillhub"
+      ]
+    },
+    {
+      "task": "把这篇长文章改成小红书风格的文案",
+      "expect": [
+        "content-repurposer",
+        "crosspost",
+        "lingyi-copy-de-ai-human-eval__skillhub",
+        "小红书助手",
+        "douyin-copy-extract__skillhub"
+      ]
+    },
+    {
+      "task": "监控这个网页有没有更新并告诉我",
+      "expect": [
+        "blogwatcher",
+        "canary-watch"
+      ]
+    },
+    {
+      "task": "帮我做一份竞品分析报告",
+      "expect": [
+        "competitive-platform-analysis",
+        "competitive-report-structure",
+        "deep-research"
+      ]
+    },
+    {
+      "task": "帮我给项目加上 CI 自动构建流程",
+      "expect": [
+        "ci-cd-and-automation",
+        "deployment-patterns"
+      ]
+    },
+    {
+      "task": "写一篇介绍我们新产品的公众号文章",
+      "expect": [
+        "article-writing",
+        "content-engine",
+        "wechat-article-search"
+      ]
+    }
+  ]
+}

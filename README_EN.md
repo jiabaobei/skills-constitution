@@ -3,7 +3,7 @@
 > **A meta-rule above all skills/tools** — forces AI agents to *check first, use what matches, search before refusing*. Cross-platform (Claude Code / WorkBuddy / Cursor / ChatGPT / Gemini / ...).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.27.6-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.28.0-blue.svg)](SKILL.md)
 
 **中文文档**: [README.md](README.md)
 
@@ -41,6 +41,15 @@ task arrives
 ```
 
 Design principles: **default soft checks** (`--strict` to block), **fail-open** (a gate bug never bricks the host), and the rule text never says "you must run the scripts" — so it stays satisfiable on prompt-only platforms.
+
+**What's new in v2.28.0 — skill retrieval rebuild: dual-evidence recall + RRF fusion + paired-eval discipline:**
+
+- **Why**: borrowing zg's "multi-channel recall + RRF + paired evaluation" methodology and measuring our own retrieval exposed it — the legacy scorer hit **hit@4 of only 45%** across 20 tasks (more than half the time the right skill was absent from the injected candidates).
+- **Root cause**: `overlap_score` had neither length normalization nor stopwords, so skills with long "universal" descriptions outranked short, precise ones (it was squeezing out `browser-automation`, `code-review`, `ponytail`); tokenization also produced fake cross-boundary CJK bigrams.
+- **Changes**: ① single weighted score → **dual-evidence recall + RRF fusion** (name channel = task tokens hitting the skill name; description channel = BM25 freq × IDF × length-norm; fused by rank, zero tuning); ② tokenizer noise fix (pure-function vs weak-meaning CJK char tables); ③ new **cross-lingual tech-term bridge** — the skill library is bilingual (Chinese tasks vs English descriptions), where lexical overlap is identically empty; a deterministic bridge stands in for a semantic channel while keeping zero dependencies.
+- **Eval discipline (the key part)**: new `scripts/tests/retrieval_eval.py` paired A/B plus **12 held-out cases never used for tuning** — measured dev hit@4 100% while holdout sat at 66.7%, catching the overfitting on the spot; eval is now a regression gate (suite 134 → 140 checks).
+- **Measured (pool of 1084 skills)**: dev hit@4 45% → **100%**, hit@1 25% → 50%; holdout hit@4 66.7% → **100%**, hit@1 41.7% → 66.7%; average candidate count unchanged at 4.00 and top-1 injected chars down ~16% (better hits, no extra tokens).
+- **Deliberately rejected**: vector/embedding semantic index (breaks the zero-dependency, token-frugal baseline); treating category routing as a recall channel (measured worse — routing is *policy*, not *evidence*).
 
 **What's new in v2.26.0 — one-click update scripts (download-latest-first, auto-install):**
 

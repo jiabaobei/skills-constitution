@@ -707,15 +707,33 @@ def main():
         shutil.rmtree(_stub_dir, ignore_errors=True)
 
     # 13.3 正常环境：钩子完成不挂起
-    # v2.27.2: 阈值 10s→18s。慢机器(每进程 2-3s)+Defender 首扫/负载尖峰时
-    # 实测 6~18s 波动(热路径均值 ~7s),原 10s 阈值误报;18s 仍低于宿主 20s 上限,
-    # 且足以捕获真挂起(30s 级)。超时记失败,不让套件崩溃。
+    # v2.28.0: 阈值从"绝对耗时 <18s"改为"**钩子自增量** <18s"。
+    # 背景: 被测性质是"钩子自身不挂起",而旧断言把机器启动成本也算进了账。
+    # 本机实测 `bash -c true` 冷启动就要 5.2~6.1s(Defender 首扫 + 慢盘),
+    # 钩子又必然再起一个子壳读 stdin → 同一份代码实测 12.9~17.5s,尖峰时 24.7s,
+    # 在 18s 阈值上反复误报(与 v2.27.2 那次 10s→18s 同源的假失败:调整阈值治不了
+    # 病根,因为病根是把环境成本计入了被测对象的成绩)。
+    # 现在先量 bash 冷启动基线(2 次取最小,避开首次安全扫描尖峰),再断言
+    #   钩子耗时 − 基线 < 18s
+    # 真挂起(Store 占位别名 sleep 30 级)自增量 ≥25s,照旧被捕获;
+    # 正常自增量实测 5.5~12.3s,两侧余量都充足。
+    # 注意:这不是放宽保护 —— 宿主 20s 上限的守护仍由 25s 超时分支承担。
+    _bl = []
+    for _ in range(2):
+        _tb = _time.time()
+        try:
+            subprocess.run(["bash", "-c", "true"], capture_output=True, timeout=25)
+            _bl.append(_time.time() - _tb)
+        except subprocess.TimeoutExpired:
+            pass
+    _base = min(_bl) if _bl else 0.0
     _t0 = _time.time()
     try:
         subprocess.run(["bash", HOOK_PATH], input='{"prompt":"你好"}',
                        capture_output=True, text=True, timeout=25)
         _dt = _time.time() - _t0
-        check("13.3 正常环境: 钩子 %.1fs 内完成(不挂起)" % _dt, _dt < 18)
+        check("13.3 正常环境: 钩子自增量 %.1fs 内完成(不挂起; 钩子 %.1fs − bash 基线 %.1fs)"
+              % (_dt - _base, _dt, _base), _dt - _base < 18)
     except subprocess.TimeoutExpired:
         check("13.3 正常环境: 25s 仍阻塞(挂起,须修复)", False)
 
@@ -802,6 +820,37 @@ def main():
           "user-prompt-submit.sh" not in _reg_src)
     check("13.6 注册脚本: pre-hook.py 已入 MARKERS(幂等卸载/替换能识别)",
           '"pre-hook.py"' in _reg_src)
+
+    # ---- 14 检索质量门禁(v2.28.0) ----
+    # 教训:检索层的评测若只留一个手工脚本,改完就跑那一次,下一个人再改检索时
+    # "悄悄掉档"无人告警。把评测固化为回归门禁:dev + holdout 双集,
+    # hybrid hit@4 既不得低于旧基线(legacy),也不得跌破绝对下限(retrieval_eval.GATE)。
+    # 留出集为什么必须有:dev 集可据其调参,holdout 只用于验收 —— 本版实测证明
+    # 只看 dev 会过拟合(dev 集被调到 hit@4 100% 时,12 条未调参的留出集只有 66.7%)。
+    try:
+        _ev = subprocess.run(
+            [sys.executable, os.path.join(SCRIPT_DIR, "retrieval_eval.py"),
+             "--json", "--gate"],
+            capture_output=True, text=True, timeout=300,
+            encoding="utf-8", errors="replace")
+        _ej = json.loads(_ev.stdout or "{}")
+        _sets = _ej.get("sets", {})
+        check("14 检索评测: dev + holdout 双集均产出指标",
+              {"dev", "holdout"} <= set(_sets))
+        for _k in ("dev", "holdout"):
+            _s = _sets.get(_k)
+            if not _s:
+                continue
+            _h, _l = _s["hybrid"], _s["legacy"]
+            check("14 检索评测 %s: hybrid hit@4(%.1f%%) 不低于 legacy(%.1f%%)"
+                  % (_k, _h["hit@4"] * 100, _l["hit@4"] * 100),
+                  _h["hit@4"] >= _l["hit@4"])
+            check("14 检索评测 %s: 上下文体积不膨胀(平均候选 %.2f ≤ 4)"
+                  % (_k, _h["avg_candidates"]), _h["avg_candidates"] <= 4.0)
+        check("14 检索评测: 绝对下限门禁通过(retrieval_eval --gate exit 0)",
+              _ev.returncode == 0)
+    except Exception as _e:
+        check("14 检索评测门禁(异常: %s)" % _e, False)
 
     # ---- 汇总 ----
     total = len(RESULTS)

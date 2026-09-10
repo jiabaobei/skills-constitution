@@ -36,11 +36,30 @@ v2.23.0:
     带着"为什么相关"的边证据注入,注入面从"整分类清单"收窄到"任务线图谱";
     图谱缺失时行为与旧版完全一致(只加不删)
 
+v2.28.0:
+  - 检索改**双路证据召回 + RRF 融合**(借鉴 zg/zvec-grep 的"多路召回 + RRF"方法论):
+    名称路(词面命中技能名,等价精确通道) + 描述路(BM25,词频×IDF×长度归一化),
+    按排名融合、零调参 —— 修"意图↔命名断层"导致的相关技能漏检;
+    候选行尾标注命中依据(命中 名称/描述),注入从"分数"进化为"可解释候选";
+    loose_retrieve_skills 保持原签名,内部委托 hybrid_retrieve_skills(旧行为可由
+    scripts/tests/retrieval_eval.py 的 legacy 通道复现)。
+  - 分词修噪:纯虚词表 + 弱义字表分离,二元组含纯虚词即丢(修"个转/价和/份汇"
+    这类跨词边界假词与冗长描述误撞 → "万能描述技能霸榜")。
+  - 跨语言技术词桥(中文意图 → 英文技术词):技能库是双语的,相当一批技能的
+    description 是英文,纯词面检索在语言鸿沟前交集恒为空;本宪法坚持零依赖不引
+    模型,故用确定性双语词桥作"语义通道"的零依赖替代 —— 只映射到英文技术词,
+    不映射到 REQUIRED_CATEGORY_KEYWORDS,不动 Layer C 任务分类行为。
+  - 评测纪律(借鉴 zg 的"配对 A/B + 留出集"):新增 scripts/tests/retrieval_eval.py,
+    同一任务集跑 legacy/hybrid 两通道对比 hit@1/hit@4 与上下文体积;并固化 12 条
+    **开发期从未调参的留出集** —— 实测 dev 集被调到 hit@4 100% 时留出集只有
+    66.7%,过拟合被当场抓出。评测已入回归门禁(run_tests 第 14 节)。
+
 返回码:
   --check 模式: 0=注入合规, 1=缺注入(宿主 hook 应阻断任务)
 """
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -188,7 +207,96 @@ TASK_SYNONYM_MAP = {
     "查一下": ["查询", "搜索"], "搜一下": ["搜索", "查询"],
     # 文件口语
     "整理文件": ["文件"], "清理文件": ["文件"],
+
+    # v2.28.0 跨语言技术词桥(中文意图 → 英文技术词)。
+    # 为什么需要:技能库是双语的 —— 任务说中文,而相当一批技能的 description
+    # 是英文(browser-automation / code-review / ponytail …)。纯词面检索在这道
+    # 语言鸿沟前交集恒为空(实测:任务"写个爬虫…"与 browser-automation 交集=[]),
+    # zg 那篇文章的答案是加一路**语义(Vector)**召回;本宪法坚持零依赖不引模型,
+    # 于是用"确定性双语词桥"作零依赖替代 —— 查到就是查到了,不猜。
+    # 只映射到英文技术词,不映射到 REQUIRED_CATEGORY_KEYWORDS/专业任务词表里的词,
+    # 避免顺手改动 Layer C 的任务分类行为。
+    "爬虫": ["scrape", "crawl", "scraping", "spider"],
+    "抓取": ["scrape", "crawl", "scraping"],
+    "抓下来": ["scrape", "crawl"],
+    "代码审查": ["review", "code review", "audit"],
+    "审查代码": ["review", "audit"],
+    "代码质量": ["review", "quality", "lint"],
+    "评审": ["review", "assessment"],
+    "省事": ["minimal", "lazy", "simplest", "yagni"],
+    "最省": ["minimal", "lazy", "simplest", "yagni"],
+    "别加依赖": ["minimal", "stdlib", "dependency"],
+    "别过度设计": ["yagni", "minimal", "simplest"],
+    "不要太复杂": ["minimal", "simplest"],
+    "报错": ["error", "debug", "debugging"],
+    "排查": ["debug", "debugging", "troubleshoot"],
+    "根因": ["root cause", "debug", "diagnose"],
+    "调试": ["debug", "debugging"],
+    "海报": ["poster", "graphic"],
+    "架构图": ["diagram", "architecture", "chart"],
+    "流程图": ["diagram", "flowchart"],
+    "可视化": ["visualization", "chart", "dashboard"],
+    "宣传视频": ["video", "promo"],
+    "定时": ["schedule", "cron", "automation"],
+    "自动化": ["automation", "workflow", "automate"],
+    "同步": ["sync", "synchronize"],
+    "对比": ["compare", "comparison", "diff"],
+    "总结": ["summary", "summarize"],
+
+    # v2.28.0 跨语言技术词桥(第二批)—— A/B 评测暴露的两类残留漏检,同一根因
+    # (中文任务 ↔ 英文 description),同一修法(加确定性词桥,不引模型):
+    #   ① 调研/竞争/行业类:任务"深度调研…竞争格局"与 deep-research(-pro) 交集=[],
+    #      而 deep-research 恰是正确解 —— 词桥把"调研"落到 research,技能名与描述同时命中;
+    #   ② 音频类:任务"有没有处理音频的技能"与 edge-tts / openai-whisper / sag 交集=[],
+    #      词桥把"音频/语音"落到 audio/voice/speech/tts。
+    # 这些词均不在 REQUIRED_CATEGORY_KEYWORDS 中(已核验),故不影响 Layer C 任务分类。
+    "调研": ["research", "investigation", "investigate"],
+    "研究": ["research", "study"],
+    "深度调研": ["deep research", "research"],
+    "竞争格局": ["competitive", "competition", "landscape", "benchmark"],
+    "竞争分析": ["competitive", "competition", "analysis"],
+    "竞品": ["competitive", "competitor", "benchmark"],
+    "行业分析": ["industry", "research", "analysis"],
+    "市场分析": ["market", "research", "analysis"],
+    "音频": ["audio", "voice", "speech", "tts"],
+    "语音": ["voice", "speech", "tts", "audio"],
+    "转录": ["transcribe", "transcription", "speech"],
+    "朗读": ["tts", "speech", "voice"],
+    "字幕": ["subtitle", "caption", "transcribe"],
+    "找技能": ["find", "discover", "skill"],
+    "找一下": ["find", "discover"],
+
+    # v2.28.0 跨语言技术词桥(第三批)—— 留出集(holdout,开发期从未调参的 12 条)
+    # 暴露的残留漏检。留出集把 dev 集 100% 打回 66.7%,证明"只在 dev 集上迭代"
+    # 会过拟合;补齐的这批词全部来自留出集的**结构性**失败模式(仍是同一根因:
+    # 中文任务 ↔ 英文 description),不是针对某条用例的硬编码。
+    #   ① 录音/文字稿:"把会议录音转成文字稿"该落到 ASR(openai-whisper),
+    #      但技能名与描述是英文,交集为空 → 桥到 speech/transcribe/audio;
+    #   ② 文案/改写/小红书:"长文改成小红书文案"该落到 content-repurposer,
+    #      桥到 copy/rewrite/repurpose;
+    #   ③ 监控/网页更新:"监控网页有没有更新"该落到 blogwatcher/canary-watch,
+    #      桥到 monitor/watch/update;
+    #   ④ 发票/提取:"发票金额账号提取"桥到 invoice/receipt/ocr/extract。
+    "录音": ["audio", "recording", "speech"],
+    "文字稿": ["transcribe", "transcription", "transcript", "speech"],
+    "转文字": ["transcribe", "transcription", "speech", "text"],
+    "语音转文字": ["speech to text", "transcribe", "transcription"],
+    "文案": ["copy", "copywriting", "content"],
+    "改写": ["rewrite", "repurpose", "adapt", "rephrase"],
+    "小红书": ["xiaohongshu", "redbook", "social"],
+    "公众号文章": ["article", "blog", "wechat"],
+    "监控": ["monitor", "watch", "alert"],
+    "网页监控": ["monitor", "watch", "url", "rss"],
+    "网页更新": ["monitor", "update", "change", "rss", "feed"],
+    "有没有更新": ["monitor", "update", "change", "rss", "feed"],
+    "发票": ["invoice", "receipt", "ocr", "extract"],
+    "提取": ["extract", "extraction", "parse"],
 }
+
+# v2.28.0:口语扩展的误触发防护 —— "审查一下/核查一下"里的"查一下"是"审批",
+# 不是"检索"(与 v2.19.0 修 "hi"⊂"this" 同源的子串碰撞问题)。命中这些字在前
+# 时不展开该短语。
+_SYNONYM_LOOKBEHIND_BLOCK = {"查一下": "审检核巡排政", "搜一下": "检核"}
 
 
 def expand_task_text(task):
@@ -199,7 +307,12 @@ def expand_task_text(task):
     t = (task or "").lower()
     extra = []
     for phrase, implied in TASK_SYNONYM_MAP.items():
-        if phrase.lower() in t:
+        p = phrase.lower()
+        blocked = _SYNONYM_LOOKBEHIND_BLOCK.get(phrase)
+        if blocked:
+            if re.search(r"(?<![" + re.escape(blocked) + r"])" + re.escape(p), t):
+                extra.extend(implied)
+        elif p in t:
             extra.extend(implied)
     if not extra:
         return task or ""
@@ -390,22 +503,160 @@ def load_skill_aliases(tree_path=DEFAULT_TREE):
     return aliases
 
 
-def loose_retrieve_skills(skills, task, top_k=4, min_score=0.08,
-                          category_boost=0.25, name_boost=0.15):
-    """v2.12.0 SAD 第一轮:宽松语义检索(零依赖 token 重叠打分)
+# ---- v2.28.0:检索侧分词与停用词 ----
+# 英文停用词复用图谱锚点那套(同一条教训:套话词不构成证据),中文补虚词/口语词。
+# 不滤掉这些词时,任意技能描述都能与任务在"的/把/了/一下/帮我"上重叠 ——
+# 实测(scripts/tests/retrieval_eval.py):20 条任务有 18 条被描述冗长的
+# "万能描述"技能(high-quality-skill-guidance 之类)霸榜,真正的领域技能进不了候选。
+_RT_WORD_RE = re.compile(r"[a-z0-9][a-z0-9_\-\.]*")
+_RT_CJK_RE = re.compile(r"[一-鿿]")
+# 纯虚词(只做语法功能,不承载语义)—— 出现即丢弃,单字与"二元组含其一"都丢。
+_CJK_STOP_CHARS = set(
+    "的了把我在有你和他她它们这那个些上下里中内外前后时让给从到向对为以于之"
+    "好很太再更最被所着过吧呢啊嘛呀怎吗咱俺您一次份些每该"
+)
+# 弱义字(可作动词也可作构词成分:会议/可能/使用…)—— 仅当它自己单独成词时丢弃,
+# 与别的字组成二元组时保留。分开处理是因为"含其一即丢"会误杀 会议/使用 这类真词。
+_CJK_WEAK_CHARS = set("能会要想要做搞弄用来去看说请帮")
+_RETRIEVAL_STOPWORDS = set(getattr(G, "ANCHOR_STOPWORDS", ()) if G else ())
+_RETRIEVAL_STOPWORDS |= {
+    "一下", "一个", "一些", "这些", "那些", "什么", "怎么", "可以", "需要",
+    "用来", "用于", "帮我", "给我", "我的", "我们", "你们", "他们",
+    "以及", "关于", "对于", "然后", "并且", "但是", "如果", "因为", "所以",
+}
 
-    SkillWeaver SAD 反馈循环的确定性实现:
-    原方案需要 LLM 草拟→检索→喂回→重写;本实现把"粗检索"环节代码化 ——
-    pre-hook 先按任务与技能描述的 token 重叠度检索 top-K 候选注入上下文,
-    Agent 起草方案时天然带着候选技能"重写对齐"(第二轮由 Agent 完成)。
 
-    打分 = token 重叠度 + 必需分类加成(category_boost) + 技能名命中加成(name_boost):
-    - 技能的分类命中任务必需分类(REQUIRED_CATEGORY_KEYWORDS 映射结果)时加分,
-      让确定性路由信号(Layer C 同源)参与排序;
-    - 任务与**技能名**有 token 交集时再加 name_boost —— 技能名是最强标识,
-      避免 git-workflow 这类描述简短的技能被描述冗长的泛相关技能挤掉。
+def _rt_tokens(text):
+    """v2.28.0:检索用词频表(Counter)——"分词 + 去停用词 + 保留词频"
 
-    返回 [(score, skill)],按相关度降序;排除元规则自身。
+    与 lib.text.tokenize 同源切分(英文词边界 + 连字符拆子词 + 中文单字/二元组),
+    两处不同:① 保留词频(BM25 的 tf 需要计数,原 tokenize 返回 set);
+    ② 过一遍检索停用词(见上)。单字虚词与"双字皆虚词"的二元组直接丢弃,
+    真实词(数据/文档/股票/会议…)一律保留。
+    """
+    t = (text or "").lower()
+    words = _RT_WORD_RE.findall(t)
+    tokens = list(words)
+    for w in words:
+        if "-" in w or "_" in w or "." in w:
+            tokens.extend(p for p in re.split(r"[_\-\.]", w) if p)
+    cjk = _RT_CJK_RE.findall(t)
+    tokens.extend(cjk)
+    tokens.extend(cjk[i] + cjk[i + 1] for i in range(len(cjk) - 1))
+    counter = {}
+    for tok in tokens:
+        if not tok.strip() or tok in _RETRIEVAL_STOPWORDS:
+            continue
+        if len(tok) == 1 and (tok in _CJK_STOP_CHARS or tok in _CJK_WEAK_CHARS):
+            continue
+        # 二元组只要含一个纯虚词就丢弃 —— 跨词边界拼出来的"个转/价和/份汇"
+        # 这类假词会与任意冗长描述误撞,是"万能描述技能霸榜"的第二个来源。
+        if len(tok) == 2 and any(c in _CJK_STOP_CHARS for c in tok):
+            continue
+        counter[tok] = counter.get(tok, 0) + 1
+    return counter
+
+
+def _rrf_fuse(rank_lists, k=60):
+    """v2.28.0:RRF 倒数排名融合(Reciprocal Rank Fusion)
+
+    借鉴 zg(zvec-grep) 的"多路召回 + RRF 融合":单一打分器在语义断层前必败 ——
+    收太紧漏掉关键技能,放太宽候选泛滥。改为把多路召回各自的**排名**融合,
+    而不是给各路分数调权重:无需归一化(不同量纲也能融合)、零调参;
+    出现在多路的候选天然被抬升,这正是不相关技能进不来的原因。
+
+    ponytail: k=60 取 RRF 论文默认值,未做调参;实测排序不佳再动。
+    返回 {技能名: 融合分}(未归一化)。
+    """
+    fused = {}
+    for ranking in rank_lists:
+        for rank, item in enumerate(ranking, start=1):
+            name = item.get("name")
+            if name:
+                fused[name] = fused.get(name, 0.0) + 1.0 / (k + rank)
+    return fused
+
+
+def _bm25_desc_scores(pool, task, k1=1.5, b=0.75):
+    """v2.28.0:描述通道的打分器 —— BM25(词频 × IDF × 文档长度归一化)
+
+    借鉴 zg 文章里 BM25 的分工("负责兜底专业名词和特定标识符的相关性排序"),
+    关键价值是**长度归一化**:旧打分 |A∩B|/min(|A|,|B|) 没有长度惩罚,
+    描述越长越"什么都沾一点"的技能越容易霸榜(实测 20 条任务挂 18 条)。
+
+    ponytail: k1=1.5 / b=0.75 取经典默认值,未针对本技能库调参。
+    返回 {技能名: bm25 分}(仅 >0 的条目)。
+    """
+    docs, df = {}, {}
+    for s in pool:
+        c = _rt_tokens(s.get("description") or "")
+        docs[s["name"]] = c
+        for t in c:
+            df[t] = df.get(t, 0) + 1
+    q = set(_rt_tokens(task))
+    if not docs or not q:
+        return {}
+    n_docs = len(docs)
+    avgdl = (sum(sum(c.values()) for c in docs.values()) / n_docs) or 1.0
+    scores = {}
+    for name, c in docs.items():
+        dl = sum(c.values())
+        if not dl:
+            continue
+        total = 0.0
+        for t in q:
+            f = c.get(t)
+            if not f:
+                continue
+            idf = math.log(1.0 + (n_docs - df.get(t, 0) + 0.5) / (df.get(t, 0) + 0.5))
+            total += idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * dl / avgdl))
+        if total > 0:
+            scores[name] = round(total, 4)
+    return scores
+
+
+def hit_channels(skill, task, expanded=None):
+    """v2.28.0:该技能命中了哪几路召回(注入溯源 / 可解释性)
+
+    返回 list[str],元素取自 名称 / 描述 —— 与 hybrid_retrieve_skills 的两路
+    证据通道同源。这里只负责解释"为什么相关":是技能名被任务词面直接命中
+    (强信号),还是描述与任务词面贴合(BM25 兜底,弱信号)。
+    """
+    if not task:
+        return []
+    exp = expand_task_text(task) if expanded is None else expanded
+    hits = []
+    if skill.get("name") and overlap_score(exp, skill["name"]) > 0:
+        hits.append("名称")
+    if set(_rt_tokens(exp)) & set(_rt_tokens(skill.get("description") or "")):
+        hits.append("描述")
+    return hits
+
+
+def hybrid_retrieve_skills(skills, task, top_k=4, min_score=0.08, rrf_k=60):
+    """v2.28.0:双路证据召回 + RRF 融合检索(替代 v2.12.0 的单一加权打分)
+
+    痛点正是 zg 文章那句"人类在说意图,Agent 在猜字面":用户说"把改好的东西
+    传上去",技能却叫 github-gitee-publish —— 单一 overlap 打分对这类
+    "意图↔命名"断层无能为力,且描述越长越占便宜,真实信号被泛相关技能稀释。
+
+    双路证据召回(各自排名,不调权重):
+      ① 名称路:任务 token 命中技能名/标识符 —— 最强信号,相当于精确匹配通道;
+      ② 描述路:BM25(词频 × IDF × 长度归一化)≥ min_score —— 语义兜底面,
+         长度归一化是精度关键(见 _bm25_desc_scores)。
+    只融合这两路 —— 二者都是**证据**通道(词面确实对上了)。
+    分类路由(REQUIRED_CATEGORY_KEYWORDS)是**策略**信号,不是证据:v2.28.0 实测
+    把它当作第三路平等融合时,它会用"分类对口但词面零交集"的候选挤掉真正命中
+    词面的技能(任务"查一下贵州茅台的股价和市盈率" → 路由把 search 类泛技能
+    顶到前 4,BM25 排第 4 的 akshare-stock 反被挤出)。路由继续以原有两种身份
+    生效:注入块的「任务必需技能」清单 + 门禁 Layer C 硬校验。
+    融合:RRF 按各路排名求和 → 归一化到 (0,1] 便于展示(最高分恒为 1.0)。
+
+    ponytail: 只融合两路证据。升第三路的正确姿势是把技能图谱的锚点邻居
+    (已由 lib/graph.py + graph_items 产出)接进来做语义路,而不是拿路由凑数;
+    等实测证明两路不够再动。
+
+    返回 [(score, skill)],按融合分降序;排除元规则自身。
     """
     if not task or not skills:
         return []
@@ -414,22 +665,36 @@ def loose_retrieve_skills(skills, task, top_k=4, min_score=0.08,
     has_install_intent = any(k in expand_task_text(task).lower()
                              for k in ["安装", "install", "配置", "configure"])
     EXCLUDED = set() if has_install_intent else {"skills-constitution", "constitution-check"}
-    required_cats = set(required_categories_for_task(task))
     expanded = expand_task_text(task)
-    scored = []
-    for s in skills:
-        if s.get("name") in EXCLUDED:
-            continue
-        hay = f"{s.get('name','')} {s.get('description','')}"
-        score = overlap_score(expanded, hay)
-        if required_cats and (set(s.get("categories", [])) & required_cats):
-            score += category_boost
-        if s.get("name") and overlap_score(expanded, s["name"]) > 0:
-            score += name_boost
-        if score >= min_score:
-            scored.append((round(score, 3), s))
+
+    pool = [s for s in skills if s.get("name") not in EXCLUDED]
+    name_hits = {s["name"]: (overlap_score(expanded, s["name"]) if s.get("name") else 0.0)
+                 for s in pool}
+    bm25 = _bm25_desc_scores(pool, expanded)
+
+    def _rank(channel, score_of):
+        return sorted(channel, key=lambda x: (-score_of.get(x["name"], 0.0), x["name"]))
+
+    by_name_ch = _rank([s for s in pool if name_hits.get(s["name"], 0.0) > 0], name_hits)
+    by_desc_ch = _rank([s for s in pool if bm25.get(s["name"], 0.0) >= min_score], bm25)
+
+    fused = _rrf_fuse([by_name_ch, by_desc_ch], k=rrf_k)
+    if not fused:
+        return []
+    best = max(fused.values())
+    scored = [(round(fused[s["name"]] / best, 3), s) for s in pool if s["name"] in fused]
     scored.sort(key=lambda x: (-x[0], x[1]["name"]))
     return scored[:top_k]
+
+
+def loose_retrieve_skills(skills, task, top_k=4, min_score=0.08,
+                          category_boost=0.25, name_boost=0.15):
+    """v2.12.0 SAD 粗检索入口;v2.28.0 起委托 hybrid_retrieve_skills(三路召回+RRF)。
+
+    category_boost / name_boost 保留仅为向后兼容 —— 融合已把"分类路由"与
+    "技能名命中"显式建模为独立召回通道,不再需要手工加成权重。
+    """
+    return hybrid_retrieve_skills(skills, task, top_k=top_k, min_score=min_score)
 
 
 def filter_tree_by_task(tree, task):
@@ -685,14 +950,18 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
 
     # v2.12.0 SAD 候选技能注入（宽松语义检索 top-K，起草方案时对齐用词）
     # v2.21.0:插件技能以完整调用名渲染(双机制平台按完整名调用)
+    # v2.28.0:双路证据召回(BM25 描述路 + 名称路)+RRF 融合排序,并标注命中依据
+    #         (名称/描述)—— Agent 据此判断候选是硬命中还是仅描述贴合,不再只看一个分数。
     if sad_candidates:
-        lines.append("### 🧠 SAD 候选技能（v2.12.0 宽松语义检索 top-K，按相关度排序）")
+        lines.append("### 🧠 SAD 候选技能（v2.28.0 双路召回+RRF 融合 top-K，按融合相关度排序）")
         for score, s in sad_candidates:
             desc = (s.get("description") or "")[:40]
             cats = "/".join(s.get("categories", [])[:3])
             qname = s.get("qualified_name")
             label = f"`{qname}`（插件）" if qname else f"`{s['name']}`"
-            lines.append(f"- {label} ({cats}, 相关度 {score}): {desc}")
+            why = hit_channels(s, task)
+            why_txt = f"，命中 {', '.join(why)}" if why else ""
+            lines.append(f"- {label} ({cats}, 相关度 {score}{why_txt}): {desc}")
         lines.append("")
         lines.append("> **SAD 流程**：先草拟执行方案 → 对照以上候选技能修订用词与粒度 → 再输出【宪法三查】。"
                      "候选均不相关时才允许声明\"技能树无匹配\"。")

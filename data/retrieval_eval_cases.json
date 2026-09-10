@@ -1,0 +1,155 @@
+{
+  "note": "技能检索评测用例(v2.28.0):任务说人话(意图),期望值写技能真名 —— 用来量'意图↔命名断层'下的检索命中率。expect 为 any-of(命中其一即算命中)。新增用例请确保 expect 中的技能名存在于 skill_tree.json。",
+  "version": "2.28.0",
+  "cases": [
+    {
+      "task": "帮我把本机改好的代码推送到 github 和 gitee",
+      "expect": [
+        "github-gitee-publish"
+      ]
+    },
+    {
+      "task": "写个爬虫把这个网站的表格数据抓下来",
+      "expect": [
+        "browser-automation",
+        "agent-browser",
+        "web-scraper",
+        "scrape",
+        "scrape-create-spider",
+        "firecrawl-search",
+        "cnfinancialscraper__skillhub"
+      ]
+    },
+    {
+      "task": "用最省事的方式重写这段代码，别加依赖",
+      "expect": [
+        "ponytail"
+      ]
+    },
+    {
+      "task": "把这个 Excel 表按月份汇总一下",
+      "expect": [
+        "xlsx"
+      ]
+    },
+    {
+      "task": "把这个 PDF 转成 Word 文档",
+      "expect": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "task": "做一份汇报用的 PPT",
+      "expect": [
+        "ppt",
+        "pptx"
+      ]
+    },
+    {
+      "task": "查一下贵州茅台的股价和市盈率",
+      "expect": [
+        "akshare-stock"
+      ]
+    },
+    {
+      "task": "把这份销售数据做成可视化图表",
+      "expect": [
+        "data-analysis",
+        "data-analyst",
+        "smart-charts__skillhub",
+        "dashboard-builder"
+      ]
+    },
+    {
+      "task": "生成一段产品宣传视频",
+      "expect": [
+        "agnes-video-generator",
+        "video-generator-seedance"
+      ]
+    },
+    {
+      "task": "记住我这个项目的约定，以后自动想起来",
+      "expect": [
+        "agent-memory",
+        "memory-bridge",
+        "ck"
+      ]
+    },
+    {
+      "task": "深度调研这个行业的竞争格局，出一份报告",
+      "expect": [
+        "deep-research",
+        "deep-research-pro"
+      ]
+    },
+    {
+      "task": "把我的记忆同步到另一台电脑",
+      "expect": [
+        "memory-bridge"
+      ]
+    },
+    {
+      "task": "帮我找一下有没有能处理音频的技能",
+      "expect": [
+        "find-skills",
+        "skill-creator",
+        "edge-tts",
+        "openai-whisper",
+        "sag",
+        "together-audio",
+        "minimax-music-gen"
+      ]
+    },
+    {
+      "task": "这个函数报错了，帮我查根因并修掉",
+      "expect": [
+        "debugging-and-error-recovery",
+        "diagnosing-bugs",
+        "ponytail"
+      ]
+    },
+    {
+      "task": "审查一下这次改动的代码质量",
+      "expect": [
+        "code-review",
+        "plankton-code-quality",
+        "gsd-ns-review"
+      ]
+    },
+    {
+      "task": "给这个服务写个 Dockerfile 并部署上线",
+      "expect": [
+        "docker-essentials",
+        "deployment-patterns"
+      ]
+    },
+    {
+      "task": "帮我发一封邮件给客户",
+      "expect": [
+        "agentmail",
+        "agently-mail__skillhub",
+        "qq-email"
+      ]
+    },
+    {
+      "task": "设计一张产品海报",
+      "expect": [
+        "canvas-design",
+        "poster__skillhub"
+      ]
+    },
+    {
+      "task": "画一张系统架构图",
+      "expect": [
+        "diagram-generator"
+      ]
+    },
+    {
+      "task": "把每周重复的活儿自动化，定时跑起来",
+      "expect": [
+        "automation-workflows"
+      ]
+    }
+  ]
+}
