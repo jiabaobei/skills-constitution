@@ -1,5 +1,5 @@
-# ============================================================
-# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.23.0)
+﻿# ============================================================
+# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.28.1)
 # ============================================================
 # 用法(在 PowerShell 里,进入本脚本所在目录):
 #   .\install.ps1                        # 自动探测 (WorkBuddy > ZCode > Claude Code)
@@ -58,15 +58,26 @@ Say "[1/4] 平台: $Platform | 技能目录: $SkillsDir"
 
 # ---- 3. 复制宪法 ----
 $Dest = Join-Path $SkillsDir "skills-constitution"
+$Backup = ""
 if (Test-Path $Dest) {
-    Warn "      检测到旧版安装,覆盖更新: $Dest"
-    Remove-Item -Recurse -Force $Dest
+    # v2.28.1: 旧版只原地改名备份,绝不删除。覆盖式 Remove-Item 一旦被宿主环境的
+    # 安全护栏(回收站保护/句柄占用)拦下,就变成"先删后装、删了装不上",用户数据直接丢。
+    # 改名是原子操作且可回滚 —— 宁可多留一个目录,不可冒丢数据的风险。
+    $Backup = "$Dest.bak-" + (Get-Date -Format "yyyyMMdd-HHmmss")
+    try {
+        Rename-Item -LiteralPath $Dest -NewName (Split-Path -Leaf $Backup) -ErrorAction Stop
+        Warn "      检测到旧版安装,已原地备份(未删除): $Backup"
+    } catch {
+        Die "旧版目录改名失败(可能被占用): $Dest`n      请关闭占用它的程序后重试。本脚本不会删除你的任何文件。"
+    }
 }
 Copy-Item -Recurse $RepoDir $Dest
 foreach ($f in @(".constitution-state.json", ".constitution-simple", ".constitution-violations.json")) {
-    Remove-Item -Force (Join-Path $Dest $f) -ErrorAction SilentlyContinue
+    # 只清刚复制进来的运行态副本,不碰用户原有文件;删不掉也不该中断安装
+    try { Remove-Item -LiteralPath (Join-Path $Dest $f) -Force -ErrorAction Stop } catch { }
 }
 Say "[2/4] 已安装到: $Dest"
+if ($Backup) { Warn "      旧版已保留在: $Backup(确认新版可用后可自行删除)" }
 
 # ---- 4. 重建技能树(最容易被漏掉的一步) ----
 Say "[3/4] 重建技能树(扫描 $SkillsDir)..."

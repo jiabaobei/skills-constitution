@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# skills-constitution 一键安装脚本 (v2.23.0)
+# skills-constitution 一键安装脚本 (v2.28.1)
 # ============================================================
 # 平台机制不一样,安装方式也不一样 —— 本脚本按平台形态分流:
 #
@@ -149,15 +149,24 @@ install_as_skill() {
   say "[1/4] 平台: $PLATFORM | 技能目录: $SKILLS_DIR"
 
   # ---- 复制宪法 ----
+  # v2.28.1: 旧版只原地改名备份,绝不删除。覆盖式 rm -rf 一旦被宿主环境的安全护栏
+  # 拦下,就变成"先删后装、删了装不上",用户数据直接丢。改名可回滚。
   DEST="$SKILLS_DIR/skills-constitution"
+  BACKUP=""
   if [[ -d "$DEST" ]]; then
-    warn "      检测到旧版安装,覆盖更新: $DEST"
-    rm -rf "$DEST"
+    BACKUP="$DEST.bak-$(date +%Y%m%d-%H%M%S)"
+    if mv "$DEST" "$BACKUP"; then
+      warn "      检测到旧版安装,已原地备份(未删除): $BACKUP"
+    else
+      die "旧版目录改名失败(可能被占用): $DEST —— 本脚本不会删除你的任何文件"
+    fi
   fi
   cp -r "$REPO_DIR" "$DEST"
+  # 只清刚复制进来的运行态副本,不碰用户原有文件
   rm -f "$DEST/.constitution-state.json" "$DEST/.constitution-simple" \
         "$DEST/.constitution-violations.json" 2>/dev/null || true
   say "[2/4] 已安装到: $DEST"
+  [[ -n "$BACKUP" ]] && warn "      旧版已保留在: $BACKUP(确认新版可用后可自行删除)"
 
   # ---- 重建技能树(最容易被漏掉的一步,现在由脚本代劳) ----
   PY="$(command -v python3 || command -v python || true)"

@@ -1,4 +1,4 @@
-# SessionStart hook (Windows): 注入宪法上下文
+﻿# SessionStart hook (Windows): 注入宪法上下文
 $PluginRoot = $env:CODEBUDDY_PLUGIN_ROOT
 if ([string]::IsNullOrWhiteSpace($PluginRoot)) {
   $PluginRoot = Split-Path -Parent $PSScriptRoot

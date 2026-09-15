@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.28.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.28.1-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -36,7 +36,7 @@ bash skills-constitution/install.sh                 # 自动探测平台，装�
 把下面这段复制到你的 Agent 的规则/指令/记忆层中：
 
 ````markdown
-## Skills 宪法（Skills Constitution）v2.28.0
+## Skills 宪法（Skills Constitution）v2.28.1
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 
@@ -298,6 +298,12 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.28.1（2026-09-15）— 安装脚本真机修复：装不上 + 可能装丢数据
+- **① `install.ps1` 无 UTF-8 BOM** → Windows PowerShell 5.1 按系统 ANSI 码页（简中 GBK）读含中文/emoji 的脚本，多字节序列被误读成引号与花括号，报「表达式或语句中包含意外的标记"}"」，**一行都跑不完**。改为带 BOM 存盘；同仓库另两个 `.ps1`（`hooks/session-start.ps1`、`scripts/update.ps1`）同类问题一并补上
+- **② 覆盖安装用删除**：旧实现 `Remove-Item -Recurse -Force`（`install.sh` 里 `rm -rf`）先删目标目录再复制。删除一旦被宿主环境的安全护栏拦下（回收站保护 / 句柄占用 / 沙箱拦截），就变成「旧版已被移走、新版又没落盘」，**用户技能目录被清空**——真机实测复现，靠事先手动备份才没出事
+- **改法**：先**原地改名备份** `skills-constitution.bak-<时间戳>` 再复制新版。改名是原子操作、可回滚，失败只报错退出；末尾打印备份路径，确认新版可用后由用户自行清理
+- **固化为脚本硬约束**：安装脚本**绝不执行删除用户数据的动作**（要腾位置就改名）；只搬运技能目录，**绝不触碰任何记忆文件**；零外部依赖
 
 ### v2.28.0（2026-09-10）— 技能检索质量重构：双路证据召回 + RRF 融合 + 配对评测纪律
 - **起因**：借鉴 zg「多路召回 + RRF + 配对评测」方法论回查检索层，拿配对 A/B 一量就露馅 —— 旧打分器在 20 条任务上 **hit@4 只有 45%**
