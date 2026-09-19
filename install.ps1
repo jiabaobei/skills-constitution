@@ -1,5 +1,5 @@
 ﻿# ============================================================
-# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.28.1)
+# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.29.0)
 # ============================================================
 # 用法(在 PowerShell 里,进入本脚本所在目录):
 #   .\install.ps1                        # 自动探测 (WorkBuddy > ZCode > Claude Code)

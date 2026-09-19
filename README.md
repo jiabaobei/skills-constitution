@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.28.1-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.29.0-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -298,6 +298,14 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.29.0（2026-09-19）— 技能路由与检索结论可靠性加固：让 Agent 用对技能、下对结论
+- **起因**：一次真实任务连犯三错——①「github改版技能」被望文生义错配成 `constitution-release`（真身是 `github-gitee-sync`）；② Glob 查 `github-gitee-sync` 零命中就断言"未安装"（实际在库，换 description 内容级检索一次命中）；③ git 仓库损坏徒手硬修，库内现成的 `git-repo-recovery` 从未被想起。复盘发现：三查防线只验证"查没查"，不验证"查得对不对、结论下得对不对"
+- **新增死规则（SKILL.md 第一条补充 C，四条）**：
+  **① 模糊指代三步映射，禁止望文生义**——全量索引内容级检索（name+description 都搜）→ 命中多/零个候选列出来请用户确认 → 执行前回显「你说的是「X」→ 我用 `Y`（依据）」，映射不定宁可问，不许猜；
+  **② "不存在/未安装"结论需双通道证据**——任何检索零命中后必须换方式复核（目录名 → description 内容、精确 → 模糊、本级 → 上级），两路皆空才许下结论；
+  **③ 类故障先查专项技能再动手**——故障与某技能 description 同域时（git 损坏 → `git-repo-recovery`）必须先加载该技能，禁止徒手硬修
+- **零代码改动**，纯规则文本；回归 `run_tests.py` 本机 139/140（唯一 FAIL 为检索门禁，经干净克隆对照实测证为环境差异：门禁按作者池 1084 技能校准，本机池 625，非本版引入；干净克隆上门禁通过 holdout hit@4 100%）
 
 ### v2.28.1（2026-09-15）— 安装脚本真机修复：装不上 + 可能装丢数据
 - **① `install.ps1` 无 UTF-8 BOM** → Windows PowerShell 5.1 按系统 ANSI 码页（简中 GBK）读含中文/emoji 的脚本，多字节序列被误读成引号与花括号，报「表达式或语句中包含意外的标记"}"」，**一行都跑不完**。改为带 BOM 存盘；同仓库另两个 `.ps1`（`hooks/session-start.ps1`、`scripts/update.ps1`）同类问题一并补上
