@@ -273,6 +273,7 @@ def is_simple(text):
 def is_continuation(text):
     """v2.22.0:追加式消息判定 —— 同一任务的延续,不应重置门禁状态
 
+    v2.30.0 起不再作为任务边界判定(被"同对话+2小时窗口"取代),保留供回滚参考。
     旧版每条用户消息都重置三查状态 → 任务中途的每条追加消息都要求重新三查,
     造成"任务开始已查过记忆/技能/调用过技能,中途仍被门禁拦"的干扰。
     规则(保守,只认开头):超短消息(≤8字符)或以追加标记开头 → 延续。
@@ -435,23 +436,71 @@ def main():
         prompt = payload.get("prompt", "") or ""
         if not prompt.strip():
             sys.exit(0)
+        # v2.30.0(用户钦定 2026-09-20):任务边界 = 同一对话 + 距上次活动 2 小时内。
+        # 旧版把"每条非追加式消息"都当新任务 → 状态重置 → 中途每个对话段落都三查
+        # (用户抓包:"明明设计好好的,任务开始三查一次,中途不再三查")。
+        # 改为:同任务不重置不重查;仅"必需分类完全不相交"时提示询问用户是否重新三查。
+        data = load_state()
+        sid = str(payload.get("session_id") or "")  # 拿得到就用;没有则退化为纯时间窗
+        cutoff = time.strftime("%Y-%m-%d %H:%M:%S",
+                               time.localtime(time.time() - 2 * 3600))
+        same_task = bool(
+            data.get("reset_ts")
+            and (data.get("last_seen_ts") or "") >= cutoff
+            and (not sid or not data.get("session_id")
+                 or data.get("session_id") == sid)
+        )
+        # 每条消息都刷新活动时间(2 小时窗口按"最近活动"计算)
+        data["last_seen_ts"] = now_ts()
+        if sid:
+            data["session_id"] = sid
         if is_simple(prompt):
+            save_state(data)
             with open(SIMPLE_FLAG, "w", encoding="utf-8") as f:
                 f.write("simple")
             sys.exit(0)
-        # v2.22.0:追加式消息不重置 —— 同一任务内的三查证据持续有效
-        if is_continuation(prompt):
+        if same_task:
+            # 同一任务:不重置、不重复要求三查(通行证/证据持续有效)。
+            # 两条边界(用户钦定 2026-09-20):
+            # ① 三查仅任务开始一次 —— 例外:本消息必需分类与当前任务完全不相交
+            #    → 可能另起新类型任务,提示 Agent 询问用户是否重新三查;
+            #    答复前按当前通行证放行(fail-open)。
+            # ② 「有匹配必用」每轮都适用 —— 本消息有必需分类就提醒一行,
+            #    相关技能必须调用;只一行,不重复三查全文(省 token)。
+            save_state(data)
+            try:
+                cur = data.get("required_categories") or []
+                new_cats = required_categories_via_pre_hook(prompt) or []
+                if cur and new_cats and not (set(cur) & set(new_cats)):
+                    print(
+                        "【宪法·新任务确认】本消息可能是同对话里另起的新类型任务"
+                        "(当前任务必需分类:{};本消息必需分类:{})。"
+                        "请先询问用户:是否重新执行宪法三查?答复前按当前通行证继续放行."
+                        .format("、".join(cur), "、".join(new_cats)),
+                        file=sys.stdout,
+                    )
+                elif new_cats:
+                    print(
+                        "【宪法·有匹配必用】本消息必需分类:"
+                        + "、".join(new_cats)
+                        + "。相关技能必须用 Skill 工具调用,无匹配才走通用能力"
+                          "(三查本任务已做过,无需重复)。",
+                        file=sys.stdout,
+                    )
+            except Exception:
+                pass
             sys.exit(0)
-        # 专业任务:清除豁免标记 + 重置门禁状态(含 reset_ts / last_task),要求新任务重新走三查
+        # 新任务(>2 小时未活动 / 换了对话 / 无任务状态):
+        # 清除豁免标记 + 重置门禁状态(含 reset_ts / last_task),要求新任务重新走三查
         try:
             if os.path.exists(SIMPLE_FLAG):
                 os.remove(SIMPLE_FLAG)
         except Exception:
             pass
-        data = load_state()
         data["steps"] = {}
         data.pop("skill_invoked", None)
         data.pop("required_categories", None)  # v2.27.5:新任务重置必需分类缓存
+        data.pop("stop_checked_ts", None)      # v2.30.0:Stop 每任务只校验一次
         data["reset_ts"] = now_ts()
         data["last_task"] = (prompt or "")[:2000]
         # v2.22.0:注入即查 —— 平台注入上下文就绪则记忆+技能树视为已查
@@ -564,6 +613,12 @@ def main():
         # v2.27.3:状态文件损坏/丢失但注入证据就绪 → 降级放行(不记违规,防误记)
         if state_broken(data) and injection_ready():
             sys.exit(0)
+        # v2.30.0:收尾校验每任务只做一次(针对任务首轮回复)。
+        # 旧版每轮 Stop 都校验 → 用户每个对话段落都被要求三查(用户钦定 2026-09-20:
+        # "任务开始三查一次,中途不再三查")。
+        if data.get("stop_checked_ts") and is_fresh(
+                data["stop_checked_ts"], data.get("reset_ts", "")):
+            sys.exit(0)
         # v2.22.0:本任务内已有证据链 → 跳过重复文本校验(防误记违规)。
         # 旧版对最终回复再做一遍三查文本校验,任务开头已查过、收尾回复没复述
         # 三查就被误记违规,下个任务开头被误注入警告。
@@ -610,6 +665,9 @@ def main():
                 )
         except Exception:
             pass
+        # v2.30.0:无论通过与否,本任务收尾只校验这一次(下次任务开始时随重置清除)
+        data["stop_checked_ts"] = now_ts()
+        save_state(data)
         sys.exit(0)
 
     sys.exit(0)

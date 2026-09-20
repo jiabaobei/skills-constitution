@@ -968,7 +968,9 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
         lines.append("")
 
     lines.append("**执行要求：**")
-    lines.append("1. 首句输出【宪法三查】,②技能树必须列出命中技能名清单(禁止只写'已读技能树')")
+    lines.append("1. 首句输出【宪法三查】,②技能树必须列出命中技能名清单(禁止只写'已读技能树')"
+                 "(v2.30.0:三查仅任务开始时一次,同一任务内后续轮次无需重复;"
+                 "但「有匹配必用」每轮都适用 —— 只要有相关技能必须用 Skill 工具调用)")
     lines.append("2. 命中技能必调用;无命中声明'技能树无匹配'再走通用能力")
     lines.append("3. 完成后输出【本次相关技能推荐】:本地技能不够用时去 GitHub 搜高 Star 技能推荐(链接+star+获取方式),排除已装")
     lines.append("")

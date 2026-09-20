@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.29.1
+version: 2.30.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -17,7 +17,8 @@ agent_created: true
 
 > **一句话定位**：凌驾于全部技能/工具/插件之上的**元规则**。所有能力调用必须先过这一关。
 >
-> **v2.29.1（当前）** — `skill_doctor` 白名单修复：`_<name>-references` 是 E2 机制用来标记"该框架已装"的目录（`recommend_skills.py` 靠它判定），它不是技能、本就没有 SKILL.md；旧版 `scan()` 只按"有无 SKILL.md"判目录性质，把它判成 `missing_skill_md/broken` → 本机常年报 1 条假损坏，`--quarantine` 更会把它当损坏技能**移走**、直接破坏 E2 标记。现于 `scan()` 的跳过 guard 增加白名单正则 `^_.*-references$`（与"点开头目录"同等对待）；报告与隔离共用同一份 findings，一处跳过即同时修好两条路径。实测本机损坏 1 → 0，新增回归断言 2 条。
+> **v2.30.0（当前）** — 任务边界重定义（用户钦定 2026-09-20："任务开始三查一次，中途不再三查"）：① 门禁 UserPromptSubmit 不再把"每条非追加式消息"当新任务 —— 新边界 = 同一对话（session_id 可用则校验，缺失退化为纯时间窗）+ 距最近活动 2 小时内；窗口内不重置状态、不重复要求三查。② 同对话另起新类型任务（新消息必需分类与当前任务完全不相交）→ 提示 Agent 询问用户是否重新三查，答复前按当前通行证放行。③ 「有匹配必用」不受"三查一次"限制：同任务每条消息凡有必需分类，提醒一行（约 40 字，省 token），相关技能必须调用。④ Stop 收尾校验每任务只做一次（针对首轮回复，保住 v2.27.5 防"零追责"目的），不再逐轮要求复述三查。新增验收脚本 `scripts/tests/gate_task_boundary.py`（13 项全过，可重复运行）；既有回归 142/142 通过。
+> **v2.29.1** — `skill_doctor` 白名单修复：`_<name>-references` 是 E2 机制用来标记"该框架已装"的目录（`recommend_skills.py` 靠它判定），它不是技能、本就没有 SKILL.md；旧版 `scan()` 只按"有无 SKILL.md"判目录性质，把它判成 `missing_skill_md/broken` → 本机常年报 1 条假损坏，`--quarantine` 更会把它当损坏技能**移走**、直接破坏 E2 标记。现于 `scan()` 的跳过 guard 增加白名单正则 `^_.*-references$`（与"点开头目录"同等对待）；报告与隔离共用同一份 findings，一处跳过即同时修好两条路径。实测本机损坏 1 → 0，新增回归断言 2 条。
 > **v2.29.0** — 技能路由与检索结论可靠性加固（2026-09-19 事故复盘）：三查防线此前只验证"查没查"，不验证"查得对不对、结论下得对不对"，一日连犯三错。新增死规则「第一条补充 C」：① 用户口述的模糊技能指代**必须映射确认**（全量内容级检索 → 列候选请用户确认 → 执行前回显映射），禁止望文生义取"最像的那一个"——实锤：「github改版技能」被错配成 constitution-release，真身是 github-gitee-sync；② "**不存在/未安装**"结论需**双通道检索证据**——单次 Glob/Grep 零命中 ≠ 不存在（实锤：github-gitee-sync 在库内被误报未安装）；③ **类故障必须先查专项技能再动手**——git 仓库损坏时库内现成的 git-repo-recovery 未被想起，徒手硬修。
 > **v2.28.0（当前检索架构）** — 技能检索质量重构（借鉴 zg「多路召回 + RRF + 配对评测」方法论）：① 单一加权打分改**双路证据召回 + RRF 融合**（名称路 = 词面命中技能名；描述路 = BM25 词频×IDF×长度归一化），按排名融合、零调参 —— 实测 dev 集 hit@4 45%→100%、未调参的留出集 66.7%→100%；② 分词修噪（纯虚词表 / 弱义字表分离，二元组含纯虚词即丢），修"个转/价和/份汇"这类**跨词边界假词**与冗长描述误撞导致的"万能描述技能霸榜"（overlap_score 既无长度归一化也无停用词，这是根因）；③ 新增**跨语言技术词桥**——技能库是双语的，任务说中文而相当一批技能的 description 是英文（browser-automation / code-review / ponytail / openai-whisper），纯词面检索在这道语言鸿沟前交集恒为空，用确定性词桥作"语义通道"的零依赖替代（只映射英文技术词，不动 Layer C 任务分类）；④ 新增**评测纪律**：`scripts/tests/retrieval_eval.py` 配对 A/B（legacy vs hybrid）+ 12 条**开发期从未调参的留出集** —— 实测 dev 集被调到 100% 时留出集只有 66.7%，过拟合被当场抓出；评测已入回归门禁（run_tests 第 14 节，134→140 条）。
 > **v2.27.6** — 修"技能树查了等于没查"：① 分类路由兜底原取字母序前 5 个分类（general/browser/search/file/data，与任务无关），改复用确定性路由，实测"推送到 github 和 gitee"能正确落到 code/meta；② 注入名录两处硬截断 `skills[:8]`/`cat_skills[:10]` 改为按任务相关度排序取前 N（复用现有 loose_retrieve_skills），行尾标注"未列全"——排在 code 类第 38 位的 github-gitee-publish 从此能露面；③ 新增死规则「第一条补充 A」：注入名录是预览不是清单，行尾标"未列全"时判"无匹配"前必须 grep 全量索引。
