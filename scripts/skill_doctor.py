@@ -33,6 +33,9 @@ skill_doctor —— 隐形技能诊断与修复（Skills 宪法 v2.24.0）
     name_mismatch         warn       目录名与 frontmatter name 不一致
     empty_dir             broken     空目录
 
+    白名单：`_<name>-references` 框架标记目录（E2）不是技能，直接跳过体检 ——
+    它本就没有 SKILL.md，旧版会把这类目录误报成 missing_skill_md/broken。
+
 用法：
     python skill_doctor.py                    # 扫描并输出人读报告
     python skill_doctor.py --json             # 机器可读
@@ -64,6 +67,9 @@ CONSTITUTION = Path(__file__).resolve().parent.parent
 TREE_JSON = CONSTITUTION / "skill_tree.json"
 MIN_INDEX = CONSTITUTION / "skill_index_min.json"
 BROKEN_DIR_NAME = ".broken"
+# 框架标记目录白名单：_<name>-references 是 E2 机制用来标记"该框架已装"的
+# 目录（见 recommend_skills.py），本身不是技能，没有 SKILL.md 属正常。
+FRAMEWORK_MARKER_RE = re.compile(r"^_.*-references$")
 MINI_DESC_LEN = 48          # mini 索引摘要长度（够检索，不铺张）
 SHORT_DESC_THRESHOLD = 12   # 短于此视为描述失效
 
@@ -202,9 +208,11 @@ def scan(skills_dir):
         return findings, ok
 
     for entry in sorted(root.iterdir()):
-        if entry.name.startswith(".") or not entry.is_dir():
+        # 点开头 = 隔离区/隐藏目录；_<name>-references = 框架标记目录（E2），均非技能
+        if (entry.name.startswith(".") or not entry.is_dir()
+                or FRAMEWORK_MARKER_RE.match(entry.name)):
             continue
-        # 跳过隔离区与本仓库自身之外的非技能目录（无 SKILL.md 且无子技能）
+        # 跳过非技能目录（无 SKILL.md 且无子技能）
         skill_md = entry / "SKILL.md"
         if not skill_md.exists():
             # 命名空间式布局：目录下还有子目录且各自带 SKILL.md → 逐个体检

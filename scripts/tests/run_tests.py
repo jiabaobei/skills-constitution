@@ -552,6 +552,20 @@ def main():
         check("短语整体命中优先(不按空格拆分误配)",
               bool(_r24) and _r24[0]["name"] == "ponytail")
 
+    # ---- 11b. v2.29.1:框架标记目录 _<name>-references 走白名单 ----
+    # 背景:E2 机制用 _<name>-references 目录标记"该框架已装"(见 recommend_skills.py),
+    # 它不是技能、本就没有 SKILL.md。旧版 scan() 把它判成 missing_skill_md/broken,
+    # 导致 doctor 长年报 1 条假损坏,--quarantine 还会把它当损坏技能移走。
+    with _tf24.TemporaryDirectory() as td_fm:
+        os.makedirs(os.path.join(td_fm, "_superpowers-references"))
+        os.makedirs(os.path.join(td_fm, "really-broken"))
+        _f_fm, _ = sd24.scan(td_fm)
+        _names_fm = {f["name"] for f in _f_fm}
+        check("框架标记目录 _*-references 不报 broken(白名单)",
+              "_superpowers-references" not in _names_fm)
+        check("真损坏目录(无 SKILL.md)仍照常报 broken",
+              "really-broken" in _names_fm)
+
     # ---- 12. v2.25.0 回归:排行榜快照推荐(第五条省 token 改造) ----
     # 背景:旧版推荐环节每次答复都"去 GitHub 全盘搜索", token 浪费严重。
     # v2.25.0 改为:读本地排行榜快照(data/skill_rankings.json) + 确定性规则,

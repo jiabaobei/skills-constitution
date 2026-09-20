@@ -5,6 +5,28 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.29.1] - 2026-09-20
+
+### 修复：skill_doctor 把框架标记目录误报为损坏技能
+
+**问题**：`_<name>-references` 是 E2 机制用来标记"该框架已装"的目录
+（`recommend_skills.py` 靠它判定，见 SKILL.md 第一条补充），它**不是技能、本就没有
+`SKILL.md`**。而 `skill_doctor.py` 的 `scan()` 只按"是否有 SKILL.md"判目录性质，
+于是把这批目录判成 `missing_skill_md` / `broken`：实测本机常年报 1 条假损坏；
+更危险的是 `--quarantine` 会把它当损坏技能**移走**，直接破坏 E2 标记。
+
+**改法**（单点修复 —— `scan()` 的跳过 guard 加一条白名单）：
+- 新增常量 `FRAMEWORK_MARKER_RE = re.compile(r"^_.*-references$")`
+- `scan()` 遍历目录时跳过匹配该正则的目录，与既有的"点开头目录"同等对待
+- 报告与 `--quarantine` 均消费 `scan()` 返回的同一份 `findings`，
+  故一处跳过即同时修好「报告误报」与「误隔离」两条路径
+
+**验证**：
+- `skill_doctor.py --skills ~/.workbuddy/skills` 损坏数 **1 → 0**，
+  且 `_agent-skills-references` 仍在原位未被移走
+- `run_tests.py` 第 11b 节新增 2 条断言：框架标记目录不报 broken（白名单生效）、
+  真损坏目录（无 SKILL.md）仍照常报 broken（防白名单过宽）
+
 ## [2.29.0] - 2026-09-19
 
 ### 加固：技能路由与检索结论可靠性 —— 2026-09-19 事故复盘

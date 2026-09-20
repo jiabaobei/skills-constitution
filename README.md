@@ -3,7 +3,7 @@
 > **Skills 宪法** —— 凌驾于全部技能/工具之上的元规则，强制 Agent 先查后用、有匹配必用、无匹配必搜。跨平台通用（WorkBuddy / Claude / ChatGPT / Cursor / Gemini / ...）
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.29.0-blue.svg)](SKILL.md)
+[![Version](https://img.shields.io/badge/version-2.29.1-blue.svg)](SKILL.md)
 [![Skills Indexed](https://img.shields.io/badge/skills__indexed-author__snapshot-green.svg)](SKILL_TREE.md)
 
 **English**: [README_EN.md](README_EN.md)
@@ -298,6 +298,11 @@ python scripts/constitution-check --step 5 --input output.txt
 ---
 
 ## 📝 改版说明（CHANGELOG 摘要）
+
+### v2.29.1（2026-09-20）— skill_doctor 白名单修复：框架标记目录不再被误报为损坏技能
+- **问题**：`_<name>-references` 是 E2 机制标记"该框架已装"的目录，本就不是技能、没有 `SKILL.md`；而 `skill_doctor.py` 的 `scan()` 只按"有无 SKILL.md"判目录性质 → 把它判成 `missing_skill_md/broken`，本机常年带 1 条假损坏，`--quarantine` 更会把它当损坏技能**移走**、直接破坏 E2 标记
+- **改法**：`scan()` 的跳过 guard 增加白名单正则 `^_.*-references$`（与"点开头目录"同等对待）。报告与 `--quarantine` 共用同一份 `findings`，故**单点修复**即同时覆盖「报告误报」与「误隔离」两条路径
+- **验证**：本机 `skill_doctor.py` 损坏 **1 → 0**（该目录仍在原位，未被移走）；`run_tests.py` 新增 2 条断言（第 11b 节）——一条钉白名单生效，一条钉真损坏仍照常报（防白名单过宽）
 
 ### v2.29.0（2026-09-19）— 技能路由与检索结论可靠性加固：让 Agent 用对技能、下对结论
 - **起因**：一次真实任务连犯三错——①「github改版技能」被望文生义错配成 `constitution-release`（真身是 `github-gitee-sync`）；② Glob 查 `github-gitee-sync` 零命中就断言"未安装"（实际在库，换 description 内容级检索一次命中）；③ git 仓库损坏徒手硬修，库内现成的 `git-repo-recovery` 从未被想起。复盘发现：三查防线只验证"查没查"，不验证"查得对不对、结论下得对不对"
