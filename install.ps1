@@ -1,5 +1,5 @@
 ﻿# ============================================================
-# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.29.0)
+# skills-constitution 一键安装脚本 — Windows PowerShell 版 (v2.31.0)
 # ============================================================
 # 用法(在 PowerShell 里,进入本脚本所在目录):
 #   .\install.ps1                        # 自动探测 (WorkBuddy > ZCode > Claude Code)
@@ -55,6 +55,23 @@ if (-not $SkillsDir) {
 elseif (-not $Platform) { $Platform = "claude" }
 New-Item -ItemType Directory -Force -Path $SkillsDir | Out-Null
 Say "[1/4] 平台: $Platform | 技能目录: $SkillsDir"
+
+# ---- v2.31.0(M6) 安装前置自检 ----
+# 事故教训:"装完才炸"(钩子超时把用户整条消息拦死)比"装不上"严重得多。
+# 故先在源目录跑抗崩溃套件,不全绿就中止安装,绝不把"会拦死用户"的版本装进去。
+$Preflight = Join-Path $RepoDir "scripts/tests/gate_failsafe.py"
+if ((Test-Path $Preflight) -and $Py) {
+    Say "      前置自检: 抗崩溃套件 gate_failsafe ..."
+    $pfOut = & $Py $Preflight 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        $pfOut | Select-Object -Last 14 | ForEach-Object { Write-Host $_ }
+        Die "抗崩溃套件未全绿 —— 已中止安装(v2.31.0 发布纪律:gate_failsafe 不全绿禁止发布)"
+    }
+    Say "      ✓ 抗崩溃套件通过(26 项)"
+}
+# 别把"已拉闸"状态装给用户(自检/调试可能留下开关文件)
+$OffFile = Join-Path $RepoDir ".constitution-off"
+if (Test-Path $OffFile) { Remove-Item -LiteralPath $OffFile -Force -ErrorAction SilentlyContinue }
 
 # ---- 3. 复制宪法 ----
 $Dest = Join-Path $SkillsDir "skills-constitution"

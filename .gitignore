@@ -39,3 +39,5 @@ hooks/injected-context.json
 .constitution-violations.json
 .constitution-simple
 hooks/.py-interp
+.constitution-health.log
+.constitution-off

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# skills-constitution 一键安装脚本 (v2.29.0)
+# skills-constitution 一键安装脚本 (v2.31.0)
 # ============================================================
 # 平台机制不一样,安装方式也不一样 —— 本脚本按平台形态分流:
 #
@@ -147,6 +147,27 @@ install_as_skill() {
   fi
   mkdir -p "$SKILLS_DIR"
   say "[1/4] 平台: $PLATFORM | 技能目录: $SKILLS_DIR"
+
+  # ---- v2.31.0(M6) 安装前置自检 ----
+  # 事故教训:"装完才炸"(钩子超时把用户整条消息拦死)比"装不上"严重得多。
+  # 故先在源目录跑抗崩溃套件,不全绿就中止安装,绝不把"会拦死用户"的版本装进去。
+  if [ -f "$REPO_DIR/scripts/tests/gate_failsafe.py" ]; then
+    _pf_py="$(command -v python3 || command -v python || true)"
+    if [ -n "$_pf_py" ]; then
+      _pf_log="${TMPDIR:-/tmp}/sc-preflight.$$"
+      say "      前置自检: 抗崩溃套件 gate_failsafe ..."
+      if "$_pf_py" "$REPO_DIR/scripts/tests/gate_failsafe.py" >"$_pf_log" 2>&1; then
+        say "      ✓ 抗崩溃套件通过(26 项)"
+      else
+        tail -14 "$_pf_log" 2>/dev/null || true
+        rm -f "$_pf_log" 2>/dev/null || true
+        die "抗崩溃套件未全绿 —— 已中止安装(v2.31.0 发布纪律:gate_failsafe 不全绿禁止发布)"
+      fi
+      rm -f "$_pf_log" 2>/dev/null || true
+    fi
+  fi
+  # 别把"已拉闸"状态装给用户(自检/调试可能留下开关文件)
+  rm -f "$REPO_DIR/.constitution-off" 2>/dev/null || true
 
   # ---- 复制宪法 ----
   # v2.28.1: 旧版只原地改名备份,绝不删除。覆盖式 rm -rf 一旦被宿主环境的安全护栏

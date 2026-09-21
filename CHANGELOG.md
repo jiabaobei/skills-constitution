@@ -5,6 +5,101 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.31.0] - 2026-09-21
+
+### 抗崩溃层：门禁永不阻塞用户 + 五条防灾死规则（2026-09-21 事故）
+
+**事故（用户三次截图，同一现象）**：
+
+```
+UserPromptSubmit operation blocked by hook:
+["…python.exe" "…constitution-gate.py" UserPromptSubmit]: Hook timed out after 15000ms
+["…python.exe" "…pre-hook.py" --hook-mode]:           Hook timed out after 20000ms
+```
+
+两个钩子在同一轮**双双超时** → 平台直接 block 用户整条消息 → 用户发什么都进不来，
+只能靠改 `hooks.json` 文件名逃生。**这不是"拦写文件"，是拦用户说话。**
+
+#### 根因（全部实测，非推断）
+
+1. **架构性**：热路径每轮要塞 **2 个 python 钩子**。本机实测 `python -c pass` 本身
+   0.7~2.5s（冷缓存 / Defender 首扫可达 2.5s），两个钩子固定成本 3~7s，
+   直逼平台 15s/20s 上限；机器一忙（Defender 扫描、并发任务）必然顶穿。
+   —— 与 v2.27.2「慢机器+Defender 首扫 6~18s 波动」、v2.27.4「bash 包装层 2.5~12.9s」
+   是同一个坑的第三次复发。
+2. **清除路径不可达**：Stop 分支有 4 条出口，3 条是提前 `sys.exit(0)`
+   （`stop_checked_ts` / `task_evidence_ok`+强证据 / 无必需分类），
+   而唯一的"通过即清除"代码在最末尾 → **永远走不到**。
+   实证：2026-09-20 那条 `count=3`（任务「帮我写一个python爬虫抓取天气数据」）
+   挂到 09-21 仍未清除。
+3. **时间窗与警告耦合**：超 2h 判新任务 → 重新读违规文件 → 把**几天前的旧账**
+   当成本轮警告弹出来（09-21 当天任务与那条"爬虫"记录毫无关系，却每轮重播）。
+4. **零断电手段**：无开关文件、无环境变量，出事只能改配置/删钩子。
+5. **写失败静默**：`_atomic_write_json` 重试耗尽后"放弃写入、保留旧文件"，
+   无日志无计数 → 状态停在旧时刻（实测 mtime 停在 08:45，而钩子已跑过多轮），
+   门禁却继续拦人，外部完全看不出异常。
+
+#### 新增：五条防灾死规则（SKILL.md 顶部「门禁防灾条款」，最高优先级）
+
+| 规则 | 内容 | 落地 |
+|---|---|---|
+| **R1 拉闸优先** | 开关文件 `.constitution-off` 或 `CONSTITUTION_OFF` 环境变量存在 → 任何事件在任何逻辑之前放行 | `main()` 首行 |
+| **R2 异常放行** | 门禁自身任何异常 → 退出码 0；状态不可读一律放行（旧版在注入也缺失时会 `exit(2)` 拦死） | `main()` 外壳 + `state_broken` 分支 |
+| **R3 自修复豁免** | 门禁不得拦截对门禁自身的修复（`scripts/` `hooks/` `tests/` + SKILL/README/CHANGELOG）；**状态文件仍永久禁写** | `self_repair_targeted()` |
+| **R4 写失败可见** | 写失败写 `.constitution-health.log`；**连续 3 次 → 自动拉闸** | `_atomic_write_json()` |
+| **R5 耗时预算** | 单次钩子超 9s 记 `slow` 并自动拉闸；子进程 timeout 30s→10s | `main()` 计时 |
+
+#### 新增：一键断电 + 体检
+
+- `scripts/emergency-off.sh` / `emergency-on.sh`：**纯 bash**，不依赖 python
+  （断电权必须比门禁本身可靠）。拉闸走文件开关而非改 `settings.json` ——
+  实测平台钩子是会话启动时加载的，改配置当轮不生效，而开关文件每次运行都读。
+- `scripts/constitution-doctor.py`：7 项体检 —— 拉闸状态 / 状态文件可读+原子写实测 /
+  注入缓存新鲜度 / 违规是否卡死 / 钩子注册命令指向的文件是否存在+超时值 /
+  **耗时实测（事故根因指标）** / 健康日志尾部异常。`--fix` 自动清卡死违规、删损坏状态。
+
+#### 语义修正：违规「合规即清零」（用户钦定 2026-09-21）
+
+- 结清动作从 Stop 分支最末尾**提到所有早返回之前**；`clear_violations_if_any()`。
+- 清零时写 `cleared_ts` / `cleared_task` / `cleared_reason` —— 计数归零但**留痕可审计**。
+- 新任务开头的警告只对**未结清**记录输出；结清后跨时段不再重播。
+
+#### 误拦修复：Bash 判定改「只看真实写入目标」（2026-09-21 当场误拦复盘）
+
+改这次版本的过程中，门禁**当场把用户本人拦了一次**：提交代码时命令里"提到"了
+`.constitution-state.json`（写 `.gitignore`、`grep` 统计提及次数），而旧版 Bash 判定 =
+「命令里出现受保护文件名」且「命令含任意写动作」→ 直接判成"篡改门禁状态文件"**拦死**。
+这正是本次要消灭的事故形态：**门禁把正常任务拦掉**。
+
+改为 `bash_write_targets()`：只从**写入目标位置**提取路径
+（`>` / `>>` / `tee` / `cp|mv` 的目标 / `touch|rm|mkdir|rmdir` / `sed -i`），
+**只有真正写向受保护文件才拦**；读、grep、仅在字符串里提到文件名一律放行。
+
+- **代价（明说）**：不再拦截"用解释器内联脚本写状态文件"这一路径。
+  理由：该路径与"正常命令里提到文件名"在字符串层面无法区分，而**可用性优先**
+  是用户钦定的第一优先级；状态文件本身也对账自重算，风险可控。
+- 新增 5 条断言（含反向断言，确保防线没被放宽）：F1 提到名字但写别的文件 / F2 只读统计
+  → 放行；F3 重定向写 / F4 `rm` / F5 `tee` → 必须拦。
+
+#### 兼容性：v2.30.0 任务边界设计一行未动
+
+同对话+2h = 同一任务、三查仅任务开始一次、「有匹配必用」每轮一行提醒、
+同对话新类型任务弹询问框、Stop 每任务只校验一次 —— 全部原样保留，
+`gate_task_boundary.py` 原有 13 项断言全过。
+
+#### 验证
+
+- `scripts/tests/gate_failsafe.py`（新增，**26 项**）：拉闸文件/环境变量、非法 JSON、
+  空 stdin、payload 结构异常、状态损坏、自修复豁免（含"豁免不越界"反向断言、
+  状态文件仍禁写）、合规即清零+留痕、已结清不重播、写失败留痕、连续失败自动拉闸、
+  耗时 < 平台上限 80%。**26/26 通过。**
+- `scripts/tests/gate_task_boundary.py`：13 → **17 项**（新增 T8 合规即结清 /
+  T8 留痕 / T9 跨 >2h 不重播旧警告 / T10 零举证仍追责）。**17/17 通过。**
+- 体检工具本机实跑：耗时 UserPromptSubmit ~0.8s、PreToolUse ~0.6s、Stop ~1.9s
+  （体检自带探针，会把超 80% 上限的项标 BAD）。
+
+**发布纪律**：`gate_failsafe.py` 不全绿 → 禁止发布。
+
 ## [2.30.0] - 2026-09-20
 
 ### 修"一个任务每个对话段落都三查"——任务边界重定义 + 每轮"有匹配必用"
@@ -396,7 +491,7 @@ Windows 平台上 `python`/`python3` 可能指向 Microsoft Store 占位别名�
 
 #### 新增
 
-- **`scripts/skill_doctor.py` 隐形技能诊断与修复**：8 类检查（missing_skill_md / empty_skill_md / no_frontmatter / missing_name / missing_desc / block_scalar_residue / name_mismatch / empty_dir），分 severity（broken=损坏 / invisible=隐形 / warn=告警）；`--fix` 自动修复（补缺失 name、重建索引）、`--quarantine` 隔离损坏技能、`--emit-min-index` 生成轻量索引、`--query` 轻量检索验证。实测本库：121 项目录级问题（损坏 7 / 隐形 4 / 告警 110），已自动补齐 4 个缺失 name（agnes-video-generator / caozhao-radar / desktop-control / grill-me-ytang）。
+- **`scripts/skill_doctor.py` 隐形技能诊断与修复**：8 类检查（missing_skill_md / empty_skill_md / no_frontmatter / missing_name / missing_desc / block_scalar_residue / name_mismatch / empty_dir），分 severity（broken=损坏 / invisible=隐形 / warn=告警）；`--fix` 自动修复（补缺失 name、重建索引）、`--quarantine` 隔离损坏技能、`--emit-min-index` 生成轻量索引、`--query` 轻量检索验证。实测本库：126 项目录级问题（损坏 7 / 隐形 4 / 告警 110），已自动补齐 4 个缺失 name（agnes-video-generator / caozhao-radar / desktop-control / grill-me-ytang）。
 - **`skill_index_min.json` 轻量索引**：约为完整索引 20% 体积（160KB / 777KB）。检索入口先用它，命中后再回查完整索引 —— 冷门技能不删除、不丢检索入口，省的是常驻 token 不是可用性。摘要截断部分提取长尾触发词（引号短语 + 全大写缩写优先，普通实词限额兜底）单独存 `k` 字段；实测 yagni / lazy mode / do less / be lazy / shortest path 五个触发词全部命中 ponytail。
 - **门禁任务级通行证（constitution-gate.py）**：任务开始时（UserPromptSubmit）平台注入成功即签发 `task_cleared`（注入即查）；step1 PASS 亦补发。持证任务内所有写操作一路绿灯，拦截前移为任务开始时的一次性「必需分类提醒」。追加式消息仍不重置；新任务重置重发。防伪造不变：状态文件仍在 GATE_PROTECTED 保护内，注入失败（bash 兜底）时回到 step1/Skill 调用证据路径。
 

@@ -68,6 +68,38 @@ VIOLATIONS = os.path.join(BASE, ".constitution-violations.json")
 CHECK = os.path.join(BASE, "scripts", "constitution-check")
 INJECTED_CONTEXT = os.path.join(BASE, "hooks", "injected-context.json")
 
+# ======================= v2.31.0 抗崩溃层 =======================
+# 背景(2026-09-21 事故,用户三次截图):
+#   勾子在 UserPromptSubmit 超时 → 平台直接 block 整条用户消息
+#   ("operation blocked by hook: Hook timed out after 15000ms/20000ms")
+#   → 用户发什么都进不来,表现为"系统崩溃"。
+#   实测本机 python 解释器启动 2.2-2.5s(正常机器 ~0.1s),每轮要跑 2 个
+#   python 钩子 → 固定成本 5s 起,机器一忙必然顶穿 15s/20s 上限。
+#   → 结论:门禁必须"宁可放行,绝不阻塞";且必须有一键断电能力。
+#
+# 五条不可违反的防灾规则(写进 SKILL.md):
+#   R1 拉闸优先:拉闸开关存在 → 任何事件在任何逻辑之前直接放行。
+#   R2 异常放行:门禁自身任何异常 → 退出码 0,永不因自身故障拦人。
+#   R3 自修复豁免:门禁不得拦截对门禁自身的修复(破"自锁死")。
+#   R4 写失败可见 + 自动断电:状态写不进去要留痕,连续失败即自动拉闸。
+#   R5 耗时预算:单次钩子超预算即放弃剩余工作并放行,绝不拖到被平台杀。
+KILL_SWITCH = os.path.join(BASE, ".constitution-off")
+HEALTH_LOG = os.path.join(BASE, ".constitution-health.log")
+# 单次钩子自设预算(ms)。平台给的上限是 15000ms,这里留足 2.5 倍安全余量。
+BUDGET_MS = 6000
+# 实测耗时超过该值即记"slow",连续 2 次 → 自动拉闸(远超预算 = 即将超时)
+SLOW_MS = 9000
+# 状态写入连续失败达该次数 → 自动拉闸(状态不可信时门禁不该继续拦人)
+WRITE_FAIL_LIMIT = 3
+# R3 自修复豁免:这些是门禁自身源码,永远可写(状态文件仍永久禁写)
+SELF_REPAIR_NAMES = (
+    "constitution-gate.py", "pre-hook.py", "constitution-check",
+    "session-start.sh", "user-prompt-submit.sh", "hooks.json",
+    "SKILL.md", "README.md", "CHANGELOG.md",
+)
+SELF_REPAIR_DIRS = ("scripts", "hooks", "tests")
+# ==============================================================
+
 # 简单任务关键词(零号条款:翻译/润色/概念解释/一般知识问答)
 # v2.19.0:仅作兜底 —— 正常路径统一走 pre-hook.classify_task(单一词表),
 # 修复 gate 与 --classify 两套词表不同步(如"介绍一下")的问题。
@@ -109,6 +141,143 @@ _BASH_WRITE_RE = _re.compile(
     r"|\b(?:cp|mv|touch|mkdir)\s+"              # 文件操作命令
     r"|\bsed\s+(?:-[a-zA-Z]*i[a-zA-Z]*\s|--inplace)"  # v2.22.0: sed -i 就地改写
 )
+
+# v2.31.0:提取"真实写入目标"的正则(只看目标位置,不看命令里是否提到某文件名)。
+# 事故(2026-09-21):旧版 Bash 判定 = "命令含受保护文件名" 且 "命令含任意写动作"
+# 即拦 —— 于是 `printf ... >> .gitignore`(文本里提到 .constitution-state.json)
+# 被误判成"篡改状态文件"直接拦死。误拦正常任务正是用户第一优先级要消除的事故。
+_BASH_WRITE_TARGET_RES = (
+    _re.compile(r">>?\s*(?!/dev/null)([^\s|&;]+)"),
+    _re.compile(r"\btee\s+(?:-a\s+)?([^\s|&;]+)"),
+    _re.compile(r"\b(?:cp|mv)\s+[^\s|&;]+\s+([^\s|&;]+)"),
+    _re.compile(r"\b(?:touch|rm|mkdir|rmdir)\s+(?:-[^\s]+\s+)*([^\s|&;]+)"),
+    _re.compile(r"\bsed\s+(?:-[a-zA-Z]*i[a-zA-Z]*|--inplace)\s+"
+                r"(?:'[^']*'|\"[^\"]*\"|[^\s]+)\s+([^\s|&;]+)"),
+)
+
+
+def bash_write_targets(cmd):
+    """Bash 命令里"真正被写的路径"清单(用于精确判定,避免误拦)"""
+    out = []
+    for rx in _BASH_WRITE_TARGET_RES:
+        for m in rx.finditer(cmd or ""):
+            out.append(m.group(1).strip("'\""))
+    return out
+
+
+# ======================= v2.31.0 抗崩溃层函数 =======================
+
+
+def health_log(kind, detail=""):
+    """R4:轻量追加健康日志(纯 append,不走原子写,失败也不抛)。
+
+    只留最近 200 行,便于事后定位"哪一步开始异常/变慢"。
+    """
+    try:
+        line = "%s\t%s\t%s\tpid=%d\n" % (
+            time.strftime("%Y-%m-%d %H:%M:%S"), kind,
+            (detail or "")[:300].replace("\n", " "), os.getpid())
+        with open(HEALTH_LOG, "a", encoding="utf-8") as f:
+            f.write(line)
+    except Exception:
+        pass
+
+
+def trip_switch(reason):
+    """R1/R4:自动拉闸 —— 写下开关文件,门禁从此对任何事件放行。
+
+    只写文件、不做别的动作:即使这一刻磁盘/权限异常,也不能让本函数抛出
+    异常影响调用方(调用方在钩子热路径上)。
+    """
+    try:
+        if os.path.exists(KILL_SWITCH):
+            return
+        with open(KILL_SWITCH, "w", encoding="utf-8") as f:
+            f.write("自动拉闸 %s\n原因: %s\n恢复: 删除本文件,或运行 "
+                    "scripts/emergency-on.sh\n" % (now_ts(), reason))
+        health_log("auto_trip", reason)
+    except Exception:
+        pass
+
+
+def kill_switch_active():
+    """R1:拉闸判定。文件开关优先,其次环境变量。返回原因(空串=未拉闸)。"""
+    try:
+        if os.path.exists(KILL_SWITCH):
+            return "文件开关 %s" % KILL_SWITCH
+    except Exception:
+        pass
+    try:
+        v = (os.environ.get("CONSTITUTION_OFF") or "").strip().lower()
+        if v and v not in ("0", "false", "no", "off"):
+            return "环境变量 CONSTITUTION_OFF=%s" % v
+    except Exception:
+        pass
+    return ""
+
+
+def write_fail_streak():
+    """R4:最近连续 write_fail 次数(尾部连续计数,遇到其它记录即重置)。"""
+    n = 0
+    try:
+        with open(HEALTH_LOG, encoding="utf-8", errors="ignore") as f:
+            for ln in f.read().splitlines()[::-1]:
+                if "\twrite_fail\t" in ln:
+                    n += 1
+                elif n:
+                    break
+    except Exception:
+        return 0
+    return n
+
+
+def self_repair_targeted(tool, tool_input, cmd_text=""):
+    """R3:目标是否是对门禁自身的修复(是→必须放行,破自锁死)。
+
+    只放行门禁源码/文档/测试;GATE_PROTECTED_NAMES(状态文件)不在其列 ——
+    状态文件仍然永久禁写,防 Agent 给自己伪造通行证。
+    """
+    try:
+        cands = []
+        if isinstance(tool_input, dict):
+            for k in ("file_path", "path", "notebook_path", "target_file"):
+                v = tool_input.get(k)
+                if isinstance(v, str) and v:
+                    cands.append(v)
+            for k in ("command", "cmd"):
+                v = tool_input.get(k)
+                if isinstance(v, str) and v:
+                    cands.append(v)
+        if cmd_text:
+            cands.append(cmd_text)
+        base_norm = os.path.normcase(os.path.abspath(BASE))
+        for c in cands:
+            c_norm = os.path.normcase(c.replace("\\", "/"))
+            # 命令里出现拉闸/合闸/钩子文件 => 一律放行(断电权高于一切)
+            if ".constitution-off" in c_norm or "emergency-" in c_norm:
+                return True
+            if "skills-constitution" in c_norm and (
+                    "hooks.json" in c_norm or "emergency" in c_norm):
+                return True
+            # 绝对路径落在门禁项目内
+            try:
+                ap = os.path.normcase(os.path.abspath(c))
+            except Exception:
+                ap = ""
+            if ap.startswith(base_norm + os.sep):
+                tail = os.path.normcase(ap[len(base_norm) + 1:])
+                name = os.path.basename(tail)
+                if name in GATE_PROTECTED_NAMES:
+                    return False           # 状态文件:豁免不适用
+                if (tail.split(os.sep)[0] in SELF_REPAIR_DIRS
+                        or name in SELF_REPAIR_NAMES):
+                    return True
+    except Exception:
+        return False
+    return False
+
+
+# ==================================================================
 
 
 def classify_via_pre_hook(text):
@@ -231,8 +400,15 @@ def _atomic_write_json(path, data):
             except OSError:
                 time.sleep(0.02)
         # 重试耗尽:放弃写入,保留旧文件(绝不退回 open(w) 直接写)
-    except Exception:
-        pass
+        # v2.31.0(R4):写失败必须留痕。旧版静默放弃 → 状态停在旧时刻,
+        # 门禁却继续拦人(2026-09-21 事故:state mtime 停在 08:45,而钩子
+        # 已跑过多轮,外部完全看不出异常)。连续失败达阈值 → 自动拉闸。
+        health_log("write_fail", os.path.basename(path))
+        if write_fail_streak() >= WRITE_FAIL_LIMIT:
+            trip_switch("状态文件连续写入失败 %d 次: %s"
+                        % (WRITE_FAIL_LIMIT, os.path.basename(path)))
+    except Exception as e:
+        health_log("write_error", "%s: %s" % (type(e).__name__, e))
     finally:
         try:
             if os.path.exists(tmp):
@@ -255,6 +431,31 @@ def load_violations():
 
 def save_violations(data):
     _atomic_write_json(VIOLATIONS, data)
+
+
+def clear_violations_if_any(reason):
+    """v2.31.0(用户钦定 2026-09-21「违规合规即清零」):任务合规即结清违规记录。
+
+    旧版把"通过即清除"写在 Stop 分支最末尾,而前面有三处提前 sys.exit(0)
+    → 清除代码永远走不到 → 2026-09-20 那条 count=3 挂了一整天,每轮重播。
+    现在:结清动作提到**所有早返回之前**,并把结清痕迹写进 cleared_ts /
+    cleared_task —— 计数归零但保留可审计历史,不销毁证据。
+    """
+    try:
+        vio = load_violations()
+        if vio.get("count", 0) > 0:
+            save_violations({
+                "count": 0,
+                "last_ts": None,
+                "last_reason": None,
+                "task": None,
+                "cleared_ts": now_ts(),
+                "cleared_task": (vio.get("task") or "")[:200],
+                "cleared_reason": reason,
+            })
+            health_log("violations_cleared", reason)
+    except Exception:
+        pass
 
 
 def is_simple(text):
@@ -312,12 +513,14 @@ def gate_file_targeted(tool, tool_input):
         return any(name in path for name in GATE_PROTECTED_NAMES)
     if tool == "Bash":
         cmd = tool_input.get("command", "") or ""
-        if not any(name in cmd for name in GATE_PROTECTED_NAMES):
+        # v2.31.0:精确判定 —— 只有"真正写向受保护文件"才算篡改。
+        # 旧版"命令里提到文件名 + 命令里有任意写动作"即拦,会把
+        # `printf ... >> .gitignore`(文本中提到状态文件名)这类正常命令误杀;
+        # 实测 2026-09-21 当场误拦了一次正常的 git 提交流程。
+        targets = bash_write_targets(cmd)
+        if not targets:
             return False
-        if bool(_BASH_WRITE_RE.search(cmd)):
-            return True
-        # rm 不在写文件正则里,单独补
-        return bool(_re.search(r"\brm\b", cmd))
+        return any(any(n in t for n in GATE_PROTECTED_NAMES) for t in targets)
     return False
 
 
@@ -425,7 +628,7 @@ def task_evidence_ok(data):
     return False
 
 
-def main():
+def _main_impl():
     try:
         payload = json.load(sys.stdin) if not sys.stdin.isatty() else {}
     except Exception:
@@ -534,15 +737,21 @@ def main():
                 pass
         save_state(data)
         # 注入上轮违规警告(v2.14.0): stdout 会被平台注入 Agent 上下文
+        # v2.31.0:警告与任务时间窗解耦 —— 只对"未结清"的记录出警告。
+        # 旧版:超 2h 判新任务 → 重新读违规文件 → 把几天前的旧账当新警告弹出来
+        # (2026-09-21 实测:09-20 的"爬虫"旧账在 09-21 每轮重播,而本轮任务
+        #  跟那条记录毫无关系)。任务合规时 Stop 会立即结清,不再重播。
         vio = load_violations()
-        if vio.get("count", 0) > 0:
+        if vio.get("count", 0) > 0 and not vio.get("cleared_ts"):
             print(
-                "【宪法违规警告】检测到上轮专业任务未通过宪法三查校验"
-                "(累计 {} 次;最近时间:{};原因:{})."
+                "【宪法违规警告】检测到**未结清**的违规记录"
+                "(累计 {} 次;最近时间:{};涉及任务:{})."
                 "本次任务必须:① 真正读取记忆;② 真正读取技能树并列出命中的技能名"
                 "(禁止只写\"已读\");③ 有匹配必用. 若再次违规将累计记录."
+                "(门禁若异常,拉闸:删除 {}/.constitution-off 对应的开关文件即可,"
+                "或运行 scripts/emergency-off.sh)"
                 .format(vio.get("count", 0), vio.get("last_ts", "?"),
-                        (vio.get("last_reason") or "?")[:200]),
+                        (vio.get("task") or "?")[:60], BASE),
                 file=sys.stdout,
             )
         sys.exit(0)
@@ -551,6 +760,13 @@ def main():
     if EVENT == "PreToolUse":
         tool = payload.get("tool_name", "") or ""
         tool_input = payload.get("tool_input", {})
+        # v2.31.0(R2):payload 结构异常(无法可靠判定目标)→ 放行,绝不误拦。
+        # 正常 Write/Edit 的 tool_input 一定是 dict;非 dict 只可能来自平台
+        # 版本差异或探测流量,门禁无从判断,按"异常放行"处理。
+        if tool_input is not None and not isinstance(tool_input, dict):
+            health_log("payload_anomaly",
+                       "tool=%s tool_input_type=%s" % (tool, type(tool_input).__name__))
+            sys.exit(0)
         # v2.22.0:记录技能调用(证据链一环)。Skill 调用本身不拦,记录后放行。
         if tool == "Skill":
             data = load_state()
@@ -576,16 +792,23 @@ def main():
         tinput = json.dumps(tool_input, ensure_ascii=False)
         if is_check_command(tinput):
             sys.exit(0)
+        # v2.31.0(R3):自修复豁免 —— 门禁不得拦截对门禁自身的修复。
+        # 事故复盘:门禁一旦开始误拦,连"修门禁"的写操作也被拦 → 自锁死,
+        # 只能靠改 hooks.json 文件名逃生。状态文件仍永久禁写(上面已拦死)。
+        if self_repair_targeted(tool, tool_input, tinput):
+            health_log("self_repair_pass", "%s -> %s" % (tool, tinput[:120]))
+            sys.exit(0)
         # 简单任务豁免
         if os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
         # 核心:本任务内三查证据链完整即放行
         # (① step1 新鲜 PASS;② 注入+技能调用 —— v2.22.0)
         data = load_state()
-        # v2.27.3:状态文件损坏/丢失但注入证据就绪 → 降级放行(提醒,不阻断)
-        # (防"任务开始已通行、状态文件被截断后中途误拦";
-        #  同时防 v2.27.0 静默放行导致门禁永久失效)
-        if state_broken(data) and injection_ready():
+        # v2.27.3:状态文件损坏/丢失 → 降级放行(提醒,不阻断)
+        # v2.31.0(R2):去掉 "and injection_ready()" 条件 —— 状态不可读就是门禁
+        # 自身故障,无论注入是否就绪都必须放行(旧版在注入也缺失时会 exit 2
+        # 拦死写操作,正是 2026-09-21 事故里"误拦正常任务"的最后一环)。
+        if state_broken(data):
             degraded_pass("状态文件损坏或丢失")
         if task_evidence_ok(data):
             sys.exit(0)
@@ -610,8 +833,9 @@ def main():
         if not msg or os.path.exists(SIMPLE_FLAG):
             sys.exit(0)
         data = load_state()
-        # v2.27.3:状态文件损坏/丢失但注入证据就绪 → 降级放行(不记违规,防误记)
-        if state_broken(data) and injection_ready():
+        # v2.27.3:状态文件损坏/丢失 → 放行且不记违规(防"拿门禁自己的故障
+        # 去惩罚用户")。v2.31.0(R2):去掉 injection 条件,状态不可读一律放行。
+        if state_broken(data):
             sys.exit(0)
         # v2.30.0:收尾校验每任务只做一次(针对任务首轮回复)。
         # 旧版每轮 Stop 都校验 → 用户每个对话段落都被要求三查(用户钦定 2026-09-20:
@@ -632,6 +856,11 @@ def main():
                 or bool(_sk.get("ts") and is_fresh(_sk["ts"], data.get("reset_ts", "")))
             )
             if _strong or not data.get("required_categories"):
+                # v2.31.0:早返回之前先结清 —— 本任务已合规,旧违规账目就地清零。
+                # (旧版在这里直接 sys.exit(0),结清代码在函数末尾 → 永不清除)
+                clear_violations_if_any("本任务证据链完整(强证据或无需三查)")
+                data["stop_checked_ts"] = now_ts()
+                save_state(data)
                 sys.exit(0)
         last_task = data.get("last_task", "")
         try:
@@ -642,15 +871,13 @@ def main():
                 cmd,
                 input=msg.encode("utf-8"),
                 capture_output=True,
-                timeout=30,
+                timeout=10,   # v2.31.0(R5):预算内。旧值 30s 会顶穿平台 Stop 上限
             )
             out = (r.stdout or b"").decode("utf-8", errors="ignore").strip()
             vio = load_violations()
             if r.returncode == 0:
-                # 通过:清除违规标记(已合规,不再警告)
-                if vio.get("count", 0) > 0:
-                    save_violations({"count": 0, "last_ts": None,
-                                     "last_reason": None, "task": None})
+                # v2.31.0:通过 = 已合规 → 结清旧违规记录(合规即清零,用户钦定)
+                clear_violations_if_any("Stop 收尾校验 PASS")
             else:
                 # FAIL:累计违规记录(v2.14.0 硬记录,下次任务注入警告)
                 vio["count"] = vio.get("count", 0) + 1
@@ -671,6 +898,35 @@ def main():
         sys.exit(0)
 
     sys.exit(0)
+
+
+def main():
+    """v2.31.0 抗崩溃外壳(R1/R2/R5):拉闸优先、异常放行、耗时留痕。
+
+    任何未预期异常 → 退出码 0(放行),绝不因为门禁自身故障拦住用户。
+    只有 _main_impl 里显式 sys.exit(2)(任务内三查证据确实不足)才允许拦截。
+    """
+    t0 = time.time()
+    sw = kill_switch_active()
+    if sw:
+        print("[constitution-gate] 宪法门禁已拉闸(%s),本次直接放行。"
+              "恢复: 删除 %s 或运行 scripts/emergency-on.sh"
+              % (sw, KILL_SWITCH), file=sys.stderr)
+        sys.exit(0)
+    try:
+        _main_impl()
+    except SystemExit:
+        cost = int((time.time() - t0) * 1000)
+        if cost > SLOW_MS:
+            health_log("slow", "%s %dms" % (EVENT, cost))
+            trip_switch("单次钩子耗时 %dms,已接近平台超时上限(15000ms),"
+                        "为防止再次把用户消息拦死,自动拉闸" % cost)
+        raise
+    except BaseException as e:                     # noqa: BLE001
+        health_log("crash", "%s %s: %s" % (EVENT, type(e).__name__, e))
+        print("[constitution-gate] 门禁自身异常(%s: %s),按防灾规则 R2 放行本次操作。"
+              % (type(e).__name__, e), file=sys.stderr)
+        sys.exit(0)
 
 
 if __name__ == "__main__":

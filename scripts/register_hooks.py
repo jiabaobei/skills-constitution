@@ -51,6 +51,15 @@ def is_ours(cmd):
     return any(m in (cmd or "") for m in MARKERS)
 
 
+# v2.31.0(2026-09-21 事故):钩子超时统一放宽到 60s。
+# 事故根因:本机 python 解释器启动本身 0.7~2.5s(Defender 首扫),热路径每轮
+# 要跑 2 个 python 钩子 → 固定成本 3~7s,原 15s/20s 上限机器一忙必被顶穿,
+# 顶穿即被平台 block 整条用户消息("operation blocked by hook")。
+# 放宽只做"保命";真正的护栏是门禁自己的 R5 耗时预算(超 9s 自动拉闸),
+# 门禁宁可自己断电,也绝不让用户消息被超时拦死。
+HOOK_TIMEOUT = 60
+
+
 def build_entries(platform, skills_dir):
     """构造要注册的钩子条目（依据 reference/installation.md 官方格式）"""
     py = sys.executable or shutil.which("python3") or shutil.which("python")
@@ -69,14 +78,14 @@ def build_entries(platform, skills_dir):
         "hooks": [{
             "type": "command",
             "command": f"{q}{py}{q} {q}{gate}{q} UserPromptSubmit",
-            "timeout": 15,
+            "timeout": HOOK_TIMEOUT,
             "description": "宪法 UserPromptSubmit：重置门禁状态 + 记录任务 + 注入上轮违规警告",
         }]
     }, {
         "hooks": [{
             "type": "command",
             "command": f"{q}{py}{q} {q}{pre_hook}{q} --hook-mode",
-            "timeout": 15,
+            "timeout": HOOK_TIMEOUT,
             "description": "宪法 UserPromptSubmit：任务分类 + 注入上下文保活(过期自动刷新)",
         }]
     }]
@@ -87,7 +96,7 @@ def build_entries(platform, skills_dir):
         "hooks": [{
             "type": "command",
             "command": f"{q}{py}{q} {q}{gate}{q} PreToolUse",
-            "timeout": 10,
+            "timeout": HOOK_TIMEOUT,
             "description": "宪法 PreToolUse：写文件前校验本任务内三查新鲜 PASS（含 Bash 写文件检测）",
         }]
     }]
@@ -96,7 +105,7 @@ def build_entries(platform, skills_dir):
         "hooks": [{
             "type": "command",
             "command": f"{q}{py}{q} {q}{gate}{q} Stop",
-            "timeout": 30,
+            "timeout": HOOK_TIMEOUT,
             "description": "宪法 Stop：校验最终回复三查+技能名，违规写入 .constitution-violations.json",
         }]
     }]
@@ -106,7 +115,7 @@ def build_entries(platform, skills_dir):
             "hooks": [{
                 "type": "command",
                 "command": f"bash {q}{session_sh}{q}",
-                "timeout": 30,
+                "timeout": HOOK_TIMEOUT,
                 "description": "宪法 SessionStart：注入记忆+技能树上下文",
             }]
         }]

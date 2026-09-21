@@ -127,6 +127,58 @@ check("T7b 提醒不要求重复三查", "三查" not in out7a.split("有匹配�
 out7c, _ = run_gate("UserPromptSubmit", {"prompt": "这个 coffee 不错", "session_id": "s7"})
 check("T7c 无必需分类的消息不打扰", "有匹配必用" not in out7c, out7c[:150])
 
+# ---- T8~T10 v2.31.0(2026-09-21 事故后新增):违规结清 / 旧账不重播 / 仍追责 ----
+VIO = os.path.join(HERE, ".constitution-violations.json")
+
+
+def write_vio(d):
+    with open(VIO, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2)
+
+
+def read_vio():
+    try:
+        with open(VIO, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+# T8:合规任务收尾 → 旧违规必须立即结清
+# (旧版清除代码在 Stop 分支最末尾,前面三处早返回 → 09-20 那条 count=3 挂了一整天)
+run_gate("UserPromptSubmit", {"prompt": "帮我写一个python爬虫抓取天气数据", "session_id": "s8"})
+s8 = read_state()
+keep_reset = s8.get("reset_ts", "")
+s8["steps"] = {"step1": {"passed": True, "level": "PASS", "ts": keep_reset}}
+s8["task_cleared"] = {"ts": keep_reset, "reason": "step1"}
+write_state(s8)
+write_vio({"count": 3, "last_ts": "2026-09-20 23:12:30",
+           "last_reason": "LayerC FAIL", "task": "帮我写一个python爬虫抓取天气数据"})
+run_gate("Stop", {"last_assistant_message": "已完成。本次任务三查:记忆已读,命中 code/data 分类技能。"})
+v8 = read_vio()
+check("T8 合规任务收尾即结清旧违规(count→0)", v8.get("count", -1) == 0, "count=" + str(v8.get("count")))
+check("T8 结清留痕可审计(cleared_ts)", bool(v8.get("cleared_ts")), str(v8.get("cleared_ts")))
+
+# T9:结清后跨长间隔(>2h)再开新任务 → 不得重播旧警告
+s9 = read_state()
+s9["last_seen_ts"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time() - 3 * 3600))
+write_state(s9)
+out9, _ = run_gate("UserPromptSubmit", {"prompt": "帮我修复技能项目的 bug", "session_id": "s9"})
+check("T9 跨 >2h 新任务不重播已结清警告", "宪法违规警告" not in out9, out9[:160])
+
+# T10:弱通行证 + 有必需分类 + 零技能调用 → 收尾仍须校验(防线不得放水)
+run_gate("UserPromptSubmit", {"prompt": "帮我写一个python爬虫抓取天气数据", "session_id": "s10"})
+s10 = read_state()
+s10.pop("task_cleared", None)
+s10.pop("skill_invoked", None)
+s10.pop("stop_checked_ts", None)
+s10["required_categories"] = ["code"]
+write_state(s10)
+write_vio({"count": 0})
+run_gate("Stop", {"last_assistant_message": "随便聊聊,没有任何三查内容"})
+v10 = read_vio()
+check("T10 零举证仍被追责(违规计数增加)", v10.get("count", 0) >= 1, "count=" + str(v10.get("count")))
+
 # ---- 汇总 ----
 print("\n===== 测试结果 =====")
 fails = 0
