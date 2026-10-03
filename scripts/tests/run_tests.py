@@ -830,10 +830,24 @@ def main():
         check("13.6 注册脚本: 可读取", False)
     check("13.6 注册脚本: UserPromptSubmit 注册注入保活钩子(pre-hook --hook-mode)",
           "pre-hook.py" in _reg_src and "--hook-mode" in _reg_src)
-    check("13.6 注册脚本: 全部直调 python(不再注册 bash user-prompt-submit.sh)",
-          "user-prompt-submit.sh" not in _reg_src)
     check("13.6 注册脚本: pre-hook.py 已入 MARKERS(幂等卸载/替换能识别)",
           '"pre-hook.py"' in _reg_src)
+    check("13.6 注册脚本: 已废弃的 user-prompt-submit.sh 也入 MARKERS"
+          "(否则重装/卸载摘不掉残留 bash 钩子)",
+          '"user-prompt-submit.sh"' in _reg_src)
+    # 断言改查 build_entries 的真实产物,而不是"源码里有没有这个字符串":
+    # v2.31.1 前者被一条字符串断言误伤——MARKERS 必须含该文件名才能清理残留,
+    # 但 build_entries 绝不能再注册它。字符串有无证明不了任何事,产物才能。
+    try:
+        _rh = load_module("register_hooks_under_test",
+                          os.path.join(SCRIPTS_DIR, "register_hooks.py"))
+        _cmds = [h.get("command", "")
+                 for _evs in _rh.build_entries("workbuddy", ROOT_DIR).values()
+                 for _g in _evs for h in _g.get("hooks", [])]
+        check("13.6 注册产物: 全部直调 python(不再注册 bash user-prompt-submit.sh)",
+              bool(_cmds) and not any("user-prompt-submit.sh" in c for c in _cmds))
+    except Exception as _e:
+        check("13.6 注册产物: build_entries 可调用 (异常: %s)" % _e, False)
 
     # ---- 14 检索质量门禁(v2.28.0) ----
     # 教训:检索层的评测若只留一个手工脚本,改完就跑那一次,下一个人再改检索时

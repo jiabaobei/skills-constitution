@@ -5,6 +5,37 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.31.1] - 2026-10-03
+
+### 修复：废弃的 bash 钩子摘不掉（v2.31.0 事故的遗留根因）
+
+**现象**：`settings.json` 的 `UserPromptSubmit` 一直挂着 **3 组**钩子
+（`constitution-gate.py` + `pre-hook.py --hook-mode` + **bash `user-prompt-submit.sh`**），
+而不是 v2.30.0 声明的 2 组。多出来的那条每轮白烧一次 bash 进程启动。
+
+**根因**：`scripts/register_hooks.py` 的 `MARKERS` 只认
+`constitution-gate.py` / `session-start.sh` / `pre-hook.py`，
+**不含已废弃的 `user-prompt-submit.sh`**。于是 `strip_ours()` 认不出它，
+`--uninstall` 与重装都无法清理 —— v2.30.0「不再注册 bash 版」的承诺
+在清理侧从未真正落实，钩子自那时起就一直挂着。
+
+**修复**：`MARKERS` 补入 `user-prompt-submit.sh`（收编为"待清理的历史条目"，
+`build_entries()` 仍不注册它，注册行为不变）。
+
+**实测**：重跑 `register_hooks.py` 后 `UserPromptSubmit` 由 3 组降为 **2 组**，
+废弃 bash 钩子已摘除，全部直调 python。
+
+### 测试：把"源码里没有某字符串"换成"产物里没有某条目"
+
+`13.6` 原断言是 `"user-prompt-submit.sh" not in <register_hooks.py 源码>`，
+用它证明"不再注册 bash 钩子"。但修复恰恰要求 MARKERS 里**必须含**该文件名
+—— 断言与修复直接冲突，且它证明不了任何事（源码里有无 ≠ 产物里有无）。
+
+改为调用 `build_entries()` 检查**真实产物**：产物非空且不含该命令。
+同时新增一条断言守住 MARKERS 的收录关系，防止回归。
+
+**回归**：143/143 通过（原 142 + 新增 1）。
+
 ## [2.31.0] - 2026-09-21
 
 ### 抗崩溃层：门禁永不阻塞用户 + 五条防灾死规则（2026-09-21 事故）

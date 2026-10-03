@@ -41,3 +41,6 @@ hooks/injected-context.json
 hooks/.py-interp
 .constitution-health.log
 .constitution-off
+_local-only-not-pushed/
+/_bak-*/
+/_local-only-not-pushed/

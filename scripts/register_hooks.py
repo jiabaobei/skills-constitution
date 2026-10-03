@@ -29,7 +29,12 @@ import shutil
 import sys
 import time
 
-MARKERS = ("constitution-gate.py", "session-start.sh", "pre-hook.py")  # 识别"我们注册的条目"
+# v2.31.1:补 user-prompt-submit.sh —— 它自 v2.30.0 起已废弃(改为直调
+# pre-hook.py --hook-mode),但因为不在 MARKERS 内,strip_ours 认不出它,
+# 重装/卸载都摘不掉,本机 UserPromptSubmit 一直挂着 3 条(2×python+1×bash)。
+# v2.31.0 事故的根因之一:多出来的那条 bash 钩子每轮白烧一次进程启动。
+MARKERS = ("constitution-gate.py", "session-start.sh", "pre-hook.py",
+           "user-prompt-submit.sh")  # 识别"我们注册的条目"(含已废弃待清理的)
 
 
 def detect_platform():
