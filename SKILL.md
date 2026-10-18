@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.31.1
+version: 2.32.0
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -350,6 +350,60 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 
 **技能图谱（v2.23.0）**：树是"行政区划"（人为分类），图谱是"自然聚落"（关系驱动）。`build_skill_tree.py` 重建技能树时自动产出 `skill_graph.json`（也可单独跑 `scripts/build_skill_graph.py` 从现有树重建）：节点=技能，边= `chains_to`（输出→输入 schema 衔接）/ `co_anchor`（共享实体锚点）/ `alternative`（替代方案），确定性标签传播聚成功能簇（如"代码发布"簇 = git 工作流 + 审查 + 部署）。用途：注入按任务线收窄、门禁 Layer F 图证据、推荐时说明技能间关系。
 
+### 🧹 定期整理技能库（v2.32.0 · 强制节奏）
+
+**为什么这必须是条款，而不只是好习惯**：索引一旦落后于磁盘，宪法注入的候选就是错的——
+**索引不准，等于宪法在主动引导 Agent 犯错。**
+
+**真实事故（2026-10-18）**：用户说「用 GitHub 改版技能」。技能树注入的候选是
+`github-gitee-publish` —— **本机根本没有这个技能**（真名 `github-gitee-sync`）。
+Agent 加载失败后**静默退化**成通用 `git-workflow-and-versioning`，于是漏掉了改版技能
+第四步「中英双档同步」整步，是用户追问才发现的。事后体检：
+
+| 体检项 | 实测 |
+|---|---|
+| `skill_tree.json` 内容生成时间 | **2026-09-01**（落后一个半月、8 个版本） |
+| 索引记录的 `skills_dir` | `C:\Users\user\.workbuddy\skills` —— **本机不存在的路径** |
+| 幽灵条目（索引有、磁盘无） | 893 个 |
+| 未收录（磁盘有、索引无） | 584 个 |
+| 评测用例外 | 20 条中 **5 条死用例**（expect 全是幽灵名，永远不可能通过） |
+| 技能库内混入的备份目录 | 4 个（`*.bak-*` / `*_git_backup`） |
+
+#### 三种触发（满足任一即执行）
+
+| 触发 | 说明 |
+|---|---|
+| **定期** | 每月一次（建议每月第一个周末） |
+| **事件式** | 单次会话内出现 ≥2 次「技能名不存在 / 索引指向失效 / 技能加载不到」→ 立即做 |
+| **变更式** | 安装或删除技能 ≥10 个后 |
+
+#### 八项体检（逐项给数字，"已检查"不算）
+
+| # | 检查项 | 判据 | 动作 |
+|---|---|---|---|
+| 1 | **索引新鲜度** | `skill_tree.json` 的 `generated_at` 距今 > 30 天 | 重建索引 |
+| 2 | **索引路径正确** | `skills_dir` 必须等于本机实际技能目录 | 显式设 `SKILLS_DIR` 后重建（曾把 `C:\Users\user\...` 写进索引） |
+| 3 | **幽灵条目** | 索引有、磁盘无 | 重建后仍残留 → 查 `skills_dir` 是否指错 |
+| 4 | **未收录** | 磁盘有、索引无 | 重建后应消失；仍在 → 该目录多半缺 `SKILL.md` |
+| 5 | **作废技能** | 缺 `SKILL.md` / frontmatter 无 `name` 或 `description` / 空目录 | 移出技能库（移到 `~/.workbuddy/backups/`，**不许删**） |
+| 6 | **备份目录污染** | `*.bak-*`、`*_git_backup`、`*broken*` 留在 skills 目录内 | 移出（它们会被当技能扫描，污染索引） |
+| 7 | **重名冲突** | 两个目录 frontmatter `name` 相同 | 保留新版，另一个改名归档，报告里列出 |
+| 8 | **评测用例有效性** | `data/retrieval_eval_cases.json` 的 `expect` 名字必须都在磁盘上 | 死用例换真名；库里确实没有的能力移入 `known_gaps`，**不许删用例掩盖缺口** |
+
+#### 命令
+
+```bash
+cd ~/.workbuddy/skills/skills-constitution
+SKILLS_DIR="$HOME/.workbuddy/skills" python scripts/build_skill_tree.py   # 重建（务必显式给路径）
+python -c "import json;d=json.load(open('skill_tree.json'));print(d['generated_at'],d['total'],d['skills_dir'])"
+```
+
+#### 铁律
+
+- 整理只做**移动 / 归档 / 重建索引**，**不删用户技能**。真要删必须先列清单、用户逐条确认。
+- 报告必须带数字（幽灵几个、未收录几个、死用例几条），不许写"已整理完毕"了事。
+- 发现索引里出现不存在的技能名 → **同时回报给用户**，因为那正是下次 Agent 踩坑的地方。
+
 ---
 
 ## 快速注入模板
@@ -357,7 +411,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.28.0
+## Skills 宪法（Skills Constitution）v2.32.0
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

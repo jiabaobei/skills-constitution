@@ -1,11 +1,11 @@
 {
-  "note": "技能检索评测用例(v2.28.0):任务说人话(意图),期望值写技能真名 —— 用来量'意图↔命名断层'下的检索命中率。expect 为 any-of(命中其一即算命中)。新增用例请确保 expect 中的技能名存在于 skill_tree.json。",
-  "version": "2.28.0",
+  "note": "技能检索评测用例(v2.28.0):任务说人话(意图),期望值写技能真名 —— 用来量'意图↔命名断层'下的检索命中率。expect 为 any-of(命中其一即算命中)。**v2.32.0 起新增校验：expect 中的技能名必须真实存在于本机技能库**——此前 5 条用例的 expect 全是不存在的名字(如 github-gitee-publish)，这类'死用例'永远不可能通过，却会误导索引推荐。库里确实没有对应能力的任务，移入 known_gaps 记录，不许直接删掉掩盖缺口。",
+  "version": "2.32.0",
   "cases": [
     {
       "task": "帮我把本机改好的代码推送到 github 和 gitee",
       "expect": [
-        "github-gitee-publish"
+        "github-gitee-sync"
       ]
     },
     {
@@ -49,7 +49,8 @@
     {
       "task": "查一下贵州茅台的股价和市盈率",
       "expect": [
-        "akshare-stock"
+        "stock-analysis",
+        "westockdata"
       ]
     },
     {
@@ -118,13 +119,6 @@
       ]
     },
     {
-      "task": "给这个服务写个 Dockerfile 并部署上线",
-      "expect": [
-        "docker-essentials",
-        "deployment-patterns"
-      ]
-    },
-    {
       "task": "帮我发一封邮件给客户",
       "expect": [
         "agentmail",
@@ -142,12 +136,26 @@
     {
       "task": "画一张系统架构图",
       "expect": [
-        "diagram-generator"
+        "architecture-diagram",
+        "mermaid-diagram",
+        "excalidraw-diagram",
+        "diagram-builder__skillhub"
+      ]
+    }
+  ],
+  "known_gaps": [
+    {
+      "task": "给这个服务写个 Dockerfile 并部署上线",
+      "why": "库中无 Docker/容器/部署流水线技能（仅 edgeone-pages-deploy / html-deploy / web-deploy 等静态站托管）",
+      "expect_removed": [
+        "docker-essentials",
+        "deployment-patterns"
       ]
     },
     {
       "task": "把每周重复的活儿自动化，定时跑起来",
-      "expect": [
+      "why": "库中无定时/自动化编排技能（无 cron / workflow engine 类）",
+      "expect_removed": [
         "automation-workflows"
       ]
     }

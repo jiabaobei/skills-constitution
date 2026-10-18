@@ -194,6 +194,13 @@ def scan_binary_libs(binaries_dir: str) -> list[dict]:
 # 扫描只依赖一个共同形态: 插件包内含 skills/ 或 bundled-skills/ 技能目录;
 # 路径任一段以 .DISABLED 结尾(停用的市场/插件)整棵子树跳过。
 KNOWN_PLUGIN_CACHE_LAYOUTS = {
+    "workbuddy": {
+        # WorkBuddy 插件缓存: <市场>/<插件>/<版本>/skills/<技能>/SKILL.md
+        # v2.32.0 补入 —— 此前只扫 zcode/claude,本机 ~/.workbuddy/plugins/cache
+        # 下 200+ 个插件技能全部漏收,索引与实况严重不符。
+        # 未接启用表: 读不到就全算启用(scan_plugin_skills 的既有降级约定)
+        "cache": ["~/.workbuddy/plugins/cache"],
+    },
     "zcode": {
         "cache": ["~/.zcode/cli/plugins/cache"],
         # ZCode 插件启用表: config.json plugins.enabledPlugins 中值为 false 的插件不入树

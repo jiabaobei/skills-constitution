@@ -157,6 +157,11 @@ CLUSTER_EDGE_KINDS = {"chains_to", "co_anchor"}
 ANCHOR_DF_RATIO = 0.035  # v2.24.0: 0.05→0.035,销售/CRM 通用词实测仍驱动 116 巨簇
 ANCHOR_DF_MIN_CAP = 8
 
+# 簇规模上限占节点总数的比例（v2.32.0）。锚点 DF 过滤只能挡「单个套话锚点」，
+# 挡不住「多跳链式吞并」——每一跳都合法，累积起来就是一个巨簇。
+# 实测：778 节点 / 最大度 20，最大簇仍达 89（11.4%）。8% → 上限 62。
+CLUSTER_SIZE_CAP_RATIO = 0.08
+
 
 def extract_anchors(name, description):
     """从一个技能的名称+描述中抽取实体锚点集合(确定性正则,零依赖)
@@ -286,6 +291,13 @@ def build_graph(skills, registry_path):
         adj_s.setdefault(e["source"], []).append(e["target"])
         adj_s.setdefault(e["target"], []).append(e["source"])
     labels = {n: n for n in names}
+    sizes = Counter(labels.values())  # 各标签当前人数（增量维护）
+    # ponytail: 簇规模上限 = 节点数 × 8%。标签传播的经典失败是「链式吞并」——
+    # 中低度节点通过共享锚点一跳一跳把两个不相干领域串成一簇，每一跳都合法，
+    # 锚点 DF 过滤挡不住。v2.32.0 实测：778 节点时最大簇 89（占 11.4%，超 80 门禁），
+    # 但全图最大度仅 20 —— 没有单点枢纽，纯粹是链式扩张。故在**采纳时**限制组规模。
+    # 上限过小 → 簇碎；过大 → 巨簇。实测 8% 给出 ~62 上限、簇粒度与 v2.24.0 相当。
+    cap = max(12, int(len(names) * CLUSTER_SIZE_CAP_RATIO))
     for _ in range(20):  # 固定轮数上限,保证终止
         changed = False
         for n in names:  # 排序遍历 + 平票取字典序最小 → 完全确定性
@@ -294,10 +306,16 @@ def build_graph(skills, registry_path):
                 continue
             cnt = Counter(nbr_labels)
             top = max(cnt.values())
-            best = min(l for l, c in cnt.items() if c == top)
-            if best != labels[n]:
-                labels[n] = best
+            for cand in sorted(l for l, c in cnt.items() if c == top):
+                if cand == labels[n]:
+                    break  # 已是多数派,不动
+                if sizes[cand] >= cap:
+                    continue  # 该簇已满,换下一个平票候选
+                sizes[labels[n]] -= 1
+                sizes[cand] += 1
+                labels[n] = cand
                 changed = True
+                break
         if not changed:
             break
     groups = {}

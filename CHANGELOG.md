@@ -5,6 +5,73 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.32.0] - 2026-10-18
+
+### 新增条款：定期整理技能库 —— 索引失配等于宪法在引导 Agent 犯错
+
+**事故背景（2026-10-18）**：用户说「升级用 Github 改版技能」。技能树注入的候选是
+`github-gitee-publish` —— **本机根本没有这个技能**（真名 `github-gitee-sync`）。
+Agent 加载失败后**静默退化**成通用 `git-workflow-and-versioning`，于是漏掉改版技能
+第四步「中英双档同步」整步：中文 README/CHANGELOG 都改了，`README_EN.md` 一行没动，
+里面还留着三句被本版推翻的话（最严重一句 "the program deliberately keeps using the
+old key" 描述的正是刚拆掉的行为）。**是用户追问「是不是写了中英双版」才发现的。**
+
+**根因不是改版技能缺规则**（第四步与自检清单早就有），而是**索引陈旧 + 入口失败后静默降级**。
+体检实测：
+
+| 体检项 | 修前 | 修后 |
+|---|---|---|
+| `skill_tree.json` 内容生成时间 | 2026-09-01（落后一个半月、8 个版本） | 2026-10-18 |
+| 索引 `skills_dir` | `C:\Users\user\.workbuddy\skills`（**本机不存在的路径**） | `C:/Users/HUAWEI/.workbuddy/skills` |
+| 幽灵条目（索引有、磁盘无） | 893 | 153（抽样 5 个中 4 个为审计脚本未扫插件缓存的误报，真幽灵 1 个） |
+| 未收录（磁盘有、索引无） | 584 | 149 |
+| 评测死用例 | 20 条中 **5 条**（expect 全是幽灵名，永不可能通过） | **0 条** |
+| 插件技能收录 | 20（只扫 zcode） | **174**（+WorkBuddy） |
+| 库内备份目录污染 | 5 个 | 0（已移出） |
+
+**改动**
+
+1. **SKILL.md 新增条款「🧹 定期整理技能库」**：三种触发（每月定期 / 单次会话 ≥2 次
+   入口失效 / 装删技能 ≥10 个）+ 八项体检（索引新鲜度、索引路径、幽灵、未收录、作废技能、
+   备份污染、重名、评测用例有效性）+ 命令 + 铁律（**只移动归档，不删用户技能**）。
+2. **`build_skill_tree.py` 补入 WorkBuddy 插件缓存发现**：`KNOWN_PLUGIN_CACHE_LAYOUTS`
+   此前只有 `zcode` / `claude`，本机 `~/.workbuddy/plugins/cache` 下 200+ 个插件技能
+   全部漏收（这正是「技能书对不上现状」的最大单一来源）。
+3. **`data/retrieval_eval_cases.json` 修死用例**：`github-gitee-publish` → `github-gitee-sync`；
+   股票类 `akshare-stock` → `stock-analysis`/`westockdata`；架构图 `diagram-generator` →
+   `architecture-diagram` 等真名。库里确实没有对应能力的两条（Docker 部署、定时自动化编排）
+   移入 `known_gaps` —— **不许删用例掩盖能力缺口**。
+4. **重建索引**：626 独立 + 174 插件 = 800 条；图谱 778 节点 / 1038 边 / 45 簇。
+5. **修复图谱聚类「链式吞并」**：重建后最大簇达 89（占 778 节点的 11.4%），
+   触发「无巨簇 ≤ 80」门禁。诊断发现**全图最大度仅 20**——不是单点枢纽，而是
+   标签传播的经典链式失败：中低度节点靠共享锚点一跳一跳把不相干领域串成一簇，
+   **每一跳都合法，锚点 DF 过滤挡不住**（v2.24.0 只调到 0.035 处理过 116 巨簇）。
+   修法：新增 `CLUSTER_SIZE_CAP_RATIO = 0.08`，在**采纳标签时**限制组规模，
+   按构造保证簇不超上限。修后最大簇 **62（8.0%）**，簇数 41 → 45。
+6. **备份目录移出技能库**：5 个 `*.bak-*` / `*_git_backup` 移到
+   `~/.workbuddy/backups/skills-cleanup-20261018/`（不删）。
+7. **版本号对齐**：SKILL.md 注入模板标题 `v2.28.0 → v2.32.0`（陈旧 4 个版本，正是本条款
+   第 2 项要防的那类问题）；README / README_EN 徽章与标题同步到 v2.32.0。
+
+**验证**
+
+- 索引元信息：`generated_at=2026-10-18`、`skills_dir=C:/Users/HUAWEI/.workbuddy/skills`、
+  `total=626`、`plugin_skills_count=174`
+- 图谱质量：最大簇 **62 / 778（8.0%）**，过「无巨簇 ≤ 80」门禁；簇数 45
+- 评测用例：死用例 5 → **0**；`github-gitee-sync` 已在索引中，幽灵名 `github-gitee-publish`
+  已从索引消失（**这条正是本次事故的诱因**）
+- 备份目录已不在索引中（`grep -c skills-constitution.bak-pre-github skill_tree.json` → 0）
+- **全量测试 143/143 通过**
+
+**已知限制**
+
+- 索引残留 153 "幽灵" / 149 "未收录" 中的大多数，是本次审计脚本未把插件缓存计入"磁盘
+  实况"的误报（抽样 5 个中 4 个确实以插件技能形态存在）。真幽灵如 `android-dev` 需人工
+  判断是卸载残留还是索引源问题。
+- WorkBuddy 内置插件（`AppData\Local\Programs\WorkBuddy\...\plugins`，56 个 SKILL.md）
+  尚未纳入发现表——该路径绑版本号，待其稳定后接入。
+- `CLUSTER_SIZE_CAP_RATIO=0.08` 为实测经验值：簇过大时降到 0.06，簇过碎时升到 0.12。
+
 ## [2.31.1] - 2026-10-03
 
 ### 修复：废弃的 bash 钩子摘不掉（v2.31.0 事故的遗留根因）
