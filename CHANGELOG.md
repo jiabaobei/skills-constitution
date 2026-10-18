@@ -5,6 +5,57 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.32.1] - 2026-10-18
+
+### 修复：门禁被并发写争用误拉闸，静默关闭 15 天
+
+**事故**：`.constitution-off` 自 **2026-10-03 14:01:46** 起存在，原因「状态文件连续写入
+失败 3 次」。也就是说**宪法门禁整整 15 天没有拦截过任何任务**。因为 `pre-hook` 注入
+一直正常（每轮三查提示都在），从表面完全看不出来——只有拦截能力没了。
+真正发现它的契机是用户问「健康日志 66/70 条 write_fail 正常吗」。
+
+**三个根因（都已修）**
+
+| # | 缺陷 | 实证 | 修法 |
+|---|---|---|---|
+| A | **拉闸判据误触发**。`write_fail_streak()` 只数日志尾部连续几条 `write_fail`，**不区分 pid、不看时间** | 10-03 13:31:39 pid=10244 / 13:31:42 pid=12212 / 13:31:44 pid=13380 —— **三个不同进程各失败一次**就凑满阈值 3，直接拉闸 | 新增 `state_write_is_stale()`：**必须同时满足「状态文件 mtime 超过 600 秒」**才拉闸。瞬时并发争用不再被误判为持久故障 |
+| B | **代理字符把写入搞崩**。`last_task = prompt[:2000]` 可能含 Windows GBK 误码产生的 lone surrogate（`\udcac`/`\udca6`/`\udc8a`），`json.dumps(ensure_ascii=False)` 之后 UTF-8 编码抛 `UnicodeEncodeError` | 10-03 13:39 / 13:43 / 14:00 三条 `write_error`，且都早于当天拉闸——是加剧写争用的独立失败源 | 在 `_atomic_write_json`（唯一写入收口）做 `encode("utf-8","replace")`，坏字符降级为 `?` 并记 `surrogate_sanitized` |
+| C | **拉闸不可见**。门禁关闭 = 宪法完全不执行，是本工具能报的最严重状态，却只报 WARN | 体检结论只写 `WARN 6 / BAD 0`，15 天无人察觉 | 升为 **BAD** + 结论行单独再吼一句；并修掉「已拉闸却建议先拉闸」的自相矛盾结语 |
+
+**顺带修：评测 `expect` 与本机技能现状脱节**
+
+用 `HEAD~1` 的旧用例跑门禁，dev hit@4 只有 40.0%，一样红——说明**不是本次用例改动
+造成的**，而是期望名单本身过时：
+
+- 大量 `expect` 是幽灵名（`github-gitee-publish`、`akshare-stock`、`docker-essentials`、
+  `data-analysis`、`resume-assistant`、`diagram-generator`…）
+- 若干真名被多写了 `__skillhub` 后缀（`agently-mail__skillhub` / `poster__skillhub` /
+  `excel-auto-zh__skillhub`）
+- 也有「名字对但不再是唯一正解」：Excel 任务只期望 `xlsx`，而池中实际有
+  `excel-auto-zh` / `excel-processing` / `excel-pro` / `excel-handler`
+
+重标遵循**三条判据**（写进脚本注释，防下次照抄检索结果）：
+① 名字必须真实存在于当前技能池；② 语义必须真的对口；③ 原期望里仍正确的名字保留。
+**因此 dev[4]「PDF 转 Word」被有意保留为真 miss**——库里没有转换类技能，检索给的是
+`pdf-generator` / `pdfkit-py` 这类**生成** PDF 的，语义不对，坚决不加。
+
+**验证**
+
+| 指标 | 修前 | 修后 |
+|---|---|---|
+| 全量测试 | 147/148（门禁红） | **148/148 通过** |
+| dev hybrid hit@4 | 61.1%（门禁下限 85%，不通过） | **94.4%**（1 条真 miss 保留） |
+| dev hybrid hit@1 | 33.3%（下限 35%，不通过） | **66.7%** |
+| holdout hybrid hit@4 | 41.7%（下限 75%，不通过） | **100.0%** |
+| `retrieval_eval --gate` | exit 1 | **exit 0** |
+| 新增测试 | — | 15.1~15.5 共 5 条（拉闸判据 3 条 + 代理字符 1 条 + doctor 告警级别 1 条） |
+
+**已知限制**
+
+- dev[4]「把 PDF 转成 Word」仍是真 miss：库里只有 PDF 生成/提取类技能，无格式转换类。
+  要么补一个转换技能，要么把该用例移入 `known_gaps` —— 留作待办，不靠放宽期望掩盖。
+- holdout 的 Docker 部署用例已移入 `known_gaps`（库里确无容器/部署流水线技能）。
+
 ## [2.32.0] - 2026-10-18
 
 ### 新增条款：定期整理技能库 —— 索引失配等于宪法在引导 Agent 犯错

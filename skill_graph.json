@@ -1,6 +1,6 @@
 {
-  "version": "2.32.0",
-  "generated_at": "2026-10-18T12:26:55.586602",
+  "version": "2.32.1",
+  "generated_at": "2026-10-18T12:50:35.492369",
   "source": {
     "tree": "skill_tree.json",
     "registry": "registry.json"
@@ -6405,7 +6405,7 @@
       ],
       "size": 12
     },
-    "delete": {
+    "apple": {
       "members": [
         "apple-notes",
         "apple-reminders",
@@ -6569,7 +6569,7 @@
       ],
       "size": 35
     },
-    "calendar": {
+    "google": {
       "members": [
         "caldav-calendar",
         "gog"
@@ -6607,7 +6607,7 @@
       ],
       "size": 2
     },
-    "dataset": {
+    "visualization": {
       "members": [
         "data-analysis-workflows",
         "data-visualization",
@@ -6623,7 +6623,7 @@
       ],
       "size": 3
     },
-    "github": {
+    "skill-vetter": {
       "members": [
         "dd-checklist",
         "skill-vetter"
@@ -6638,7 +6638,7 @@
       ],
       "size": 3
     },
-    "performance": {
+    "regression": {
       "members": [
         "diagnose",
         "diagnosing-bugs",
@@ -6734,7 +6734,7 @@
       ],
       "size": 5
     },
-    "smtp": {
+    "imap": {
       "members": [
         "imap-smtp-email",
         "qq-email",
@@ -6742,7 +6742,7 @@
       ],
       "size": 3
     },
-    "automate": {
+    "inspect": {
       "members": [
         "android-dev",
         "ios-dev"
@@ -6780,7 +6780,7 @@
       ],
       "size": 2
     },
-    "note": {
+    "vault": {
       "members": [
         "obsidian",
         "obsidian-vault"
@@ -6800,7 +6800,7 @@
       ],
       "size": 8
     },
-    "spatial": {
+    "cloud": {
       "members": [
         "saw-st-v8",
         "saw-st-v8-realign",
@@ -6847,7 +6847,7 @@
       ],
       "size": 3
     },
-    "westock-data": {
+    "routing-guid": {
       "members": [
         "westock-data",
         "westock-screener",

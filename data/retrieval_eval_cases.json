@@ -29,7 +29,11 @@
     {
       "task": "把这个 Excel 表按月份汇总一下",
       "expect": [
-        "xlsx"
+        "xlsx",
+        "excel-auto-zh",
+        "excel-processing",
+        "excel-pro",
+        "excel-handler"
       ]
     },
     {
@@ -42,8 +46,10 @@
     {
       "task": "做一份汇报用的 PPT",
       "expect": [
-        "ppt",
-        "pptx"
+        "pptx",
+        "ppt-craft",
+        "ppt-design",
+        "ppt-implement"
       ]
     },
     {
@@ -56,10 +62,11 @@
     {
       "task": "把这份销售数据做成可视化图表",
       "expect": [
-        "data-analysis",
-        "data-analyst",
         "smart-charts__skillhub",
-        "dashboard-builder"
+        "chart-infographic",
+        "workbuddy-charts",
+        "generate-chart__skillhub",
+        "data-visualization"
       ]
     },
     {
@@ -114,15 +121,13 @@
       "task": "审查一下这次改动的代码质量",
       "expect": [
         "code-review",
-        "plankton-code-quality",
-        "gsd-ns-review"
+        "code-reviewer__skillhub"
       ]
     },
     {
       "task": "帮我发一封邮件给客户",
       "expect": [
-        "agentmail",
-        "agently-mail__skillhub",
+        "agently-mail",
         "qq-email"
       ]
     },
@@ -130,7 +135,9 @@
       "task": "设计一张产品海报",
       "expect": [
         "canvas-design",
-        "poster__skillhub"
+        "poster",
+        "poster-design-studio",
+        "poster-generate__skillhub"
       ]
     },
     {

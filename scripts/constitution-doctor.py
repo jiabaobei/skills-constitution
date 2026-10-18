@@ -72,12 +72,16 @@ print("=" * 74)
 # ---- 1 拉闸状态 ----
 print("\n【1】拉闸开关")
 if os.path.exists(OFF):
-    say("WARN", "门禁处于拉闸状态(不会拦任何任务)", OFF)
+    # v2.32.1: 由 WARN 升为 BAD。门禁被拉闸 = 宪法完全不执行，是本工具能报的
+    # 最严重状态，不该与「Stop 超时偏紧」同级。2026-10-03 自动拉闸后以 WARN
+    # 埋在 6 条告警里，**门禁静默关闭 15 天无人察觉**，直到 2026-10-18 才发现。
+    say("BAD", "门禁处于拉闸状态 —— 宪法当前完全不执行(不会拦任何任务)", OFF)
     try:
         with open(OFF, encoding="utf-8") as f:
             print("      原因: " + f.read().strip().replace("\n", " / "))
     except Exception:
         pass
+    print("      → 确认根因已修后合闸: scripts/emergency-on.sh（或删除该文件）")
 else:
     say("OK", "未拉闸,门禁在岗")
 
@@ -259,10 +263,18 @@ else:
 # ---- 结论 ----
 print("\n" + "=" * 74)
 print("体检结论: OK %d / WARN %d / BAD %d    最慢单次钩子 %dms" % (ok_n, warn_n, bad_n, worst))
+if os.path.exists(OFF):
+    # 单独再吼一次：这一条必须不可能被「WARN 6 个」这种汇总数字淹没
+    print("🔴 门禁已拉闸 —— 宪法的「必查/必用」当前完全不生效，请优先处理（见【1】）")
 if FIXES:
     print("已修复: " + "；".join(FIXES))
 print("=" * 74)
 if bad_n:
-    print("有 BAD 项 —— 建议先拉闸(scripts/emergency-off.sh),修好再合闸。")
+    # v2.32.1: 已拉闸时不能再说「建议先拉闸」——那正是当前状态，自相矛盾
+    if os.path.exists(OFF):
+        print("门禁当前已拉闸；上列 BAD 若仅为拉闸本身，修好根因后合闸即可"
+              "(scripts/emergency-on.sh)。")
+    else:
+        print("有 BAD 项 —— 建议先拉闸(scripts/emergency-off.sh),修好再合闸。")
     sys.exit(2)
 sys.exit(0)

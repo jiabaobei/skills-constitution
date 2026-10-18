@@ -1,7 +1,7 @@
 ---
 name: skills-constitution
 description: "当 Agent 接到专业任务（编码/爬虫/文件操作/API调用/数据分析/文档/部署/推送等）时，强制先查记忆层和技能索引，有匹配必用、无匹配必搜、答复时自动推荐（排除已装）。用于防止 Agent 跳过技能直接硬扛通用能力。跨平台通用（WorkBuddy/Claude/ChatGPT/Cursor/Gemini 等 20+ 框架）。完整版本史见 CHANGELOG.md。"
-version: 2.32.0
+version: 2.32.1
 license: MIT
 author: jiabaobei
 github: https://github.com/jiabaobei/skills-constitution
@@ -350,7 +350,7 @@ ZCode / Claude Code / DeepSeek Harness(dsh) 等平台的能力同时来自**两�
 
 **技能图谱（v2.23.0）**：树是"行政区划"（人为分类），图谱是"自然聚落"（关系驱动）。`build_skill_tree.py` 重建技能树时自动产出 `skill_graph.json`（也可单独跑 `scripts/build_skill_graph.py` 从现有树重建）：节点=技能，边= `chains_to`（输出→输入 schema 衔接）/ `co_anchor`（共享实体锚点）/ `alternative`（替代方案），确定性标签传播聚成功能簇（如"代码发布"簇 = git 工作流 + 审查 + 部署）。用途：注入按任务线收窄、门禁 Layer F 图证据、推荐时说明技能间关系。
 
-### 🧹 定期整理技能库（v2.32.0 · 强制节奏）
+### 🧹 定期整理技能库（v2.32.1 · 强制节奏）
 
 **为什么这必须是条款，而不只是好习惯**：索引一旦落后于磁盘，宪法注入的候选就是错的——
 **索引不准，等于宪法在主动引导 Agent 犯错。**
@@ -411,7 +411,7 @@ python -c "import json;d=json.load(open('skill_tree.json'));print(d['generated_a
 以下模板可直接复制到各平台的规则/指令/记忆层中：
 
 ```markdown
-## Skills 宪法（Skills Constitution）v2.32.0
+## Skills 宪法（Skills Constitution）v2.32.1
 
 本规则优先级高于全部技能/工具/插件。任何能力调用必须先过这一关。
 

@@ -231,6 +231,27 @@ def write_fail_streak():
     return n
 
 
+def state_write_is_stale(seconds=600):
+    """状态文件是否已经很久没写成功（v2.32.1）。
+
+    R4 拉闸的真正语义是「状态**持续**写不进去」——门禁靠状态文件记通行证，
+    状态停在旧时刻意味着门禁行为不可信。但 write_fail_streak() 只数日志里连续
+    几个 write_fail，**不区分 pid、不看时间**：三个并发钩子各自失败一次就凑满 3，
+    属于正常争用而非持久故障。
+
+    2026-10-03 实测事故：13:31:39 pid=10244 / 13:31:42 pid=12212 /
+    13:31:44 pid=13380 —— 三个不同进程各失败一次、5 秒内抵达阈值 →
+    自动拉闸 → **门禁静默关闭 15 天**，直到 2026-10-18 体检才发现。
+
+    故把「状态是否真的陈旧」作为拉闸的第二个必要条件：只要最近有过一次成功
+    写入（mtime 新鲜），说明写通道是通的，失败只是瞬时争用，不该拉闸。
+    """
+    try:
+        return time.time() - os.path.getmtime(STATE) > seconds
+    except OSError:
+        return True  # 状态文件读不到 → 确实不可信，按陈旧处理
+
+
 def self_repair_targeted(tool, tool_input, cmd_text=""):
     """R3:目标是否是对门禁自身的修复(是→必须放行,破自锁死)。
 
@@ -386,6 +407,16 @@ def _atomic_write_json(path, data):
     下次任务开始 UserPromptSubmit 会重写,远好过写残导致门禁永久失效。
     """
     blob = json.dumps(data, ensure_ascii=False, indent=2)
+    # v2.32.1: Windows 上 argv/文本可能带 lone surrogate(GBK 误码被 fsdecode 成
+    # \udcac 这类半截代理字符), json.dumps 能过、UTF-8 编码直接抛
+    # UnicodeEncodeError → 整次写入失败。2026-10-03 实测 3 次(13:39/13:43/14:00),
+    # 且早于当天的拉闸,是加剧写争用的独立失败源。
+    # 在唯一的写入收口处清洗(所有写方都经过这里),坏字符退化成 '?' 而不是让
+    # 整个状态文件写不进去 —— 丢一个字符远好过门禁状态永久停在旧时刻。
+    _clean = blob.encode("utf-8", "replace").decode("utf-8")
+    if _clean != blob:
+        health_log("surrogate_sanitized", "状态文本含非法代理字符，已降级为 ?")
+        blob = _clean
     tmp = "%s.%d.tmp" % (path, os.getpid())
     _cleanup_stale_tmp(path)
     try:
@@ -404,8 +435,11 @@ def _atomic_write_json(path, data):
         # 门禁却继续拦人(2026-09-21 事故:state mtime 停在 08:45,而钩子
         # 已跑过多轮,外部完全看不出异常)。连续失败达阈值 → 自动拉闸。
         health_log("write_fail", os.path.basename(path))
-        if write_fail_streak() >= WRITE_FAIL_LIMIT:
-            trip_switch("状态文件连续写入失败 %d 次: %s"
+        # v2.32.1: 只数「连续失败」会误判并发争用为持久故障（详见 state_write_is_stale
+        # 的注释：2026-10-03 三个进程各失败一次就把门禁关了 15 天）。加第二个条件：
+        # 状态文件本身确实长期没写成功，才认为门禁行为不可信、需要拉闸。
+        if write_fail_streak() >= WRITE_FAIL_LIMIT and state_write_is_stale():
+            trip_switch("状态文件连续写入失败 %d 次且已陈旧: %s"
                         % (WRITE_FAIL_LIMIT, os.path.basename(path)))
     except Exception as e:
         health_log("write_error", "%s: %s" % (type(e).__name__, e))

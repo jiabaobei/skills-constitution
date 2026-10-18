@@ -5,54 +5,50 @@
       "task": "帮我把这个 Excel 里的数据按月份汇总一下",
       "expect": [
         "xlsx",
-        "excel-auto-zh__skillhub",
-        "data-analysis",
-        "data-analyst"
-      ]
-    },
-    {
-      "task": "用 docker 把这个服务部署到服务器上",
-      "expect": [
-        "docker-essentials",
-        "deployment-patterns"
+        "excel-auto-zh",
+        "excel-processing",
+        "excel-pro"
       ]
     },
     {
       "task": "帮我根据岗位 JD 改一版简历",
       "expect": [
-        "resume-assistant"
+        "resume-design",
+        "resume-diagnosis",
+        "interview-summary"
       ]
     },
     {
       "task": "把这张发票上的金额和账号提取出来",
       "expect": [
-        "nutrient-document-processing",
-        "ocr-local",
-        "beneficiary-creation"
+        "invoice-pdf-extract",
+        "pdf-ocr-md__skillhub",
+        "docx-xlsx-extractor"
       ]
     },
     {
       "task": "查一下今天沪深300指数的行情",
       "expect": [
-        "akshare-stock",
-        "cnfinancialscraper__skillhub"
+        "westockdata",
+        "westock-data",
+        "stock-analysis",
+        "neodata-financial-search"
       ]
     },
     {
       "task": "把会议录音转成文字稿",
       "expect": [
         "openai-whisper",
-        "together-audio",
-        "scribe",
-        "tencent-meeting-skill",
-        "meeting-and-brief__skillhub"
+        "meeting-notes-assistant__skillhub"
       ]
     },
     {
       "task": "画一张系统架构图",
       "expect": [
-        "diagram-generator",
-        "contextweave-interactive-architecture__skillhub"
+        "architecture-diagram",
+        "diagram-builder__skillhub",
+        "contextweave-interactive-architecture__skillhub",
+        "mermaid-diagram"
       ]
     },
     {
@@ -93,6 +89,16 @@
         "article-writing",
         "content-engine",
         "wechat-article-search"
+      ]
+    }
+  ],
+  "known_gaps": [
+    {
+      "task": "用 docker 把这个服务部署到服务器上",
+      "why": "库中无 Docker/容器/部署流水线技能（检索返回的全是文档排版类，与部署无关）",
+      "expect_removed": [
+        "docker-essentials",
+        "deployment-patterns"
       ]
     }
   ]

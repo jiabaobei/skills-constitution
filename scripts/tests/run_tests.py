@@ -880,6 +880,80 @@ def main():
     except Exception as _e:
         check("14 检索评测门禁(异常: %s)" % _e, False)
 
+    # 15 v2.32.1:写状态三修 —— 拉闸误触发 / 代理字符写崩 / 拉闸不可见
+    #
+    # 事故 2026-10-03：三个并发钩子各自写失败一次（pid 10244/12212/13380，
+    # 5 秒内），write_fail_streak() 只数「日志尾部连续几条 write_fail」，
+    # 不看 pid 也不看时间 → 凑满 3 → 自动拉闸 → **门禁静默关闭 15 天**，
+    # 直到 2026-10-18 体检才发现（且当时只报 WARN，混在 6 条告警里）。
+    import importlib.util as _ilu
+    import tempfile as _tf15
+    import time as _time15
+    from pathlib import Path as _P15
+
+    _gate_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                              "constitution-gate.py")
+    _spec = _ilu.spec_from_file_location("_gate15", _gate_path)
+    _gate = _ilu.module_from_spec(_spec)
+    try:
+        _spec.loader.exec_module(_gate)
+    except SystemExit:
+        pass
+    _gate = sys.modules.get("_gate15", _gate)
+
+    # 15.1 状态新鲜时不得拉闸（并发争用 ≠ 持久故障）
+    _d15 = _tf15.mkdtemp(prefix="const15-")
+    _state15 = os.path.join(_d15, "state.json")
+    _log15 = os.path.join(_d15, "health.log")
+    _P15(_state15).write_text('{"steps":{}}', encoding="utf-8")
+    os.utime(_state15, None)  # mtime = now → 新鲜
+    _orig_state, _orig_log = getattr(_gate, "STATE", None), getattr(_gate, "HEALTH_LOG", None)
+    try:
+        if _orig_state and _orig_log:
+            _gate.STATE = _state15
+            _gate.HEALTH_LOG = _log15
+            _P15(_log15).write_text(
+                "t1\twrite_fail\tstate.json\tpid=1\n"
+                "t2\twrite_fail\tstate.json\tpid=2\n"
+                "t3\twrite_fail\tstate.json\tpid=3\n", encoding="utf-8")
+            check("15.1 状态新鲜: 连续3次写失败不算持久故障(不拉闸)",
+                  _gate.write_fail_streak() >= 3 and _gate.state_write_is_stale() is False)
+            # 15.2 状态陈旧 → 认定为真故障
+            os.utime(_state15, (_time15.time() - 7200, _time15.time() - 7200))
+            check("15.2 状态陈旧2小时: 判定为持久故障(该拉闸)",
+                  _gate.state_write_is_stale() is True)
+            # 15.3 状态文件缺失 → 按陈旧处理
+            os.remove(_state15)
+            check("15.3 状态文件缺失: 判定为持久故障",
+                  _gate.state_write_is_stale() is True)
+    finally:
+        if _orig_state and _orig_log:
+            _gate.STATE, _gate.HEALTH_LOG = _orig_state, _orig_log
+
+    # 15.4 含 lone surrogate 的状态必须能写成功（不再整次失败）
+    _d15b = _tf15.mkdtemp(prefix="const15b-")
+    _p15b = os.path.join(_d15b, "s.json")
+    try:
+        _orig_log2 = getattr(_gate, "HEALTH_LOG", None)
+        _gate.HEALTH_LOG = _log15
+        try:
+            _gate._atomic_write_json(_p15b, {"last_task": "正常文本\udcac尾巴"})
+            _txt = _P15(_p15b).read_text(encoding="utf-8")
+            check("15.4 lone surrogate 状态不再写崩(降级为?)", "\udcac" not in _txt and "正常文本" in _txt)
+        finally:
+            if _orig_log2:
+                _gate.HEALTH_LOG = _orig_log2
+    except UnicodeEncodeError:
+        check("15.4 lone surrogate 状态不再写崩(降级为?)", False)
+
+    # 15.5 doctor 必须把拉闸报成 BAD（沉默 15 天的那条）
+    try:
+        _doc = _P15(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/constitution-doctor.py").read_text(encoding="utf-8")
+        check("15.5 doctor 把拉闸报为 BAD 而非 WARN",
+              'say("BAD", "门禁处于拉闸状态' in _doc)
+    except Exception as _e15:
+        check("15.5 doctor 把拉闸报为 BAD 而非 WARN(读取失败: %s)" % _e15, False)
+
     # ---- 汇总 ----
     total = len(RESULTS)
     passed = sum(1 for _, ok, _ in RESULTS if ok)
