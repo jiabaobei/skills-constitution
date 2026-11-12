@@ -381,46 +381,39 @@ SIMPLE_TASK_MARKERS = [
     "thank", "hi", "hello", "what is", "what's",
 ]
 
-# 零号条款：专业任务关键词（命中任一 → 判定专业，走通道B，强制拦截）
-# 注意:专业词保持子串匹配(宽松) —— 专业词的误报只会"多查一次",符合零号条款
-# "模糊任务宁可不放过"的精神;危险方向是简单词误报导致豁免逃逸,那边用词边界收紧。
-PROFESSIONAL_TASK_MARKERS = [
+# v2.33.0 零号条款：动作型任务关键词（命中任一 → 判定专业，走通道B）
+# 判定标准：任务是否**真的会改动本机状态**（写/改/删文件、跑脚本、安装、写代码、部署推送）。
+# 纯认知/领域词（查询、分析、数据处理、启动、金融、股票、行情、基金、邮件）已移除 ——
+# 「上网搜索最新模型」「不用启动三查」这类句子不再被误判专业。
+# 兜底由「模糊按专业处理」改为「默认简单」：判不准就直接答，不多查一次。
+ACTION_TASK_MARKERS = [
     "编码", "代码", "编程", "开发", "写一个", "实现", "部署", "推送",
-    "文件", "脚本", "爬虫", "抓取", "API", "接口", "数据库", "查询",
-    "分析", "数据处理", "生成", "创建", "修改", "编辑", "删除",
+    "文件", "脚本", "爬虫", "抓取", "API", "接口", "数据库",
+    "生成", "创建", "修改", "编辑", "删除",
     "git", "github", "push", "commit", "deploy", "运行", "测试",
-    "安装", "配置", "启动", "打包", "编译", "调优", "排错", "修复",
+    "安装", "配置", "打包", "编译", "调优", "排错", "修复",
     "网页", "网站", "前端", "后端", "服务器", "docker", "npm", "python",
-    "excel", "word", "pdf", "ppt", "报表", "图表", "可视化",
-    "金融", "股票", "行情", "基金", "邮件", "发送邮件",
+    "excel", "word", "pdf", "ppt", "报表", "图表", "可视化", "发送邮件",
 ]
-
 
 def classify_task(text):
     """零号条款任务分类器（确定性代码，不依赖 Agent 自觉）
 
-    返回: "simple" | "professional" | "ambiguous"
-    - simple: 命中简单关键词 → 通道A（跳过门禁，直接通用能力）
-    - professional: 命中专业关键词 → 通道B（强制 pre-hook + 五步校验）
-    - ambiguous: 无命中 → 宁可不放过，按专业处理（宪法:模糊任务 ✅ 查一下）
+    返回: "simple" | "professional"
+    - professional: 命中 ACTION_TASK_MARKERS（真会改动本机状态的动作）→ 通道B
+    - simple: 其余一切（纯信息查询、简单问答、模糊任务）→ 通道A 直接作答
 
-    v2.19.0 两处修复:
-    1. 简单词用词边界匹配 —— "hi" 不再命中 "this/shift"、"explain" 不再
-       豁免 "explain this bug and fix the code" 这类混合任务中的专业部分。
-    2. 专业词优先 —— 同时命中简单词和专业词时判 professional
-       ("帮我解释这个报错然后修复代码并部署" 不再被整体豁免)。
-       专业词保持子串匹配:误报只会多查一次,符合"宁可不放过"。
+    v2.33.0：默认简单。旧版 ambiguous「宁可不放过，按专业处理」导致
+    「上网搜索最新模型版本」被拉去跑完整三查，且注入块「首句输出三查」
+    是无条件措辞，形成过度触发。动作词优先保留（混合任务仍判专业）。
+    SIMPLE_TASK_MARKERS 保留供外部引用，判定统一走 ACTION_TASK_MARKERS。
     """
     if not text:
-        return "ambiguous"
-    text_lower = expand_task_text(text).lower()  # v2.12.0:同义词扩展后分类
-    has_simple = any(keyword_in(text_lower, m) for m in SIMPLE_TASK_MARKERS)
-    has_pro = any(m.lower() in text_lower for m in PROFESSIONAL_TASK_MARKERS)
-    if has_pro:
-        return "professional"
-    if has_simple:
         return "simple"
-    return "ambiguous"
+    text_lower = expand_task_text(text).lower()
+    if any(m.lower() in text_lower for m in ACTION_TASK_MARKERS):
+        return "professional"
+    return "simple"
 
 
 def load_memory(memory_path=DEFAULT_MEMORY):
@@ -968,7 +961,7 @@ def build_injection(memory_text, tree, matched_cats, task, sad_candidates=None,
         lines.append("")
 
     lines.append("**执行要求：**")
-    lines.append("1. 首句输出【宪法三查】,②技能树必须列出命中技能名清单(禁止只写'已读技能树')"
+    lines.append("1. 仅【专业任务】首句输出【宪法三查】;纯信息查询/简单问答按零号条款豁免,直接作答(v2.33.0);②技能树必须列出命中技能名清单(禁止只写'已读技能树')"
                  "(v2.30.0:三查仅任务开始时一次,同一任务内后续轮次无需重复;"
                  "但「有匹配必用」每轮都适用 —— 只要有相关技能必须用 Skill 工具调用)")
     lines.append("2. 命中技能必调用;无命中声明'技能树无匹配'再走通用能力")
@@ -1159,10 +1152,9 @@ def main():
         if a.json:
             print(json.dumps({
                 "task_type": task_type,
-                "channel": "A-简单(通用能力)" if task_type == "simple"
-                           else "B-专业(强制门禁)" if task_type == "professional"
-                           else "B-模糊(按专业处理)",
-                "rule": "零号条款:简单问答跳过;专业任务必查;模糊任务查一下(宁可不放过)"
+                "channel": "A-简单(直接作答)" if task_type == "simple"
+                           else "B-专业(强制门禁)",
+                "rule": "v2.33.0 零号条款:默认简单直接作答;仅动作型任务(动文件/跑脚本/安装/写代码)必查"
             }, ensure_ascii=False, indent=2))
         else:
             if task_type == "simple":
